@@ -19,7 +19,6 @@ import (
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
 	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
-	"go.opentelemetry.io/otel/log/global"
 	"go.opentelemetry.io/otel/propagation"
 	sdklog "go.opentelemetry.io/otel/sdk/log"
 	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
@@ -120,7 +119,7 @@ func Setup(ctx context.Context, opts Options, stdout *slog.Logger) (*Providers, 
 		sdklog.WithProcessor(sdklog.NewBatchProcessor(logExp)),
 		sdklog.WithResource(res),
 	)
-	global.SetLoggerProvider(lp)
+	otel.SetLoggerProvider(lp)
 	p.shutdowns = append(p.shutdowns, lp.Shutdown)
 
 	otelHandler := otelslog.NewHandler(opts.ServiceName, otelslog.WithLoggerProvider(lp))
