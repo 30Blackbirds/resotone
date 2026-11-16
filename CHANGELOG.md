@@ -1,3 +1,10 @@
+## [3.6.6](https://github.com/KlangHaus/resonans/compare/v3.6.5...v3.6.6) (2026-11-16)
+
+
+### Bug Fixes
+
+* **deps:** bump otel family to 1.47.x ([#212](https://github.com/KlangHaus/resonans/issues/212)) ([d52d229](https://github.com/KlangHaus/resonans/commit/d52d229c9f13bec815f17fac132046e7a7ac6d89))
+
 ## [3.6.5](https://github.com/KlangHaus/resonans/compare/v3.6.4...v3.6.5) (2026-11-12)
 
 
