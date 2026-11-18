@@ -68,7 +68,7 @@ select set_config('resotone.app_password', :'app_password', false);
 do $guard$
 begin
   if coalesce(current_setting('resotone.app_password', true), '') = '' then
-    raise exception 'RESONANS_APP_PASSWORD is empty or unset — refusing to create a passwordless resonans_app role';
+    raise exception 'RESONANS_APP_PASSWORD is empty or unset — refusing to create a passwordless resotone_app role';
   end if;
 end
 $guard$;
@@ -81,7 +81,7 @@ begin
 end
 $$;
 
-create role resonans_app with
+create role resotone_app with
   login password :'app_password'
   nosuperuser nocreatedb nocreaterole noinherit nobypassrls;
 
@@ -101,9 +101,9 @@ create role resonans_app with
 -- (internal/persistence/migrate.go, ensureSchema), so a least-privilege
 -- migrator on a database owned by someone else works too — which is the shape
 -- every hand-written setup guide produces.
-create schema if not exists resonans_app authorization resonans_migrator;
+create schema if not exists resonans_app authorization resotone_migrator;
 
-grant usage on schema resonans_app to resonans_app;
+grant usage on schema resonans_app to resotone_app;
 
 -- No table exists yet, so grant on what the migrator WILL create.
 --
@@ -121,7 +121,7 @@ grant usage on schema resonans_app to resonans_app;
 --
 --   statements as written, run as superuser, tables created by the migrator
 --     -> app role: ERROR: permission denied for table documents
---   same statements plus `for role resonans_migrator`
+--   same statements plus `for role resotone_migrator`
 --     -> app role: 0 rows, works
 --
 -- So outside this file, name the creating role explicitly:
@@ -129,6 +129,6 @@ grant usage on schema resonans_app to resonans_app;
 --
 -- They are also per-SCHEMA, so the schema is named rather than inherited.
 alter default privileges in schema resonans_app
-  grant select, insert, update, delete on tables to resonans_app;
+  grant select, insert, update, delete on tables to resotone_app;
 alter default privileges in schema resonans_app
-  grant usage, select on sequences to resonans_app;
+  grant usage, select on sequences to resotone_app;
