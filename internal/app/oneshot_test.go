@@ -100,3 +100,37 @@ func TestMediaAssetResolver(t *testing.T) {
 		t.Errorf("another tenant resolved the asset: %v", got)
 	}
 }
+
+// admin grant checks its arguments before it connects anywhere: a typo in the
+// tenant must not reach the database as another tenant, and nothing is granted
+// to an empty subject.
+func TestAdminGrantRefusesBadArgumentsBeforeConnecting(t *testing.T) {
+	t.Setenv("NODE_ENV", "development")
+	t.Setenv("DATABASE_URL", "postgres://nobody@127.0.0.1:1/none?sslmode=disable")
+	t.Setenv("RESONANS_JWT_ISSUER", "")
+	t.Setenv("RESONANS_JWKS_URL", "")
+	t.Setenv("RESONANS_TENANT_ID", "")
+	t.Setenv("RESONANS_TENANT_MODE", "")
+	ctx := context.Background()
+	good := uuid.NewString()
+	for name, c := range map[string]struct{ issuer, sub, tenant, want string }{
+		"no issuer":      {"", "u1", good, "--issuer is required"},
+		"no sub":         {"https://idp.example", "  ", good, "--sub is required"},
+		"tenant typo":    {"https://idp.example", "u1", "acme", "--tenant must be a tenant uuid"},
+		"no tenant":      {"https://idp.example", "u1", "", "--tenant must be a tenant uuid"},
+		"unreachable db": {"https://idp.example", "u1", good, "connect db"},
+	} {
+		if err := AdminGrant(ctx, c.issuer, c.sub, c.tenant); err == nil || !strings.Contains(err.Error(), c.want) {
+			t.Errorf("%s: AdminGrant = %v, want an error containing %q", name, err, c.want)
+		}
+	}
+}
+
+func TestAdminGrantRequiresADatabase(t *testing.T) {
+	t.Setenv("NODE_ENV", "development")
+	t.Setenv("DATABASE_URL", "")
+	err := AdminGrant(context.Background(), "https://idp.example", "u1", uuid.NewString())
+	if err == nil || !strings.Contains(err.Error(), "DATABASE_URL is required for admin grant") {
+		t.Errorf("AdminGrant without DATABASE_URL = %v", err)
+	}
+}

@@ -412,3 +412,57 @@ func TestRoleClaimDoesNotGrantARoleWithoutOptIn(t *testing.T) {
 		}
 	}
 }
+
+// `resotone admin grant` against a real database: the first admin is created
+// without ever having logged in, a repeat changes nothing, and the same
+// identity in another tenant is left alone.
+func TestAdminGrantMakesTheFirstAdminAndIsIdempotent(t *testing.T) {
+	ctx := context.Background()
+	pool, scopedDSN := testpg.PoolDSN(t)
+	if _, err := persistence.Migrate(ctx, pool); err != nil {
+		t.Fatalf("migrate: %v", err)
+	}
+	t.Setenv("NODE_ENV", "development")
+	t.Setenv("DATABASE_URL", scopedDSN)
+	t.Setenv("RESONANS_JWT_ISSUER", "")
+	t.Setenv("RESONANS_JWKS_URL", "")
+	t.Setenv("RESONANS_TENANT_MODE", "")
+	t.Setenv("RESONANS_TENANT_ID", "")
+	tenant, other := uuid.New(), uuid.New()
+	const issuer = "https://idp.example"
+
+	for i := 0; i < 2; i++ {
+		if err := AdminGrant(ctx, issuer, "ada", tenant.String()); err != nil {
+			t.Fatalf("AdminGrant run %d: %v", i+1, err)
+		}
+	}
+	count := func(tn uuid.UUID, q string) int {
+		var n int
+		if err := pool.QueryRow(ctx, q, tn).Scan(&n); err != nil {
+			t.Fatalf("%s: %v", q, err)
+		}
+		return n
+	}
+	if n := count(tenant, `select count(*) from resonans_app.users where tenant_id = $1 and issuer = 'https://idp.example' and sub = 'ada'`); n != 1 {
+		t.Errorf("%d user rows after two grants, want 1", n)
+	}
+	if n := count(tenant, `select count(*) from resonans_app.user_roles where tenant_id = $1 and role = 'admin'`); n != 1 {
+		t.Errorf("%d admin rows after two grants, want 1", n)
+	}
+	if n := count(other, `select count(*) from resonans_app.user_roles where tenant_id = $1`); n != 0 {
+		t.Errorf("the grant reached another tenant: %d role rows", n)
+	}
+
+	// Single-tenant defaults: issuer and tenant come from the environment.
+	t.Setenv("RESONANS_JWT_ISSUER", issuer)
+	t.Setenv("RESONANS_JWKS_URL", issuer+"/jwks")
+	t.Setenv("RESONANS_JWT_AUDIENCE", "resotone")
+	t.Setenv("RESONANS_TENANT_MODE", "single")
+	t.Setenv("RESONANS_TENANT_ID", other.String())
+	if err := AdminGrant(ctx, "", "bo", ""); err != nil {
+		t.Fatalf("AdminGrant with defaults: %v", err)
+	}
+	if n := count(other, `select count(*) from resonans_app.user_roles where tenant_id = $1 and role = 'admin'`); n != 1 {
+		t.Errorf("defaulted grant made %d admins in the single tenant, want 1", n)
+	}
+}

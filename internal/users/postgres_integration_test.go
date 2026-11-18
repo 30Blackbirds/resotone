@@ -156,3 +156,96 @@ func TestConcurrentFirstLoginsCreateOneUser(t *testing.T) {
 		}
 	}
 }
+
+func TestGrantRoleCreatesTheUserAndIsIdempotent(t *testing.T) {
+	ctx := context.Background()
+	s, admin := stores(t)
+	tenant := uuid.New()
+
+	// Nobody has logged in yet; the operator grants the first admin.
+	first, err := s.GrantRole(ctx, tenant, "https://idp.example", "ada", auth.RoleAdmin)
+	if err != nil || !first.UserCreated || !first.RoleChanged || first.Disabled {
+		t.Fatalf("first grant = %+v, %v; want a created user and a changed role", first, err)
+	}
+	// The same command again changes nothing.
+	again, err := s.GrantRole(ctx, tenant, "https://idp.example", "ada", auth.RoleAdmin)
+	if err != nil || again.UserCreated || again.RoleChanged || again.UserID != first.UserID {
+		t.Fatalf("second grant = %+v, %v; want a no-op on the same user", again, err)
+	}
+	var users, roles int
+	_ = admin.QueryRow(ctx, `select count(*) from resonans_app.users`).Scan(&users)
+	_ = admin.QueryRow(ctx, `select count(*) from resonans_app.user_roles`).Scan(&roles)
+	if users != 1 || roles != 1 {
+		t.Fatalf("%d users, %d roles after two grants; want 1 and 1", users, roles)
+	}
+
+	// The login path now resolves that user as admin, and fills in the profile.
+	rec, err := s.Login(ctx, ident(tenant, "ada"))
+	if err != nil || rec.ID != first.UserID || rec.Role != auth.RoleAdmin {
+		t.Fatalf("login after grant = %+v, %v; want the same user as admin", rec, err)
+	}
+	var name string
+	_ = admin.QueryRow(ctx, `select display_name from resonans_app.users`).Scan(&name)
+	if name != "Ada" {
+		t.Errorf("display name after the first login = %q, want Ada", name)
+	}
+}
+
+// A grant is for one tenant and one identity only.
+func TestGrantRoleStaysInItsTenantAndIdentity(t *testing.T) {
+	ctx := context.Background()
+	s, _ := stores(t)
+	a, b := uuid.New(), uuid.New()
+	if _, err := s.GrantRole(ctx, a, "https://idp.example", "ada", auth.RoleAdmin); err != nil {
+		t.Fatal(err)
+	}
+	if rec, _ := s.Login(ctx, ident(b, "ada")); rec.Role != auth.RoleNone {
+		t.Errorf("tenant B login of the same person = %v; the grant leaked across tenants", rec.Role)
+	}
+	other := ident(a, "ada")
+	other.Issuer = "https://other-idp.example"
+	if rec, _ := s.Login(ctx, other); rec.Role != auth.RoleNone {
+		t.Errorf("same sub at another issuer = %v; the grant leaked across issuers", rec.Role)
+	}
+	if rec, _ := s.Login(ctx, ident(a, "ada")); rec.Role != auth.RoleAdmin { // positive control
+		t.Errorf("the granted user lost the role: %v", rec.Role)
+	}
+}
+
+func TestGrantRoleKeepsADisabledUserDisabled(t *testing.T) {
+	ctx := context.Background()
+	s, admin := stores(t)
+	tenant := uuid.New()
+	rec, _ := s.Login(ctx, ident(tenant, "ada"))
+	if _, err := admin.Exec(ctx, `update resonans_app.users set status = 'disabled' where id = $1`, rec.ID); err != nil {
+		t.Fatal(err)
+	}
+	res, err := s.GrantRole(ctx, tenant, "https://idp.example", "ada", auth.RoleAdmin)
+	if err != nil || !res.Disabled || !res.RoleChanged {
+		t.Fatalf("grant on a disabled user = %+v, %v; want recorded and reported disabled", res, err)
+	}
+	if got, _ := s.Login(ctx, ident(tenant, "ada")); !got.Disabled {
+		t.Errorf("the grant re-enabled a disabled user")
+	}
+}
+
+func TestGrantRoleRefusesWhatItCannotGrant(t *testing.T) {
+	ctx := context.Background()
+	s, _ := stores(t)
+	tenant := uuid.New()
+	for name, c := range map[string]struct {
+		tenant      uuid.UUID
+		issuer, sub string
+		role        auth.Role
+	}{
+		"no sub":    {tenant, "https://idp.example", " ", auth.RoleAdmin},
+		"no issuer": {tenant, "", "ada", auth.RoleAdmin},
+		"no tenant": {uuid.Nil, "https://idp.example", "ada", auth.RoleAdmin},
+		"no role":   {tenant, "https://idp.example", "ada", auth.RoleNone},
+		"bogus":     {tenant, "https://idp.example", "ada", auth.Role(99)},
+	} {
+		if _, err := s.GrantRole(ctx, c.tenant, c.issuer, c.sub, c.role); err == nil {
+			t.Errorf("%s: accepted", name)
+		}
+	}
+}

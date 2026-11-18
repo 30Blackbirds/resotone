@@ -419,6 +419,58 @@ func Migrate(ctx context.Context) error {
 	return nil
 }
 
+// AdminGrant makes the user (issuer, sub) an administrator of a tenant: the
+// operator's way to a first admin, since no role is ever assigned by default and
+// nobody else can assign one before an admin exists. Idempotent. Run it as
+// `resotone admin grant`; it uses DATABASE_URL like the other one-shots.
+//
+// issuer defaults to RESONANS_JWT_ISSUER and tenant to RESONANS_TENANT_ID
+// (single-tenant mode), so a one-organization install passes only --sub.
+func AdminGrant(ctx context.Context, issuer, sub, tenant string) error {
+	cfg, err := config.Load()
+	if err != nil {
+		return fmt.Errorf("load config: %w", err)
+	}
+	logger := newStdoutLogger(cfg.LogLevel, cfg.OTelServiceName, cfg.NodeEnv)
+	logNodeEnv(logger, cfg.NodeEnv, cfg.NodeEnvDefaulted)
+	if issuer == "" {
+		issuer = cfg.JWTIssuer
+	}
+	if tenant == "" {
+		tenant = cfg.TenantID
+	}
+	if issuer == "" {
+		return errors.New("--issuer is required (or set RESONANS_JWT_ISSUER)")
+	}
+	if strings.TrimSpace(sub) == "" {
+		return errors.New("--sub is required: the `sub` claim the provider puts in this person's token")
+	}
+	tenantID, err := uuid.Parse(strings.TrimSpace(tenant))
+	if err != nil {
+		return fmt.Errorf("--tenant must be a tenant uuid (or set RESONANS_TENANT_ID in single-tenant mode): %w", err)
+	}
+	if cfg.DatabaseURL == "" {
+		return errors.New("DATABASE_URL is required for admin grant")
+	}
+	pool, err := persistence.NewPool(ctx, cfg.DatabaseURL)
+	if err != nil {
+		return fmt.Errorf("connect db: %w", err)
+	}
+	defer pool.Close()
+	res, err := users.NewPostgresStore(pool).GrantRole(ctx, tenantID, issuer, sub, auth.RoleAdmin)
+	if err != nil {
+		return fmt.Errorf("admin grant: %w", err)
+	}
+	// The subject is personal data and stays out of the log.
+	logger.Info("admin_granted", "tenant", tenantID, "user", res.UserID,
+		"userCreated", res.UserCreated, "roleChanged", res.RoleChanged)
+	if res.Disabled {
+		logger.Warn("admin_grant_user_disabled", "user", res.UserID,
+			"detail", "the role is recorded, but this user is disabled and cannot log in until enabled")
+	}
+	return nil
+}
+
 // SanitizeBackfill runs the rich-text backfill over documents and
 // document_versions (internal/backfill). Dry-run unless apply; writes a report
 // with counts and ids/paths only. Must run as the migrator role (BYPASSRLS).
