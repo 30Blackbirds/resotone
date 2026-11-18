@@ -410,6 +410,15 @@ Verified against the code, not assumed:
 - **Name and email are optional.** They are read from the access token's `name` (or
   `preferred_username`) and `email` claims, and many providers put them only in the ID
   token. If absent the user is listed by `sub` alone. They never decide access.
+- **Email is trusted from the provider, never verified here.** Resotone sends no email
+  and has no SMTP. It stores an address only when the access token also says
+  `email_verified` is true; without that claim no email is stored. A provider that has no
+  email verification can be accommodated with `RESONANS_REQUIRE_EMAIL_VERIFIED=0`, and
+  then the stored address is **unverified**: treat it as a label, not as proof that the
+  person owns it. Roles never depend on it; they are assigned by issuer and `sub`.
+- **Identity comes only from the verified access token.** The user store is asked about
+  the issuer, `sub`, name, email and tenant in the access token the API verified, and
+  nothing else. Headers, parameters or a body naming someone else change nothing.
 - **Untested at other providers.** CI logs in through Dex and the authors run
   BetterAuth; other providers follow the standard but are not part of CI.
 - **Defaults carry one name:** the default role claim is `resonans_role`. It is a
@@ -518,7 +527,7 @@ You run it, so you decide purpose, legal basis and retention; this is the factua
 | --- | --- | --- | --- |
 | `sub` and `issuer` | `users` | the access token | Identify the user. |
 | `display_name` | `users` | token claim `name`, else `preferred_username` (may be empty) | Show who is who to admins. |
-| `email` | `users` | token claim `email` (optional) | Show who is who to admins. |
+| `email` | `users` | token claim `email`, only with `email_verified` true unless `RESONANS_REQUIRE_EMAIL_VERIFIED=0` (optional) | Show who is who to admins. |
 | `status`, `created_at`, `last_login_at` | `users` | Resotone | Disable a user; the first login; the latest login, rewritten at most every 15 minutes. |
 | `role`, `assigned_at` | `user_roles` | an admin, or `admin grant` | What the user may do. |
 | `deleted_at` | `users` | Resotone | Marks an erased user. |
