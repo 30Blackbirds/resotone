@@ -1,6 +1,5 @@
-# Multi-stage build for the Resonans CMS (Go REST content-API).
-# Mirrors the permissions/notifications service Dockerfiles (Docker Compose /
-# Caddy deploy model per docs/infrastructure — not k8s).
+# Multi-stage build for the Resotone CMS (Go REST content-API), for a Docker
+# Compose deployment behind a reverse proxy (not Kubernetes).
 # Pinned to the exact patch in go.mod's `go` directive: CI runs tests on the
 # directive version, so a floating tag would ship a stdlib we never tested
 # against ([permissions]-fund 2026-08-14). Held at 1.25 because the

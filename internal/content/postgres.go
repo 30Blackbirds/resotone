@@ -22,7 +22,7 @@ const documentColumns = `id, tenant_id, dataset, type, slug, title, body, status
 // transaction that first sets the tenant GUC (set_config('app.tenant_id', …,
 // is_local=true)), so the documents_tenant_isolation RLS policy scopes all rows
 // to the caller's tenant. The GUC is transaction-local and never leaks to other
-// pooled connections. Pattern ported from permissions/internal/persistence/audit.go.
+// pooled connections.
 type PostgresStore struct {
 	pool *pgxpool.Pool
 }

@@ -55,7 +55,7 @@ func main() {
 
 // healthcheck probes the local /healthz endpoint and exits accordingly.
 // Distroless ships no shell/curl, so the container HEALTHCHECK invokes the
-// binary itself in this mode (same pattern as permissions/notifications).
+// binary itself in this mode.
 func healthcheck() int {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -81,7 +81,7 @@ func healthcheck() int {
 	c := &http.Client{Timeout: timeout}
 	// #nosec G704 -- localhost /healthz probe; host/port stammer fra betroet
 	// container-env (HEALTHCHECK_HOST/PORT), ikke bruger-input. Standard
-	// distroless-healthcheck-mønster (samme som permissions/notifications).
+	// distroless-healthcheck-mønster.
 	resp, err := c.Get(url) //nolint:noctx // kortlivet probe med client-timeout
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "healthcheck: %v\n", err)
