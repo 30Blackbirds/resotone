@@ -18,7 +18,7 @@
 --
 -- Then run the migrations as the migrator, and only then start the server:
 --
---   DATABASE_URL=postgres://resonans_migrator:...@HOST:5432/resotone resotone migrate
+--   DATABASE_URL=postgres://resotone_migrator:...@HOST:5432/resotone resotone migrate
 --
 -- Three things below are load-bearing and each has a measurement behind it.
 -- They are numbered so a code review can point at one.
@@ -55,14 +55,14 @@ end
 $$;
 
 -- (1) ROLES BEFORE THE DATABASE.
--- Not style: the database is created OWNER resonans_migrator below, so the role
+-- Not style: the database is created OWNER resotone_migrator below, so the role
 -- has to exist first. Creating the database first and the roles after is the
 -- ordering a hand-written guide naturally produces, and it forces you into (2).
-create role resonans_migrator with
+create role resotone_migrator with
   login password :'migrator_password'
   nosuperuser nocreatedb nocreaterole;
 
-create role resonans_app with
+create role resotone_app with
   login password :'app_password'
   nosuperuser nocreatedb nocreaterole noinherit nobypassrls;
 
@@ -75,16 +75,16 @@ create role resonans_app with
 --
 --   superuser owns the db, schema pre-created, no CREATE granted
 --     -> resotone migrate: permission denied for database (42501), 0 tables
---   same, plus `grant create on database resotone to resonans_migrator`
+--   same, plus `grant create on database resotone to resotone_migrator`
 --     -> green, 5 tables
---   `create database resotone owner resonans_migrator`   (this file)
+--   `create database resotone owner resotone_migrator`   (this file)
 --     -> green, 5 tables
 --
 -- The third is chosen over the second because it grants nothing anyone has to
 -- remember to revoke later. Newer Resotone looks the schema up before creating it
 -- (internal/persistence/migrate.go, ensureSchema), so the first shape works too —
 -- but this file must not depend on the server being new enough.
-create database resotone owner resonans_migrator;
+create database resotone owner resotone_migrator;
 
 -- (3) NOW CHANGE DATABASE. This is a command, not a comment.
 -- Everything below belongs to `resotone`. Run it while still connected to
@@ -98,22 +98,22 @@ create database resotone owner resonans_migrator;
 -- The tables live in the `resonans_app` SCHEMA, not in `public`. Granting on
 -- `public` produced an app role that could not read its own tables at all, and
 -- every request answered `permission denied for schema resonans_app`.
-create schema if not exists resonans_app authorization resonans_migrator;
+create schema if not exists resonans_app authorization resotone_migrator;
 
-grant usage on schema resonans_app to resonans_app;
+grant usage on schema resonans_app to resotone_app;
 
 -- (4) `FOR ROLE` IS LOAD-BEARING.
 -- `alter default privileges` attaches to the role that RUNS it unless `for role`
 -- says otherwise, and it is per-SCHEMA. You are running this as a third role; the
--- TABLES will be created by resonans_migrator during `resotone migrate`. Without
+-- TABLES will be created by resotone_migrator during `resotone migrate`. Without
 -- `for role` the defaults attach to YOU, the migrator's tables get nothing, and
 -- the app role answers `permission denied for table documents` on every request.
 -- Measured against postgres:16-alpine with the working variant as the control in
 -- the same run.
-alter default privileges for role resonans_migrator in schema resonans_app
-  grant select, insert, update, delete on tables to resonans_app;
-alter default privileges for role resonans_migrator in schema resonans_app
-  grant usage, select on sequences to resonans_app;
+alter default privileges for role resotone_migrator in schema resonans_app
+  grant select, insert, update, delete on tables to resotone_app;
+alter default privileges for role resotone_migrator in schema resonans_app
+  grant usage, select on sequences to resotone_app;
 
 -- Nothing grants BYPASSRLS or SUPERUSER to either role, which is what makes
 -- tenant isolation hold. A table that carries a tenant_id and forgot
