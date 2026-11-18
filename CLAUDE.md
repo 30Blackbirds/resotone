@@ -68,9 +68,9 @@ og blev sprunget over». Synsfelt: **kun Go**; `pytest -k`, `vitest -t` og
 - `internal/config/` — env-config (honour the deploy contract in README).
 - `internal/content/` — domæne: Document + tenant-scoped Store (Postgres+RLS + in-memory).
 - `internal/httpapi/` — REST-adaptering, tenant fra actor (ingen forretningslogik).
-- `internal/auth/` — OIDC JWT/JWKS-verifier + Actor + net/http-middleware, der slår brugeren og rollen op i `internal/users/` (porteret fra permissions).
+- `internal/auth/` — OIDC JWT/JWKS-verifier + Actor + net/http-middleware, der slår brugeren og rollen op i `internal/users/`.
 - `internal/users/` — Resotones egne brugere og rolletildelinger (RLS pr. tenant), admin-API og `admin grant`.
-- `internal/observability/` — OTel-setup (kopieret fra permissions/notifications).
+- `internal/observability/` — OTel-setup.
 - `internal/persistence/` — pgx-pool + boot-migrations.
 - `migrations/` — embedded *.sql (køres ved boot).
 
