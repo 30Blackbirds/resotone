@@ -163,7 +163,7 @@ RESONANS_MIGRATOR_PASSWORD=$(openssl rand -hex 24) \
 RESONANS_APP_PASSWORD=$(openssl rand -hex 24) \
   psql -v ON_ERROR_STOP=1 -U postgres -d postgres -f deploy/manual-setup.sql
 
-DATABASE_URL='postgres://resonans_migrator:...@HOST:5432/resotone' resotone migrate
+DATABASE_URL='postgres://resotone_migrator:...@HOST:5432/resotone' resotone migrate
 psql -v ON_ERROR_STOP=1 -U postgres -d resotone -f deploy/assert-rls-coverage.sql
 ```
 
@@ -178,6 +178,12 @@ be a command instead of a comment. Each of those has a measurement written besid
 
 Use **hex**, not base64: a `/` in a base64 password breaks DSN parsing in several clients.
 
+The two roles, `resotone_migrator` and `resotone_app`, are plain Postgres roles created
+by the SQL in this repository and nothing else. They are members of no other role and need
+no extension, no cloud-provider role and no external service. The app role is created
+`nosuperuser nocreatedb nocreaterole noinherit nobypassrls`, which is what keeps tenant
+isolation in force. (The schema that holds the tables is still named `resonans_app`.)
+
 ### Backups
 
 State lives in two places, and a backup needs both: the Postgres database (`resotone`) and
@@ -185,7 +191,7 @@ the asset files (the `assets_data` volume, mounted at `/var/lib/resotone/assets`
 you use Bunny storage). With the bundled Postgres, a database dump looks like this:
 
 ```bash
-docker compose exec -T postgres pg_dump -U resonans_migrator -Fc resotone > resotone.dump
+docker compose exec -T postgres pg_dump -U resotone_migrator -Fc resotone > resotone.dump
 ```
 
 Back the asset volume up with whatever you already use for Docker volumes, and test a
@@ -438,11 +444,23 @@ the logout, and editors stay logged in with a message saying so.
 2. Change `RESONANS_VERSION` to the new exact tag, then `docker compose pull` and
    `docker compose up -d --no-build` (or `git pull` and `up -d --build` when building from
    source). Database migrations run when the stack starts, in the `migrate` service.
-3. Upgrading from a release before Resotone stored users? Read
+3. **From a version that still used the roles `resonans_migrator` and `resonans_app`:** rename
+   them once, as a superuser, before you start the new version. The schema, its tables and
+   the default privileges follow the role, so nothing else changes:
+
+   ```sql
+   alter role resonans_migrator rename to resotone_migrator;
+   alter role resonans_app rename to resotone_app;
+   ```
+
+   A rename clears a password that is stored as MD5, so set both passwords again with
+   `alter role ... password '...'` if a login then fails. Point `DATABASE_URL` at the new
+   names.
+4. Upgrading from a release before Resotone stored users? Read
    [login and roles](#login-and-roles) first: roles are now assigned inside Resotone.
-4. After migrating a database you manage yourself, run
+5. After migrating a database you manage yourself, run
    [deploy/assert-rls-coverage.sql](deploy/assert-rls-coverage.sql) again.
-5. Take a [backup](#backups) first. Releases are not guaranteed to be reversible.
+6. Take a [backup](#backups) first. Releases are not guaranteed to be reversible.
 
 ## Reference
 
