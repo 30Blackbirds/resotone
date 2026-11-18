@@ -33,13 +33,17 @@ const maxUploadBytes = 25 << 20
 
 // Deps are the collaborators the API needs.
 type Deps struct {
-	Store         content.Store
-	Registry      *schema.Registry
-	Media         *media.Service
-	Video         media.VideoProvider // nil when no video plugin is configured
-	Verifier      auth.Verifier       // nil in dev/test (X-Dev-Tenant header path)
-	Settings      settings.Store      // per-tenant content profile
-	PreviewSecret string              // signs preview tokens; empty disables preview
+	Store    content.Store
+	Registry *schema.Registry
+	Media    *media.Service
+	Video    media.VideoProvider // nil when no video plugin is configured
+	Verifier auth.Verifier       // nil in dev/test (X-Dev-Tenant header path)
+	// Users is Resotone's own user store; the role comes from it, not from the
+	// token. ClaimGrants is the operator's opt-in (RESONANS_ROLE_CLAIM_GRANTS=1).
+	Users         auth.UserStore
+	ClaimGrants   bool
+	Settings      settings.Store // per-tenant content profile
+	PreviewSecret string         // signs preview tokens; empty disables preview
 	// Assets resolves asset ids in live-preview envelopes, exactly as delivery
 	// does, so the frontend renders the draft with the same shape it gets in
 	// production. nil = asset fields are left unresolved.
@@ -139,7 +143,7 @@ func NewRouter(d Deps) http.Handler {
 	for _, rt := range h.Routes() {
 		mux.HandleFunc(rt.Pattern, auth.RequireRole(rt.MinRole, rt.handler))
 	}
-	return auth.Middleware(d.Verifier, d.Logger)(mux)
+	return auth.NewMiddleware(d.Verifier, auth.Options{Logger: d.Logger, Users: d.Users, ClaimGrants: d.ClaimGrants})(mux)
 }
 
 // previewToken issues a short-lived signed token granting draft-read for one

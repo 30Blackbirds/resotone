@@ -17,5 +17,7 @@ OIDC_SCOPES=openid profile email groups offline_access
 # The mock connector's one user is in the group `authors`.
 RESONANS_ROLE_CLAIM=groups
 RESONANS_ROLE_MAP=authors=admin
+# The try stack has no admin to assign roles yet, so let the claim grant them.
+RESONANS_ROLE_CLAIM_GRANTS=1
 RESONANS_TENANT_MODE=single
 RESONANS_TENANT_ID=00000000-0000-4000-8000-000000000001

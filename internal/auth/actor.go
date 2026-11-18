@@ -1,11 +1,16 @@
 // Package auth verifies JWTs from any OpenID Connect provider locally against
 // a cached JWKS and derives the request Actor (subject, tenant, role).
-// Beslutning D (auth is a shared dependency, verified locally, must not degrade
-// on auth downtime), Beslutning K (tenant = a token claim) and ADR 0001
-// (provider-neutral claims and built-in roles). Ported from the permissions PDP.
+// Tokens are verified locally against a cached JWKS, so a briefly unreachable
+// provider does not take the API down; the tenant is a token claim; claim names
+// and roles are provider-neutral (ADR 0001). The effective role then comes from
+// Resotone's own user records (users.go, middleware.go).
 package auth
 
-import "context"
+import (
+	"context"
+
+	"github.com/google/uuid"
+)
 
 // Actor is the verified sender of a request.
 //
@@ -20,6 +25,18 @@ type Actor struct {
 	Sub    string
 	Tenant string
 	Role   Role
+	// Issuer is the provider the token came from (the verifier's configured
+	// issuer, which the token was validated against). With Sub it identifies the
+	// user. Empty for dev and service actors.
+	Issuer string
+	// DisplayName and Email are the optional profile claims (name or
+	// preferred_username, and email). Informational only: never used to make an
+	// access decision.
+	DisplayName string
+	Email       string
+	// UserID is Resotone's own record of this user, set once the login resolver
+	// has found or created it. The zero value means no record (dev, service).
+	UserID uuid.UUID
 }
 
 // HasTenant reports whether a non-empty tenant was present on the JWT.

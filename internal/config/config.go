@@ -78,6 +78,15 @@ type Config struct {
 	TenantClaim string
 	RoleClaim   string
 	RoleMap     map[string]auth.Role
+	// RoleClaimGrants (RESONANS_ROLE_CLAIM_GRANTS=1) lets the provider's role
+	// claim raise a user's role above the one assigned inside Resotone. Off by
+	// default; only the exact value 1 turns it on.
+	RoleClaimGrants bool
+	// AllowUnverifiedEmail (RESONANS_REQUIRE_EMAIL_VERIFIED=0) stores the email
+	// claim even when the token does not say the provider verified it. Default
+	// false: an email is stored only with email_verified = true. Resotone sends
+	// no email itself and never verifies one; it trusts the provider.
+	AllowUnverifiedEmail bool
 
 	// TenantID is single-tenant mode (RESONANS_TENANT_MODE=single +
 	// RESONANS_TENANT_ID): every editor works in this tenant and the tenant
@@ -229,6 +238,8 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("RESONANS_ROLE_MAP: %w", err)
 	}
 	cfg.RoleMap = roleMap
+	cfg.RoleClaimGrants = strings.TrimSpace(os.Getenv("RESONANS_ROLE_CLAIM_GRANTS")) == "1"
+	cfg.AllowUnverifiedEmail = strings.TrimSpace(os.Getenv("RESONANS_REQUIRE_EMAIL_VERIFIED")) == "0"
 
 	if !localePattern.MatchString(cfg.DefaultLocale) {
 		return nil, fmt.Errorf("RESONANS_DEFAULT_LOCALE: %q is not a language tag like en or pt-BR", cfg.DefaultLocale)

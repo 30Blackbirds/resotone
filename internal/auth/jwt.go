@@ -51,6 +51,11 @@ type VerifierConfig struct {
 	// FixedTenant, when set, is single-tenant mode: every actor gets this
 	// tenant and the tenant claim is not read at all.
 	FixedTenant string
+	// AllowUnverifiedEmail keeps the email claim when the token does not say it is
+	// verified. The default (false) keeps an email only when the token carries
+	// email_verified = true, so an address the provider never checked is not
+	// stored. RESONANS_REQUIRE_EMAIL_VERIFIED=0 sets this.
+	AllowUnverifiedEmail bool
 	// KeySet is a test seam. When set, the verifier uses it directly instead of
 	// fetching/caching the remote JWKS.
 	KeySet jwk.Set
@@ -58,17 +63,18 @@ type VerifierConfig struct {
 
 // jwksVerifier verifies tokens against a (possibly cached) JWKS.
 type jwksVerifier struct {
-	issuer      string
-	audience    string
-	jwksURL     string
-	tenantClaim string
-	roleClaim   string
-	roleMap     map[string]Role
-	fixedTenant string
+	issuer               string
+	audience             string
+	jwksURL              string
+	tenantClaim          string
+	roleClaim            string
+	roleMap              map[string]Role
+	fixedTenant          string
+	allowUnverifiedEmail bool
 	// cache is the jwx auto-refreshing JWKS cache; nil when a static KeySet is
 	// supplied (test seam). Keys are served from local memory and refreshed in
 	// the background, so a transient auth/JWKS outage does NOT take the service
-	// down (degrade-not-fail, Beslutning D).
+	// down (degrade, do not fail).
 	cache  *jwk.Cache
 	keySet jwk.Set
 }
@@ -78,13 +84,14 @@ type jwksVerifier struct {
 // boot; later refresh failures keep serving cached keys).
 func NewVerifier(ctx context.Context, cfg VerifierConfig) (Verifier, error) {
 	v := &jwksVerifier{
-		issuer:      cfg.Issuer,
-		audience:    cfg.Audience,
-		jwksURL:     cfg.JWKSURL,
-		tenantClaim: cfg.TenantClaim,
-		roleClaim:   cfg.RoleClaim,
-		roleMap:     cfg.RoleMap,
-		fixedTenant: cfg.FixedTenant,
+		issuer:               cfg.Issuer,
+		audience:             cfg.Audience,
+		jwksURL:              cfg.JWKSURL,
+		tenantClaim:          cfg.TenantClaim,
+		roleClaim:            cfg.RoleClaim,
+		roleMap:              cfg.RoleMap,
+		fixedTenant:          cfg.FixedTenant,
+		allowUnverifiedEmail: cfg.AllowUnverifiedEmail,
 	}
 	if v.tenantClaim == "" {
 		v.tenantClaim = DefaultTenantClaim
@@ -106,7 +113,7 @@ func NewVerifier(ctx context.Context, cfg VerifierConfig) (Verifier, error) {
 	if err := cache.Register(cfg.JWKSURL); err != nil {
 		return nil, fmt.Errorf("auth: register jwks url: %w", err)
 	}
-	// Degrade-not-fail (Beslutning D): priming is best-effort. If auth/JWKS is
+	// Degrade, do not fail: priming is best-effort. If auth/JWKS is
 	// unreachable at boot we STILL return a working verifier — the public
 	// /delivery path uses no JWT, and the editor JWT path recovers as soon as
 	// the keys are fetched (on demand in keys() + background refresh). This
@@ -134,7 +141,8 @@ func (v *jwksVerifier) keys(ctx context.Context) (jwk.Set, error) {
 
 // Verify parses and validates the token (algorithm, signature, issuer,
 // audience, exp/nbf), then extracts sub (required, non-empty), the tenant and
-// the role. A missing tenant or role is NOT an error here: the token is
+// the role CLAIM. The claim is only an input: the login middleware decides the
+// effective role from Resotone's own assignment (users.go). A missing tenant or role is NOT an error here: the token is
 // genuine, and the handlers answer 403 for what it may not do.
 func (v *jwksVerifier) Verify(ctx context.Context, token string) (Actor, error) {
 	if err := checkAlg(token); err != nil {
@@ -168,7 +176,50 @@ func (v *jwksVerifier) Verify(ctx context.Context, token string) (Actor, error) 
 	if tenant == "" {
 		tenant = stringClaim(tok, v.tenantClaim)
 	}
-	return Actor{Sub: sub, Tenant: tenant, Role: v.role(tok)}, nil
+	name := stringClaim(tok, "name")
+	if name == "" {
+		name = stringClaim(tok, "preferred_username")
+	}
+	return Actor{
+		Sub:         sub,
+		Tenant:      tenant,
+		Role:        v.role(tok),
+		Issuer:      v.issuer,
+		DisplayName: truncate(name, maxProfileRunes),
+		Email:       truncate(v.email(tok), maxProfileRunes),
+	}, nil
+}
+
+// email returns the email claim only when it may be kept: verified by the
+// provider (email_verified true, as a boolean or the string "true"), unless the
+// operator turned the requirement off. A missing email_verified is unverified.
+func (v *jwksVerifier) email(tok jwt.Token) string {
+	addr := stringClaim(tok, "email")
+	if addr == "" || v.allowUnverifiedEmail {
+		return addr
+	}
+	switch ev := func() any { x, _ := tok.Get("email_verified"); return x }(); t := ev.(type) {
+	case bool:
+		if t {
+			return addr
+		}
+	case string:
+		if t == "true" {
+			return addr
+		}
+	}
+	return ""
+}
+
+// maxProfileRunes bounds the profile claims that are stored, so a provider (or a
+// hostile token from one) cannot make Resotone keep an unbounded string.
+const maxProfileRunes = 320
+
+func truncate(s string, n int) string {
+	if r := []rune(s); len(r) > n {
+		return string(r[:n])
+	}
+	return s
 }
 
 // checkAlg refuses a token whose header names an algorithm outside allowedAlgs,

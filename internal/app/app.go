@@ -31,6 +31,7 @@ import (
 	"github.com/30blackbirds/resotone/internal/schema"
 	"github.com/30blackbirds/resotone/internal/seed"
 	"github.com/30blackbirds/resotone/internal/settings"
+	"github.com/30blackbirds/resotone/internal/users"
 )
 
 // version and revision are stamped via -ldflags at build time. revision is the
@@ -98,13 +99,14 @@ func Run(ctx context.Context) error {
 			logger.Warn("RESONANS_DEV_AUTH=1 ignored for the editor API: JWT is configured, X-Dev-Tenant is not read")
 		}
 		verifier, err = auth.NewVerifier(ctx, auth.VerifierConfig{
-			Issuer:      cfg.JWTIssuer,
-			JWKSURL:     cfg.JWKSURL,
-			Audience:    cfg.JWTAudience,
-			TenantClaim: cfg.TenantClaim,
-			RoleClaim:   cfg.RoleClaim,
-			RoleMap:     cfg.RoleMap,
-			FixedTenant: cfg.TenantID,
+			Issuer:               cfg.JWTIssuer,
+			JWKSURL:              cfg.JWKSURL,
+			Audience:             cfg.JWTAudience,
+			TenantClaim:          cfg.TenantClaim,
+			RoleClaim:            cfg.RoleClaim,
+			RoleMap:              cfg.RoleMap,
+			FixedTenant:          cfg.TenantID,
+			AllowUnverifiedEmail: cfg.AllowUnverifiedEmail,
 		})
 		if err != nil {
 			return fmt.Errorf("jwt verifier: %w", err)
@@ -231,6 +233,18 @@ func Run(ctx context.Context) error {
 		settingsStore = settings.NewMemoryStore()
 	}
 
+	// --- Users: Resotone's own record of who may do what ---
+	var userStore auth.UserStore
+	if pool != nil {
+		userStore = users.NewPostgresStore(pool)
+	} else {
+		userStore = users.NewMemoryStore()
+	}
+	if cfg.RoleClaimGrants {
+		logger.Warn("role_claim_grants_enabled",
+			"detail", "RESONANS_ROLE_CLAIM_GRANTS=1 — a role claim from the identity provider can raise a user's role above the one assigned in Resotone")
+	}
+
 	// --- Editor REST router (tenant-scoped, JWT-gated) ---
 	apiRouter := httpapi.NewRouter(httpapi.Deps{
 		DefaultLocale: cfg.DefaultLocale,
@@ -239,6 +253,8 @@ func Run(ctx context.Context) error {
 		Media:         mediaSvc,
 		Video:         videoProvider,
 		Verifier:      verifier,
+		Users:         userStore,
+		ClaimGrants:   cfg.RoleClaimGrants,
 		Settings:      settingsStore,
 		PreviewSecret: cfg.PreviewSecret,
 		Assets:        &mediaAssetResolver{media: mediaSvc},
