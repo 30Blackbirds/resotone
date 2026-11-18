@@ -86,6 +86,8 @@ services:
       RESONANS_ROLE_MAP: ${RESONANS_ROLE_MAP:-}
       # Exactly 1 lets the provider's role claim raise a role. See .env.example.
       RESONANS_ROLE_CLAIM_GRANTS: ${RESONANS_ROLE_CLAIM_GRANTS:-}
+      # Exactly 0 stores an email the provider did not verify. See .env.example.
+      RESONANS_REQUIRE_EMAIL_VERIFIED: ${RESONANS_REQUIRE_EMAIL_VERIFIED:-}
       RESONANS_TENANT_MODE: ${RESONANS_TENANT_MODE:-multi}
       RESONANS_TENANT_ID: ${RESONANS_TENANT_ID:-}
       RESONANS_TENANT_CLAIM: ${RESONANS_TENANT_CLAIM:-org}
