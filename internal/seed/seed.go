@@ -1,5 +1,5 @@
 // Package seed inserts a realistic explainers demo dataset (Danish gymnasium
-// organic-chemistry course) so consumers (Etude M5) can render against real
+// organic-chemistry course) so consumers can render against real
 // Resonans content instead of mocks. Domain data is realistic, not lorem
 // (rockfaker doctrine). All documents are validated against the schema before
 // insert and published.
@@ -54,7 +54,7 @@ func (s *seeder) run() error {
 		return err
 	}
 
-	// --- Quiz doc (answer key; delivery serves it, Etude redacts) ---
+	// --- Quiz doc (answer key; delivery serves it, the consumer redacts) ---
 	quizID, err := s.doc("quiz", "kulstof-bindinger", "Kulstof-bindinger", map[string]any{
 		"question": i18n("Hvor mange kovalente bindinger danner et kulstofatom typisk?"),
 		"type":     "single",

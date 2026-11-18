@@ -1,5 +1,5 @@
 // Minimal frontend for trying visual editing locally — and the reference for
-// what a real site (Etude, blog) has to do. No dependencies: node server.mjs.
+// what a real site (a learning platform, a blog) has to do. No dependencies: node server.mjs.
 //
 //   RESONANS_URL   Resonans API origin        (default http://localhost:3999)
 //   STUDIO_ORIGIN  the ONLY origin the bridge talks to (default http://localhost:3000)

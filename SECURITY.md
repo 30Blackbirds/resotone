@@ -12,6 +12,18 @@ If you have no GitHub account, open a regular issue containing **only** the word
 "security report, please contact me" and no details at all, and we will find a private
 channel.
 
+## Supported versions
+
+Resotone is in beta. Security fixes are released on the **latest release only**; they are
+not backported to older versions. Pin an exact version, and when an advisory is published,
+upgrade to the release it names. [CHANGELOG.md](CHANGELOG.md) lists the steps each upgrade
+needs.
+
+| Version | Security fixes |
+| --- | --- |
+| Latest release | Yes |
+| Anything older | No |
+
 ## What we consider a vulnerability
 
 Resotone is multi-tenant and self-hosted, so the things we care about most:

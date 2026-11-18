@@ -18,11 +18,11 @@ Produkt-brief:
 - **Stack = Go + go-starter** (Allan 2026-07-20; Go-everywhere).
 - **API = REST** (Beslutning W: content-API til egne Nuxt-sites).
 - **Multi-tenant + RLS fra dag 1** (tenant_id ≡ org_id, pool+silo, Beslutning K)
-  — vendte den oprindelige single-site-Beslutning B (Etude = primær forbruger;
-  klanghaus.dk-marketing = tenant med count=1).
-- **Bredt, content-type-agnostisk CMS** (Etude-læring + blog + marketing) via
+  — vendte den oprindelige single-site-Beslutning B (én primær forbruger;
+  marketing-site = tenant med count=1).
+- **Bredt, content-type-agnostisk CMS** (læring + blog + marketing) via
   schema-registry.
-- **Egen content-DB** (adskilt fra Etudes money-tier-DB).
+- **Egen content-DB** (adskilt fra forbrugernes egne databaser).
 - **Redaktør-UI genbruger grundtone-komponenter** (afklares m/ [grundtone]).
 - **OTel fra dag ét** — tenant.id pr. request på spans, ikke på resource.
 

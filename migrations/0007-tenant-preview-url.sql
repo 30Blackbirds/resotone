@@ -1,5 +1,5 @@
 -- Visual editing: the tenant's frontend preview URL template, e.g.
--- https://etude.example/preview/{type}/{slug}?token={token}&locale={locale}.
+-- https://app.example/preview/{type}/{slug}?token={token}&locale={locale}.
 -- The Studio loads it in an iframe and derives the only origin it will talk to
 -- over postMessage from it. Empty = visual editing off for the tenant.
 -- Same table, so the existing FORCE RLS policy scopes the column too.

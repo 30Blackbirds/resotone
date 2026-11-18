@@ -2,8 +2,8 @@
 #
 # SECURITY: a quiz document carries the answer key (options.correct →
 # correctOptionIds) + explanation. Delivery serves the FULL document over the
-# trusted service channel; REDACTION IS THE CONSUMER'S RESPONSIBILITY (Etude's
-# Nitro strips correct/explanation before the browser, grades server-side).
+# trusted service channel; REDACTION IS THE CONSUMER'S RESPONSIBILITY (a Nitro
+# consumer strips correct/explanation before the browser, grades server-side).
 # Resonans never redacts (it has no learner state). See internal/delivery
 # (quiz shaping) + /delivery/v1/schema marks this type server-side-only.
 type: quiz

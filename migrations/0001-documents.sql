@@ -8,7 +8,7 @@
 -- isolated by RLS (see 0002).
 --
 -- `dataset` is the Sanity-style content space within a tenant (default
--- 'production'); it maps to tenant_registry.cms_dataset on the Etude side.
+-- 'production'); it maps to tenant_registry.cms_dataset on the consumer side.
 
 create table if not exists resonans_app.documents (
   id            uuid        primary key default gen_random_uuid(),

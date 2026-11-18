@@ -100,7 +100,7 @@ func TestBuildEnvelopeQuizAnswerKey(t *testing.T) {
 	}
 	env := BuildEnvelope(context.Background(), uuid.New(), doc, reg(t), "da", "da", fakeAssets{})
 
-	// correctOptionIds is derived + INCLUDED (Etude redacts server-side, §F).
+	// correctOptionIds is derived + INCLUDED (the consumer redacts server-side, §F).
 	cids, _ := env.Data["correctOptionIds"].([]any)
 	if len(cids) != 1 || cids[0] != "a" {
 		t.Fatalf("correctOptionIds = %v, want [a]", env.Data["correctOptionIds"])

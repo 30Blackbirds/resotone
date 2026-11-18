@@ -6,7 +6,7 @@ click on an element in the preview jumps to its field.
 
 This directory is a dependency-free reference site (`server.mjs` + `index.html`).
 It is both the local test bed and the integration guide for real frontends
-(Etude, blog).
+(a learning platform, a blog).
 
 ## How it fits together
 

@@ -92,14 +92,14 @@ func TestPreviewEnvelopeRespectsContentProfile(t *testing.T) {
 
 func TestPreviewSettingsRoundtripAndIsolation(t *testing.T) {
 	h := testRouter(t)
-	const tpl = "https://etude.example/preview/{type}/{slug}?token={token}"
+	const tpl = "https://app.example/preview/{type}/{slug}?token={token}"
 	rec := do(t, h, http.MethodPut, "/api/v1/settings/preview", tenantA, map[string]any{"previewUrl": tpl})
 	if rec.Code != http.StatusOK {
 		t.Fatalf("put = %d %s", rec.Code, rec.Body)
 	}
 	var got map[string]any
 	_ = json.Unmarshal(rec.Body.Bytes(), &got)
-	if got["previewUrl"] != tpl || got["previewOrigin"] != "https://etude.example" {
+	if got["previewUrl"] != tpl || got["previewOrigin"] != "https://app.example" {
 		t.Errorf("put response = %v", got)
 	}
 	// testRouter has no preview secret: the URL is stored but preview is not ready.
@@ -111,7 +111,7 @@ func TestPreviewSettingsRoundtripAndIsolation(t *testing.T) {
 	if got["previewUrl"] != "" || got["previewOrigin"] != "" {
 		t.Errorf("tenant B sees %v", got)
 	}
-	rec = do(t, h, http.MethodPut, "/api/v1/settings/preview", tenantA, map[string]any{"previewUrl": "http://etude.example/p?token={token}"})
+	rec = do(t, h, http.MethodPut, "/api/v1/settings/preview", tenantA, map[string]any{"previewUrl": "http://app.example/p?token={token}"})
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("invalid url: status = %d, want 400", rec.Code)
 	}
