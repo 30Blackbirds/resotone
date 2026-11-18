@@ -28,7 +28,7 @@ services:
       # the server connects as. See that file for why the two roles are split.
       RESONANS_APP_PASSWORD: ${RESONANS_APP_PASSWORD:?set RESONANS_APP_PASSWORD in .env}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
       # initdb scripts run ONLY on an empty data directory. Changing this file
       # after the first start has no effect — drop the volume or apply the SQL
       # by hand.
