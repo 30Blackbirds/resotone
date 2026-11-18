@@ -100,13 +100,14 @@ func Run(ctx context.Context) error {
 			logger.Warn("RESONANS_DEV_AUTH=1 ignored for the editor API: JWT is configured, X-Dev-Tenant is not read")
 		}
 		verifier, err = auth.NewVerifier(ctx, auth.VerifierConfig{
-			Issuer:      cfg.JWTIssuer,
-			JWKSURL:     cfg.JWKSURL,
-			Audience:    cfg.JWTAudience,
-			TenantClaim: cfg.TenantClaim,
-			RoleClaim:   cfg.RoleClaim,
-			RoleMap:     cfg.RoleMap,
-			FixedTenant: cfg.TenantID,
+			Issuer:               cfg.JWTIssuer,
+			JWKSURL:              cfg.JWKSURL,
+			Audience:             cfg.JWTAudience,
+			TenantClaim:          cfg.TenantClaim,
+			RoleClaim:            cfg.RoleClaim,
+			RoleMap:              cfg.RoleMap,
+			FixedTenant:          cfg.TenantID,
+			AllowUnverifiedEmail: cfg.AllowUnverifiedEmail,
 		})
 		if err != nil {
 			return fmt.Errorf("jwt verifier: %w", err)

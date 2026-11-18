@@ -1,8 +1,9 @@
 // Package auth verifies JWTs from any OpenID Connect provider locally against
 // a cached JWKS and derives the request Actor (subject, tenant, role).
-// Beslutning D (auth is a shared dependency, verified locally, must not degrade
-// on auth downtime), Beslutning K (tenant = a token claim) and ADR 0001
-// (provider-neutral claims and built-in roles). Ported from the permissions PDP.
+// Tokens are verified locally against a cached JWKS, so a briefly unreachable
+// provider does not take the API down; the tenant is a token claim; claim names
+// and roles are provider-neutral (ADR 0001). The effective role then comes from
+// Resotone's own user records (users.go, middleware.go).
 package auth
 
 import (
