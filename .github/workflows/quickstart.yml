@@ -49,9 +49,13 @@ jobs:
         run: |
           set -euo pipefail
           for image in ghcr.io/30blackbirds/resotone:latest ghcr.io/30blackbirds/resotone-studio:latest; do
-            digests="$(docker image inspect --format '{{len .RepoDigests}}' "$image")"
-            if [ "$digests" != "0" ]; then
-              echo "::error::$image came from a registry ($digests repo digests), not from this checkout"
+            # A repo digest is no proof of a pull: the Docker on the runner gives a
+            # locally built image one too. A pulled release image is older than this
+            # job, a built one is minutes old.
+            created="$(docker image inspect --format '{{.Created}}' "$image")"
+            age=$(( $(date +%s) - $(date -d "$created" +%s) ))
+            if [ "$age" -gt 3600 ]; then
+              echo "::error::$image is $age seconds old, so it was pulled and not built from this checkout"
               exit 1
             fi
           done
