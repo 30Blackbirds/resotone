@@ -15,4 +15,4 @@ useDefault = true
 # red again, and someone has to decide again. That is on purpose.
 [allowlist]
 description = "SonarQube projectKey: a public identifier, not a credential"
-regexes = ['''30blackbirds_resonans_7e9bb7e1-ee71-479d-9904-a02be28f4d30''']
+regexes = ['''KlangHaus_resonans_7e9bb7e1-ee71-479d-9904-a02be28f4d30''']
