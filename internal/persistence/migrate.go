@@ -17,7 +17,7 @@ import (
 // Migrate runs all embedded *.sql migrations that have not yet been applied, in
 // lexical filename order, each in its own transaction. Applied state is tracked
 // in resonans_app.schema_migrations. Idempotent — safe on every boot. Returns
-// the names of newly-applied migrations. Copied from the permissions service.
+// the names of newly-applied migrations.
 func Migrate(ctx context.Context, pool *pgxpool.Pool) ([]string, error) {
 	return migrateFS(ctx, pool, migrations.FS)
 }

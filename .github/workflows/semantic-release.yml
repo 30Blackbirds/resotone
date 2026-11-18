@@ -3,7 +3,7 @@ name: Semantic Release
 # §A prod-sporbarhed: udleder semver fra conventional commits (håndhævet af
 # commitlint) → opretter git-tag vX.Y.Z + GitHub Release + CHANGELOG.md.
 # Tag-pushet trigger repoets eksisterende release.yml → semver-tagget image.
-# Changesets-ækvivalenten for ikke-npm-services (auth/permissions/notifications/...).
+# Changesets-ækvivalenten for ikke-npm-services.
 #
 # Krav pr. repo: en semantic-release-konfiguration i roden. I DETTE repo er den
 # `release.config.mjs` og IKKE `.releaserc.json` — konfigurationen har brug for en

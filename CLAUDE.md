@@ -68,8 +68,8 @@ og blev sprunget over». Synsfelt: **kun Go**; `pytest -k`, `vitest -t` og
 - `internal/config/` — env-config (honour the deploy contract in README).
 - `internal/content/` — domæne: Document + tenant-scoped Store (Postgres+RLS + in-memory).
 - `internal/httpapi/` — REST-adaptering, tenant fra actor (ingen forretningslogik).
-- `internal/auth/` — BetterAuth-JWT/JWKS-verifier + Actor + net/http-middleware (porteret fra permissions).
-- `internal/observability/` — OTel-setup (kopieret fra permissions/notifications).
+- `internal/auth/` — JWT/JWKS-verifier + Actor + net/http-middleware.
+- `internal/observability/` — OTel-setup.
 - `internal/persistence/` — pgx-pool + boot-migrations.
 - `migrations/` — embedded *.sql (køres ved boot).
 

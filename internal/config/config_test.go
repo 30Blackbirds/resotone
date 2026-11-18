@@ -323,7 +323,7 @@ func TestProductionDemandsHTTPSForTheTrustAnchor(t *testing.T) {
 // development": identical NodeEnv, opposite NodeEnvDefaulted. Without that pair
 // this test would pass against a field hard-wired to `NodeEnv != "production"`,
 // which is a different claim and a wrong one — staging declares development on
-// purpose. Measured on platform 2026-10-06: a migrate container logged
+// purpose. Measured 2026-10-06: a migrate container logged
 // "env":"development" on a production box, and nothing in the config or the log
 // could tell a forgotten variable from a deliberate one.
 func TestNodeEnvDefaultedDistinguishesSourceFromValue(t *testing.T) {

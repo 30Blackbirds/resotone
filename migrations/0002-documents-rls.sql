@@ -1,7 +1,6 @@
 -- Row-level security for documents (Beslutning K — tenant isolation).
 --
--- Fail-closed variant (mirrors a consumer service's own RLS migration,
--- stricter than the permissions PDP's NULL-tolerant policy): CMS content is
+-- Fail-closed variant (stricter than a NULL-tolerant policy): CMS content is
 -- ALWAYS tenant-owned, so the GUC MUST be set. `current_setting('app.tenant_id',
 -- false)` raises if the GUC is unset (no accidental unscoped read), and the
 -- ::uuid cast matches documents.tenant_id.
