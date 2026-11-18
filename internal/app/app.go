@@ -1,6 +1,5 @@
 // Package app wires the Resotone CMS: config -> otel -> jwt -> db/migrate ->
-// content store -> REST router -> graceful shutdown. It mirrors the boot
-// structure of the permissions/notifications Go services.
+// content store -> REST router -> graceful shutdown.
 package app
 
 import (
