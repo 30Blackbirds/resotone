@@ -1,6 +1,6 @@
 // Package seed inserts a realistic explainers demo dataset (Danish gymnasium
-// organic-chemistry course) so consumers (Etude M5) can render against real
-// Resonans content instead of mocks. Domain data is realistic, not lorem
+// organic-chemistry course) so consumers can render against real
+// Resotone content instead of mocks. Domain data is realistic, not lorem
 // (rockfaker doctrine). All documents are validated against the schema before
 // insert and published.
 package seed
@@ -54,7 +54,7 @@ func (s *seeder) run() error {
 		return err
 	}
 
-	// --- Quiz doc (answer key; delivery serves it, Etude redacts) ---
+	// --- Quiz doc (answer key; delivery serves it, the consumer redacts) ---
 	quizID, err := s.doc("quiz", "kulstof-bindinger", "Kulstof-bindinger", map[string]any{
 		"question": i18n("Hvor mange kovalente bindinger danner et kulstofatom typisk?"),
 		"type":     "single",
@@ -203,7 +203,7 @@ func (s *seeder) seedBlog() error {
 		{
 			slug: "derfor-byggede-vi-vores-eget-cms", title: "Hvorfor vi byggede vores eget CMS i stedet for at bruge Sanity",
 			author: "Allan Asp Christensen", category: "Produkt",
-			excerpt: "Resonans startede som en intern nødvendighed og blev til et produkt. Her er de beslutninger der formede det — og hvad vi lærte om at eje sin egen content-pipeline.",
+			excerpt: "Resotone startede som en intern nødvendighed og blev til et produkt. Her er de beslutninger der formede det — og hvad vi lærte om at eje sin egen content-pipeline.",
 			body: []any{
 				block("rich_text", map[string]any{"format": "html", "value": i18n(
 					"<p>Vi startede med Sanity, som de fleste. Det er godt værktøj. Men jo mere KlangHaus voksede, jo tydeligere blev det at vores indhold — kurser, blog, marketing — var kernen i produktet, ikke en detalje vi ville leje plads til hos en tredjepart.</p>" +
@@ -211,13 +211,13 @@ func (s *seeder) seedBlog() error {
 						"<p>Selfhost-først er en af vores grunddoktriner. Det handler ikke om at spare et abonnement — det handler om at <strong>eje sin egen skæbne</strong>: data-residens i EU, ingen pludselige pris-ændringer, og friheden til at forme content-modellen præcis som vores domæne kræver.</p>" +
 						"<blockquote><p>Et CMS er ikke et sted man gemmer tekst. Det er den kontrakt mellem dem der skriver og dem der læser.</p><cite>— fra vores interne arkitektur-noter</cite></blockquote>",
 				)}),
-				block("callout", map[string]any{"variant": "tip", "value": i18n("Resonans er schema-som-kode: content-typerne bor i git, ikke i en database-UI. Det gør dem review-bare, versionerede og genskabelige.")}),
+				block("callout", map[string]any{"variant": "tip", "value": i18n("Resotone er schema-som-kode: content-typerne bor i git, ikke i en database-UI. Det gør dem review-bare, versionerede og genskabelige.")}),
 				block("code", map[string]any{"language": "yaml", "filename": "schemas/types/post.yaml", "value": "type: post\nfields:\n  - { name: excerpt, type: text, i18n: true }\n  - name: body\n    type: blocks\n    allow: [rich_text, image, callout, code, cta, columns]\n  - { name: author, type: string }\n  - { name: category, type: string }"}),
 				block("columns", map[string]any{"columns": []any{
 					map[string]any{"content": []any{block("rich_text", map[string]any{"format": "html", "value": i18n("<p><strong>Hvad vi vandt:</strong> fuld kontrol over leverings-formatet, multi-tenant fra dag ét, og et delivery-API der passer præcis til vores Nuxt-sites.</p>")})}},
 					map[string]any{"content": []any{block("rich_text", map[string]any{"format": "html", "value": i18n("<p><strong>Hvad det kostede:</strong> vi skulle selv bygge editoren, media-pipelinen og RLS-isolationen. Det tog tid — men nu er det vores.</p>")})}},
 				}}),
-				block("cta", map[string]any{"heading": i18n("Vil du følge med i hvordan Resonans bliver til?"), "label": i18n("Læs flere indlæg"), "href": "/"}),
+				block("cta", map[string]any{"heading": i18n("Vil du følge med i hvordan Resotone bliver til?"), "label": i18n("Læs flere indlæg"), "href": "/"}),
 			},
 		},
 		{

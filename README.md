@@ -1,62 +1,46 @@
-# Resonans
+# Resotone
 
-A self-hosted, multi-tenant **headless CMS** written in Go. One content engine behind
-many surfaces: a learning platform, a blog, marketing pages, a knowledge base. Content
-types are declared in YAML, so adding one takes no Go code. The YAML is embedded in the
-binary, so today adding one means rebuilding your image.
+> A self-hosted, multi-tenant headless CMS written in Go. *Formerly Resonans.*
 
-Built by [KlangHaus](https://klanghaus.dk) to replace hosted CMS-as-a-service for our own
-sites, and released so you can run the same thing yourself. It is the CMS behind our
-production content, currently on an older 1.x release: the OpenID Connect editor login from
-2.0 onward has not run in our production yet.
+[![CI](https://github.com/30Blackbirds/resotone/actions/workflows/ci-go.yml/badge.svg?branch=main)](https://github.com/30Blackbirds/resotone/actions/workflows/ci-go.yml)
+[![License: AGPL-3.0](https://img.shields.io/github/license/30Blackbirds/resotone)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/30Blackbirds/resotone)](https://github.com/30Blackbirds/resotone/releases)
+![Status: beta](https://img.shields.io/badge/status-beta-orange)
 
-**Status: beta.** It is not stable yet: the API (`/api/v1`), the configuration and the
-content model can still change in ways that need you to act. The major version number does
-not mean a stable API — it comes from the release tooling, which counts every published
-change and bumps the major only for changes marked as breaking. Pin an exact version, and
-read [CHANGELOG.md](CHANGELOG.md) for every version you skip; operator steps are listed
-there under **ACTION REQUIRED**. Questions and help: [SUPPORT.md](SUPPORT.md).
+One content engine behind many surfaces: a learning platform, a blog, marketing pages, a
+knowledge base. Content types are declared in YAML, so adding one takes no Go code. Tenants
+are isolated by the database itself. One Go binary and Postgres; no Redis, no queue, no
+search cluster.
 
-## What "ready" means
+> **Name note.** The project was called Resonans. The name in this README is now
+> **Resotone**, but the container images, the Go binary, the environment variables and
+> the database objects still carry the old name (`resonans`, `RESONANS_*`), and this
+> document uses them exactly as they are.
 
-The version number cannot say when Resonans is ready to rely on, so this list does. It is
-ready when all eight hold:
+**Status: beta.** The API (`/api/v1`), the configuration and the content model can still
+change in ways that need you to act. The major version number does not mean a stable API:
+it comes from the release tooling, which bumps the major only for changes marked as
+breaking. Pin an exact version and read [CHANGELOG.md](CHANGELOG.md) for every version you
+skip; operator steps are listed there under **ACTION REQUIRED**.
 
-| # | Capability | Today |
-| --- | --- | --- |
-| 1 | Clone it, run one command, and reach a working editor and API, with no registry account. | **Yes.** It builds from source, and CI boots it from a clean clone. Published images also exist, for amd64 only. |
-| 2 | Editors log in through any standard OpenID Connect provider, with four roles and a single-tenant mode. | **Yes, for two providers.** CI logs in through Dex; ours runs BetterAuth. Others are untested. |
-| 3 | Write in an English editor: rich text, blocks and media, then draft, preview, publish, history, rollback and a bin. | **Partly.** All of it works in English or Danish, but asset and reference fields ask for a raw id, and the rich text editor is an interim one. |
-| 4 | Define your own content types. | **Partly.** YAML, but compiled in, so it takes a rebuild. |
-| 5 | A site or app reads published content over a documented REST API, with locales, ETags and preview. | **Yes, with limits.** Nested expansion only works for the `course` type. Lists page with a cursor, 200 documents at most per page. |
-| 6 | Tenants are isolated by the database, and CI proves it on every change. | **Yes.** See [Tenant isolation](#tenant-isolation). |
-| 7 | The authors run the same public release that you do. | **Not yet.** Our production is on 1.x. |
-| 8 | The basics for trusting a project: licence, security policy, contributor agreement, signed images with an SBOM, and docs that match the code. | **Yes.** The contributor agreement is a required check. |
+## Contents
 
-## Why this and not the others
-
-- **It is yours.** AGPL-3.0, no seat pricing, no API request quota, no vendor who can
-  reprice the thing your website depends on. Data lives in your Postgres.
-- **Multi-tenant from the first commit**, enforced in the database with row level
-  security — not by remembering to add `where tenant_id = …`. See
-  [Tenant isolation](#tenant-isolation).
-- **It refuses to boot into an unsafe state.** No authentication configured, no database,
-  no durable asset storage: the server exits instead of starting in a degraded mode you
-  would discover months later. Every one of those refusals exists because the permissive
-  version of it shipped first.
-- **No CDN account required.** Assets go on a volume and Resonans serves them. Put a CDN
-  in front when you want one, not to get started.
-- **Small.** One Go binary in a distroless image, plus Postgres. No Redis, no queue, no
-  search cluster.
-
-It does **not** manage users or send email. It verifies JWTs from an identity provider you
-already run.
+- [Quickstart](#quickstart): [try it in 60 seconds](#try-it)
+- [Features](#features)
+- [Is it ready?](#is-it-ready)
+- [Self-hosting in production](#self-hosting-in-production)
+- [Configuration](#configuration)
+- [Login and roles](#login-and-roles)
+- [Upgrading](#upgrading)
+- [Reference](#reference): [tenant isolation](#tenant-isolation), [content model](#content-model), [HTTP surfaces](#http-surfaces), [deleting content](#deleting-content), [asset storage](#asset-storage)
+- [Development](#development)
+- [Contributing](#contributing) · [Security](#security) · [License](#copyright-and-license) · [Links](#links)
 
 ## Quickstart
 
-You need Docker with Compose 2.24 or newer. Both commands below build the images from your checkout, so
-the first run takes a few minutes and no registry account is needed. On amd64 you can
-[use the published images](#use-the-published-images) instead.
+You need Docker with Compose 2.24 or newer. Each option below builds the images from your
+checkout unless it says otherwise, so no registry account is needed. The first build takes a
+few minutes.
 
 ### Try it
 
@@ -70,7 +54,9 @@ docker compose --env-file deploy/try/env -f compose.yml -f compose.try.yml up -d
 
 That one command starts the whole product from this repository: Postgres, the database
 migrations, the content API on <http://localhost:3000> and the editor on
-<http://localhost:8080>. Nothing else needs to be installed or cloned.
+<http://localhost:8080>. Nothing else needs to be installed or cloned. (The clone URL is
+the repository's original address, which GitHub redirects to
+<https://github.com/30Blackbirds/resotone>; CI runs this block as written.)
 
 Open <http://localhost:8080> and press log in. You land as an administrator without a
 password: [Dex](https://dexidp.io), an independent OpenID Connect provider, runs alongside
@@ -81,7 +67,7 @@ add `127.0.0.1 dex.localhost` to `/etc/hosts`.
 
 To remove it and its data, run the same command with `down -v` in place of `up -d --build`.
 
-### Run it
+### Run it with your own settings
 
 ```bash
 cp .env.example .env
@@ -91,24 +77,78 @@ docker compose up -d --build
 
 Editor at <http://localhost:8080>, content API at <http://localhost:3000>.
 
-`compose.yml` deliberately does **not** terminate TLS, and it publishes its ports on
-127.0.0.1 only (`BIND_ADDRESS`). Put your own reverse proxy in front. Publishing an editor
-to the internet is a decision only you can make, so it is not a default.
+### Without Docker
+
+```bash
+RESONANS_DEV_AUTH=1 go run ./cmd/resonans
+```
+
+That runs with an in-memory store and no login, taking the tenant from an `X-Dev-Tenant`
+header in the editor API and from `X-Scope-OrgID` in the delivery API, from any caller.
+It is for development only, and `RESONANS_DEV_AUTH=1` together with
+`NODE_ENV=production` is refused rather than honoured.
+
+## Features
+
+- **Headless and content-type agnostic.** Content types and a shared block library are
+  YAML ([content model](#content-model)); documents are validated JSONB.
+- **Editor and API.** A web editor with rich text, blocks and media, draft, preview,
+  publish, history, rollback and a bin; a REST editor API and a read-only delivery API for
+  your own front-ends, with locales, ETags and preview. OpenAPI reference at `/docs/v1/`.
+- **Multi-tenant from the first commit**, enforced by Postgres row level security rather
+  than by remembering a `where` clause ([tenant isolation](#tenant-isolation)).
+- **Standard OpenID Connect login**, four roles and a single-tenant mode. It keeps no
+  users and sends no email ([login and roles](#login-and-roles)).
+- **Refuses to boot into an unsafe state.** No authentication, no database or no durable
+  asset storage configured: the server exits instead of starting degraded.
+- **No CDN required.** Assets go on a volume and are served by the app; put a CDN in front
+  when you want one ([asset storage](#asset-storage)).
+- **Yours.** AGPL-3.0, no seat pricing, no request quota. Data lives in your Postgres.
+
+## Is it ready?
+
+The version number cannot say when Resotone is ready to rely on, so this list does.
+
+| # | Capability | Today |
+| --- | --- | --- |
+| 1 | Clone it, run one command, and reach a working editor and API, with no registry account. | **Yes.** It builds from source, and CI boots it from a clean clone. Published images also exist, for amd64 only. |
+| 2 | Editors log in through any standard OpenID Connect provider, with four roles and a single-tenant mode. | **Yes, for two providers.** CI logs in through Dex; the authors run BetterAuth. Others are untested. |
+| 3 | Write in an English editor: rich text, blocks and media, then draft, preview, publish, history, rollback and a bin. | **Partly.** All of it works in English or Danish, but asset and reference fields ask for a raw id, and the rich text editor is an interim one. |
+| 4 | Define your own content types. | **Partly.** YAML, but compiled in, so it takes a rebuild. |
+| 5 | A site or app reads published content over a documented REST API, with locales, ETags and preview. | **Yes, with limits.** Nested expansion only works for the `course` type. Lists page with a cursor, 200 documents at most per page. |
+| 6 | Tenants are isolated by the database, and CI proves it on every change. | **Yes.** See [Tenant isolation](#tenant-isolation). |
+| 7 | The authors run the same public release that you do. | **Not yet.** The authors' production is on an older 1.x release; the OpenID Connect editor login from 2.0 onward has not run there yet. |
+| 8 | The basics for trusting a project: licence, security policy, contributor agreement, signed images with an SBOM, and docs that match the code. | **Yes.** The contributor agreement is a required check. |
+
+## Self-hosting in production
+
+`compose.yml` is the reference deployment: four services (`postgres`, `migrate`, `api`,
+`studio`) and two named volumes (`postgres_data`, `assets_data`). Secrets come from the
+environment, never from a file in an image.
 
 ### Use the published images
 
-The images are public, so no login is needed. They are built for **amd64 only**: on Apple
+The images `ghcr.io/klanghaus/resonans` (API) and `ghcr.io/klanghaus/resonans-studio`
+(editor) are public, so no login is needed. They are built for **amd64 only**: on Apple
 Silicon or another arm64 machine, build from source as above.
 
 ```bash
-export RESONANS_VERSION=3.3.1   # the tag has no "v"
+export RESONANS_VERSION=3.6.6   # the tag has no "v"
 docker compose pull
 docker compose up -d --no-build
 ```
 
 `docker compose up --pull always` does not do this: it skips a service that can also be
-built. Pin a version for anything you care about, and read [CHANGELOG.md](CHANGELOG.md) for
-every version you skip.
+built. Pin a version for anything you care about.
+
+### Reverse proxy and TLS
+
+`compose.yml` deliberately does **not** terminate TLS, and it publishes its ports on
+`BIND_ADDRESS` (default 127.0.0.1), editor on `STUDIO_PORT` (8080), API on `API_PORT`
+(3000). Put your own reverse proxy (Caddy, nginx, Traefik, whatever you already run) in
+front of both, and set `EDITOR_URL` and `PUBLIC_URL` to the public https addresses.
+Publishing an editor to the internet is a decision only you can make, so it is not a
+default.
 
 ### Onto a Postgres you already run
 
@@ -136,16 +176,27 @@ be a command instead of a comment. Each of those has a measurement written besid
 
 Use **hex**, not base64: a `/` in a base64 password breaks DSN parsing in several clients.
 
-### Without Docker
+### Backups
+
+State lives in two places, and a backup needs both: the Postgres database (`resonans`) and
+the asset files (the `assets_data` volume, mounted at `/var/lib/resonans/assets`, unless
+you use Bunny storage). With the bundled Postgres, a database dump looks like this:
 
 ```bash
-RESONANS_DEV_AUTH=1 go run ./cmd/resonans
+docker compose exec -T postgres pg_dump -U resonans_migrator -Fc resonans > resonans.dump
 ```
 
-That runs with an in-memory store and no login, taking the tenant from an `X-Dev-Tenant`
-header in the editor API and from `X-Scope-OrgID` in the delivery API, from any caller.
-It is for development only, and `RESONANS_DEV_AUTH=1` together with
-`NODE_ENV=production` is refused rather than honoured.
+Back the asset volume up with whatever you already use for Docker volumes, and test a
+restore. Deleted assets keep their bytes (see [Deleting content](#deleting-content)).
+
+### Before you go live
+
+- Set the variables marked required in [Configuration](#configuration); the server exits at
+  boot if one is missing, and in production it also refuses a database role that can
+  bypass row level security.
+- Set `RESONANS_SOURCE_URL` if you run a modified version (see [License](#copyright-and-license)).
+- Check `GET /healthz` and `GET /readyz`; `/healthz` reports the `version` and `revision`
+  that is running.
 
 ## Configuration
 
@@ -156,7 +207,7 @@ them with the reasoning. The ones that decide whether the server starts at all:
 | --- | --- | --- |
 | `DATABASE_URL` | yes | Postgres DSN. Unset in production the server exits: the in-memory store loses content *and* does not enforce tenant isolation. |
 | `RESONANS_JWT_ISSUER` + `RESONANS_JWKS_URL` | yes, both, and **https** | Editor login. Either one missing and the server exits rather than exposing the editor API to an unauthenticated header. In production both must be `https`, because the JWKS is the trust anchor — over plain http anyone on the path can substitute the signing keys. `RESONANS_ALLOW_INSECURE_JWKS=1` waives it deliberately, and every boot then logs the URL. |
-| `RESONANS_JWT_AUDIENCE` | yes, with the two above | The `aud` your provider puts in Resonans' access tokens. Without it the server exits: it would otherwise accept a token minted for any other service at the same provider. |
+| `RESONANS_JWT_AUDIENCE` | yes, with the two above | The `aud` your provider puts in Resotone' access tokens. Without it the server exits: it would otherwise accept a token minted for any other service at the same provider. |
 | `RESONANS_TENANT_MODE` + `RESONANS_TENANT_ID` | for one organisation | `single` with a UUID serves one tenant and never reads a tenant claim. Default `multi` reads the tenant from `RESONANS_TENANT_CLAIM` (`org`). |
 | `RESONANS_DELIVERY_TOKEN` | yes | Authenticates the trusted read surface. Unset or blank, the server exits: without it `/delivery` would trust a tenant header from anyone. Only `RESONANS_DEV_AUTH=1` outside production starts it without one. |
 | `RESONANS_STORAGE_DIR` *or* all three `BUNNY_STORAGE_*` | yes, one of them | Where asset bytes live. Neither set, the server exits instead of accepting uploads it will drop on restart. |
@@ -165,7 +216,7 @@ them with the reasoning. The ones that decide whether the server starts at all:
 
 ## Login and roles
 
-Resonans keeps no users and no passwords. Editors log in with **standard OpenID Connect**
+Resotone keeps no users and no passwords. Editors log in with **standard OpenID Connect**
 at the identity provider you already run — Keycloak, Authentik, Zitadel, Authelia, or
 BetterAuth's OIDC provider, which is what we run. The decision and the alternatives are in
 [ADR 0001](docs/adr/0001-editor-login-with-standard-oidc.md).
@@ -219,7 +270,22 @@ Upgrading from before 3.2.2 to a provider with an `end_session_endpoint`: regist
 post-logout redirect URI first. Until it is registered, a provider that checks it refuses
 the logout, and editors stay logged in with a message saying so.
 
-## Tenant isolation
+## Upgrading
+
+1. Read [CHANGELOG.md](CHANGELOG.md) for **every** version between yours and the target.
+   Steps you must take are listed there under **ACTION REQUIRED**.
+2. Change `RESONANS_VERSION` to the new exact tag, then `docker compose pull` and
+   `docker compose up -d --no-build` (or `git pull` and `up -d --build` when building from
+   source). Database migrations run when the stack starts, in the `migrate` service.
+3. After migrating a database you manage yourself, run
+   [deploy/assert-rls-coverage.sql](deploy/assert-rls-coverage.sql) again.
+4. Take a [backup](#backups) first. Releases are not guaranteed to be reversible.
+
+## Reference
+
+Behaviour worth knowing before you build on it.
+
+### Tenant isolation
 
 Every document carries a `tenant_id` and a `dataset` (default `production`). Three things
 have to hold, and each is checked in a different place:
@@ -262,7 +328,7 @@ have to hold, and each is checked in a different place:
    creates — and the app role ends up with nothing once the migrator creates the tables.
    Name the creating role with `for role`. This has already cost one deployment plan.
 
-## Content model
+### Content model
 
 Content types are declarative, in `internal/schema/schemas/` — YAML, versioned in git.
 Document types live in `types/*.yaml`, and they share one block library (`blocks.yaml`).
@@ -279,7 +345,7 @@ array`.
 `GET /api/v1/schema` serves the registry so an editor can generate its own forms and
 block palette from it.
 
-## HTTP surfaces
+### HTTP surfaces
 
 **Editor API** — `/api/v1`, tenant from the verified token.
 
@@ -318,9 +384,9 @@ handlers' responses against them; the editor API's response bodies are not descr
 
 **Unauthenticated** — `/healthz`, `/readyz`, the API reference under `/docs/v1/`, the
 visual-editing script at `/bridge/v1/resonans-bridge.js`, and `/_assets/{key}` when
-Resonans serves asset bytes itself.
+Resotone serves asset bytes itself.
 
-## Deleting content
+### Deleting content
 
 `DELETE` moves a document or an asset to a bin: it disappears from every read path, and
 `?deleted=only` lists what is in there. `POST …/restore` brings it back. Deleting twice,
@@ -345,13 +411,13 @@ reference is a bare id inside a JSONB body, so `body::text like '%<uuid>%'` is a
 unindexed full scan that can also match a coincidence — and a plausible-but-wrong
 reference count is worse than none, because an editor would act on it.
 
-## Asset storage
+### Asset storage
 
 | Backend | Selected by | Bytes served by | Survives a restart |
 | --- | --- | --- | --- |
 | `bunny` | `BUNNY_STORAGE_ENDPOINT` + `_ZONE` + `_KEY`, all three | Bunny CDN pull-zone | yes |
-| `disk` | `RESONANS_STORAGE_DIR` | Resonans, at `GET /_assets/<key>` | yes, with a volume |
-| `memory` | neither of the above | Resonans, at `GET /_assets/<key>` | **no** |
+| `disk` | `RESONANS_STORAGE_DIR` | Resotone, at `GET /_assets/<key>` | yes, with a volume |
+| `memory` | neither of the above | Resotone, at `GET /_assets/<key>` | **no** |
 
 Bunny wins when both are configured: a CDN in front beats an origin shipping image bytes.
 `BUNNY_CDN_BASE` defaults to `PUBLIC_URL` + `/_assets`, so leave it empty unless you
@@ -359,12 +425,12 @@ actually use Bunny.
 
 **Asset URLs are for the reader's browser.** Every asset URL in a delivery response is
 built from `BUNNY_CDN_BASE`, which is fixed at startup, so one address goes into every page
-a site renders. Set `PUBLIC_URL` to the address readers reach Resonans at, never to a
+a site renders. Set `PUBLIC_URL` to the address readers reach Resotone at, never to a
 container or internal hostname. A consumer that fetches asset bytes itself, such as a
-server that resizes images inside the same network as Resonans, should not rely on that
-public address resolving there. When Resonans serves the bytes (`disk` or `memory`, with
+server that resizes images inside the same network as Resotone, should not rely on that
+public address resolving there. When Resotone serves the bytes (`disk` or `memory`, with
 the default `BUNNY_CDN_BASE`), such a consumer replaces the `PUBLIC_URL` part of each URL
-with the address it already uses to reach Resonans, and keeps the rest of the URL as it
+with the address it already uses to reach Resotone, and keeps the rest of the URL as it
 is. With `bunny` the URLs point at the CDN, which a server fetches the same way a browser
 does.
 
@@ -397,12 +463,18 @@ from your checkout. If ports 8080 and 3000 are taken, use
 `STUDIO_PORT=3010 API_PORT=3015 tilt up`. `tilt up -- --dev` runs the development
 stack instead: no login, the editor as a live-reloading dev server, and the examples.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+## Contributing
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before you spend an evening on a patch: it covers
+setup, conventional commits, and the contributor licence agreement that outside
+contributions need before they can be merged. Everyone taking part is expected to follow
+the [Code of Conduct](CODE_OF_CONDUCT.md). Questions and help: [SUPPORT.md](SUPPORT.md).
 
 ## Security
 
-Please do not open a public issue for a vulnerability. [SECURITY.md](SECURITY.md) says how
-to report one.
+Please do not open a public issue for a vulnerability. Use GitHub's
+[private vulnerability reporting](https://github.com/30Blackbirds/resotone/security/advisories/new);
+[SECURITY.md](SECURITY.md) says what counts and what happens next.
 
 ## Copyright and license
 
@@ -411,7 +483,7 @@ Asp Productions ApS (CVR 36708077, Denmark). Licensed under the
 [GNU AGPL-3.0](LICENSE) — [NOTICE](NOTICE) says why the holder is the authors and not the
 company.
 
-If you modify Resonans and offer it to users over a network, §13 says those users are
+If you modify Resotone and offer it to users over a network, §13 says those users are
 entitled to your source. Set `RESONANS_SOURCE_URL` to your repository and `/healthz` will
 tell them where to find it — leaving it at the upstream default is only truthful if you
 changed nothing. It must be an `http(s)` URL; anything else is refused at startup.
@@ -424,5 +496,9 @@ If the AGPL does not fit what you want to build, ask us — but note that a diff
 needs the agreement of everyone who holds copyright in the part you want, and that is the
 authors rather than the company. See [NOTICE](NOTICE).
 
-Outside contributions need a signed contributor licence agreement first — see
-[CONTRIBUTING.md](CONTRIBUTING.md#licensing-of-contributions) before spending an evening on a patch.
+## Links
+
+- [CHANGELOG.md](CHANGELOG.md) · [SUPPORT.md](SUPPORT.md) · [SECURITY.md](SECURITY.md)
+- [ADR 0001: editor login with standard OIDC](docs/adr/0001-editor-login-with-standard-oidc.md)
+- [OpenAPI document](docs/api/openapi.yaml)
+- [Releases](https://github.com/30Blackbirds/resotone/releases)

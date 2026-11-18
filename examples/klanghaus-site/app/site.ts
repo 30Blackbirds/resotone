@@ -1,5 +1,5 @@
 // Site chrome: the few strings the header and footer need on every page. The
-// pages themselves come from Resonans; these do not, because they are the frame
+// pages themselves come from Resotone; these do not, because they are the frame
 // around the content rather than content (klanghaus.dk keeps them in copy.ts).
 export const SITE = {
   name: 'KlangHaus',
@@ -10,6 +10,6 @@ export const SITE = {
 }
 
 /** The building's floor plan, as on klanghaus.dk: which studio sits where. It is
- *  physical layout, not content — sizes and availability come from Resonans. */
+ *  physical layout, not content — sizes and availability come from Resotone. */
 export const PLAN_TOP = [5, 4, 3, 2, 1]
 export const PLAN_BOTTOM = [9, 8, 7, 6, 10]

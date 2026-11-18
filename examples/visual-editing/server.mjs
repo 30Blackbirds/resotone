@@ -1,7 +1,7 @@
 // Minimal frontend for trying visual editing locally — and the reference for
-// what a real site (Etude, blog) has to do. No dependencies: node server.mjs.
+// what a real site (a learning platform, a blog) has to do. No dependencies: node server.mjs.
 //
-//   RESONANS_URL   Resonans API origin        (default http://localhost:3999)
+//   RESONANS_URL   Resotone API origin        (default http://localhost:3999)
 //   STUDIO_ORIGIN  the ONLY origin the bridge talks to (default http://localhost:3000)
 //   PORT           this site's port           (default 4100)
 //
@@ -39,7 +39,7 @@ createServer(async (req, res) => {
   )
   const envelope = draft.ok ? await draft.json() : { error: `preview ${draft.status}` }
   const html = page
-    // `?started=` busts the browser cache when Resonans is restarted with a new
+    // `?started=` busts the browser cache when Resotone is restarted with a new
     // bridge during local development; a real site can load the plain URL.
     .replace('__BRIDGE_SRC__', `${RESONANS_URL}/bridge/v1/resonans-bridge.js?started=${STARTED}`)
     .replace('__STUDIO_ORIGIN__', JSON.stringify(STUDIO_ORIGIN))
@@ -54,5 +54,5 @@ createServer(async (req, res) => {
   })
   res.end(html)
 }).listen(PORT, () => {
-  console.log(`visual-editing example on http://localhost:${PORT} (Resonans ${RESONANS_URL}, Studio ${STUDIO_ORIGIN})`)
+  console.log(`visual-editing example on http://localhost:${PORT} (Resotone ${RESONANS_URL}, Studio ${STUDIO_ORIGIN})`)
 })

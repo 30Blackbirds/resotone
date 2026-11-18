@@ -1,5 +1,5 @@
 // Package observability wires OpenTelemetry (traces + metrics + logs) for the
-// Resonans CMS, mirroring the permissions/notifications services. Export is
+// Resotone CMS, mirroring the permissions/notifications services. Export is
 // OTLP/HTTP via the standard OTEL_* environment variables. When no endpoint is
 // configured the setup is a no-op: global providers stay no-op and logging is
 // plain stdout JSON, keeping local dev free of a Collector.

@@ -1,4 +1,4 @@
-// useResonans — the typed client for the Resonans backend (/api/v1). The Studio
+// useResonans — the typed client for the Resotone backend (/api/v1). The Studio
 // is schema-driven: it fetches the registry and renders nav + forms from it, so
 // there are no hardcoded content types here.
 

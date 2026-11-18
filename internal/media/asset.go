@@ -1,4 +1,4 @@
-// Package media is the Resonans asset pipeline (Fase 3): tenant-scoped media
+// Package media is the Resotone asset pipeline (Fase 3): tenant-scoped media
 // assets stored in object storage (Bunny) + referenced from content by id, plus
 // a pluggable video-provider (Vimeo) for video-embed blocks.
 //

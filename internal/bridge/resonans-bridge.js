@@ -1,5 +1,5 @@
 /*
- * Resonans visual-editing bridge (protocol v1).
+ * Resotone visual-editing bridge (protocol v1).
  *
  * Include it on the frontend's PREVIEW route only:
  *

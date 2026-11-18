@@ -7,7 +7,7 @@ import (
 )
 
 // URLBuilder turns an asset into a public CDN URL, optionally with Bunny
-// Optimizer transform parameters (resizing happens at the edge — Resonans just
+// Optimizer transform parameters (resizing happens at the edge — Resotone just
 // stores the original + emits transform URLs).
 type URLBuilder struct {
 	cdnBase string // Bunny pull-zone base, e.g. https://cdn.example.com

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-// Renders a Resonans page as klanghaus.dk's landing-page sections. The markup and
+// Renders a Resotone page as klanghaus.dk's landing-page sections. The markup and
 // class names are klanghaus.dk's own, so its stylesheet applies unchanged; which
 // layout a block gets is decided by the block's `variant` (feature_grid,
-// section_header) — a hint Resonans stores and never interprets.
+// section_header) — a hint Resotone stores and never interprets.
 import { GTButton } from '@grundtone/vue'
 import {
   toSections, str, assetUrl, headingHtml, features, columnImages, isExternal, useEditable,
@@ -77,7 +77,7 @@ const contactCard = (s: Section) => s.blocks.filter((b) => b._type === 'rich_tex
           </GTButton>
         </template>
       </div>
-      <!-- eslint-disable-next-line vue/no-v-html -- Resonans sanitizes rich text on save -->
+      <!-- eslint-disable-next-line vue/no-v-html -- Resotone sanitizes rich text on save -->
       <div v-for="(b, bi) in contactCard(s)" :key="`c${bi}`" class="kh-contact__card" v-bind="ed(b._i, 'value')" v-html="str(b.value)" />
     </section>
 

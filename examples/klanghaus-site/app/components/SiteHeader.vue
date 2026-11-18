@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // The navigation is the front page's own sections: every section_header with an
-// anchor becomes a link, labelled by its navLabel (or else its eyebrow). Add a section in Resonans and
+// anchor becomes a link, labelled by its navLabel (or else its eyebrow). Add a section in Resotone and
 // it appears here. On other pages the links point back to the front page.
 import { GTButton } from '@grundtone/vue'
 import { SITE } from '~/site'

@@ -1,6 +1,6 @@
--- Resonans content model — multi-tenant documents (Fase 0 foundation).
+-- Resotone content model — multi-tenant documents (Fase 0 foundation).
 --
--- Resonans is a broad, content-type-agnostic headless CMS: a `document` holds
+-- Resotone is a broad, content-type-agnostic headless CMS: a `document` holds
 -- any content type (course, module, lesson, page, post, resource, ...). The
 -- concrete per-type field/block schema is validated by the schema-registry
 -- (Fase 1); at the storage layer a document is a typed, tenant-scoped JSONB
@@ -8,7 +8,7 @@
 -- isolated by RLS (see 0002).
 --
 -- `dataset` is the Sanity-style content space within a tenant (default
--- 'production'); it maps to tenant_registry.cms_dataset on the Etude side.
+-- 'production'); it maps to tenant_registry.cms_dataset on the consumer side.
 
 create table if not exists resonans_app.documents (
   id            uuid        primary key default gen_random_uuid(),

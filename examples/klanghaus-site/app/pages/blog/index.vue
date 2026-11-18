@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// The blog: every published `post` in Resonans, newest first.
+// The blog: every published `post` in Resotone, newest first.
 import type { PostSummary } from '~~/server/utils/resonans'
 
 const { data: posts } = await useFetch<PostSummary[]>('/api/posts', { key: 'posts' })

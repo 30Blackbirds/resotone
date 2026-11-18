@@ -1,4 +1,4 @@
-// Package content is the Resonans CMS domain: tenant-scoped content documents,
+// Package content is the Resotone CMS domain: tenant-scoped content documents,
 // their storage contract, and the two Store implementations (Postgres+RLS for
 // real deploys, in-memory for dev/test). It has no HTTP knowledge.
 //

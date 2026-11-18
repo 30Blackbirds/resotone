@@ -8,11 +8,11 @@ import (
 	"time"
 )
 
-// AssetPath is the route prefix under which Resonans serves its own asset bytes.
+// AssetPath is the route prefix under which Resotone serves its own asset bytes.
 const AssetPath = "/_assets/"
 
 // AssetHandler serves stored asset bytes at /_assets/<key>. It exists so a
-// self-hosted Resonans has a working public asset URL with nothing but a
+// self-hosted Resotone has a working public asset URL with nothing but a
 // volume: before it, an install without Bunny stored uploads in memory and
 // pointed every asset URL at a route that did not exist.
 //

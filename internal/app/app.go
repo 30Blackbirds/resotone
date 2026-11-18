@@ -1,4 +1,4 @@
-// Package app wires the Resonans CMS: config -> otel -> jwt -> db/migrate ->
+// Package app wires the Resotone CMS: config -> otel -> jwt -> db/migrate ->
 // content store -> REST router -> graceful shutdown. It mirrors the boot
 // structure of the permissions/notifications Go services.
 package app

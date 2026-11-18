@@ -1,5 +1,5 @@
 // Package persistence holds the Postgres connection pool and the migration
-// runner for the Resonans CMS. Postgres backing is Beslutning K (self-host);
+// runner for the Resotone CMS. Postgres backing is Beslutning K (self-host);
 // the in-memory content store (internal/content) is the dev/test fallback.
 package persistence
 

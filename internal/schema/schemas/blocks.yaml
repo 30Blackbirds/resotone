@@ -1,6 +1,6 @@
-# Resonans shared block library. Defined once; each doc-type's `body` field
+# Resotone shared block library. Defined once; each doc-type's `body` field
 # declares an `allow` subset. i18n:true = field-level translated. Field names
-# align to the [etude]-locked delivery contract (§F) so delivery is passthrough
+# align to the consumer-locked delivery contract (§F) so delivery is passthrough
 # (image/download/quiz get small delivery-side shaping — see internal/delivery).
 blocks:
   # ── Content blocks ──────────────────────────────────────
@@ -9,7 +9,7 @@ blocks:
       - { name: value, type: richtext, i18n: true, required: true }
       - { name: format, type: string } # "portable_text" (default) | "html"
 
-  - name: video_embed # references a Vimeo video; player-resolution is Etude's
+  - name: video_embed # references a Vimeo video; player-resolution is the consumer's
     fields:
       - { name: provider, type: string } # "vimeo" | "bunny"
       - { name: videoId, type: string, required: true }
@@ -45,7 +45,7 @@ blocks:
       - { name: aspectRatio, type: string }
 
   # quiz block references a quiz document; the quiz content (question + answer
-  # key) lives in the `quiz` doc-type, delivered server-side-only (Etude redacts).
+  # key) lives in the `quiz` doc-type, delivered server-side-only (the consumer redacts).
   - name: quiz
     fields:
       - { name: quizRef, type: reference, ref: quiz, required: true }
@@ -69,7 +69,7 @@ blocks:
   - name: section_header
     fields:
       - { name: anchor, type: string } # URL fragment, e.g. "pricing"
-      - { name: variant, type: string } # a style hint for the front-end, e.g. "band"; Resonans does not interpret it
+      - { name: variant, type: string } # a style hint for the front-end, e.g. "band"; Resotone does not interpret it
       - { name: eyebrow, type: string, i18n: true }
       - { name: navLabel, type: string, i18n: true } # the section's name in a site menu, when it differs from the eyebrow
       - { name: heading, type: string, i18n: true, required: true }

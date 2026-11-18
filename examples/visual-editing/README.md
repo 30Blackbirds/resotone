@@ -6,7 +6,7 @@ click on an element in the preview jumps to its field.
 
 This directory is a dependency-free reference site (`server.mjs` + `index.html`).
 It is both the local test bed and the integration guide for real frontends
-(Etude, blog).
+(a learning platform, a blog).
 
 ## How it fits together
 
@@ -64,7 +64,7 @@ contain `{token}`.
 
 ## Run locally
 
-Start the Resonans API with a preview secret, the Studio, and this site:
+Start the Resotone API with a preview secret, the Studio, and this site:
 
 ```bash
 GOTOOLCHAIN=go1.26.9 PORT=3998 RESONANS_DEV_AUTH=1 RESONANS_PREVIEW_SECRET=local-secret go run ./cmd/resonans

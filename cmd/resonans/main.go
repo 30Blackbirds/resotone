@@ -1,4 +1,4 @@
-// Command resonans is the KlangHaus headless CMS (Resonans) server.
+// Command resonans is the KlangHaus headless CMS (Resotone) server.
 //
 // Subcommands:
 //

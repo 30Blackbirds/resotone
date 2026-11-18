@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Login for the editor. With OIDC configured, the button leaves for the
 // identity provider (via the editor's own /auth/login); there is no password
-// field here, because Resonans keeps no passwords (ADR 0001). In dev mode the
+// field here, because Resotone keeps no passwords (ADR 0001). In dev mode the
 // guard never sends anyone here, and the page says so.
 const { t } = useT()
 const { enabled, ready, refresh, signIn } = useAuth()
@@ -30,10 +30,10 @@ onMounted(async () => {
 <template>
   <div class="lg">
     <div class="lg__card">
-      <h1 class="lg__h">{{ t('Log in to Resonans') }}</h1>
+      <h1 class="lg__h">{{ t('Log in to Resotone') }}</h1>
 
       <p v-if="ready && !enabled" class="lg__note">
-        {{ t('No login service is configured for this environment, so login is turned off. Resonans is running in development mode.') }}
+        {{ t('No login service is configured for this environment, so login is turned off. Resotone is running in development mode.') }}
       </p>
 
       <template v-else>

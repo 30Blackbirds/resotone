@@ -1,4 +1,4 @@
-# Local dev stack for Resonans (Beslutning P — Tilt-on-Compose).
+# Local dev stack for Resotone (Beslutning P — Tilt-on-Compose).
 # Brings up Postgres + the CMS (migrations run at boot in dev). Dev-mode needs
 # NO secrets: tenant via X-Dev-Tenant (editor) / X-Scope-OrgID (delivery),
 # in-memory storage backend, boot auto-migrate.

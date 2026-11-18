@@ -1,4 +1,4 @@
--- Resonans: database and roles, for a setup you run BY HAND.
+-- Resotone: database and roles, for a setup you run BY HAND.
 --
 -- Use THIS file — not deploy/initdb/10-app-role.sql — whenever you are not the
 -- postgres image running that file as POSTGRES_USER on a cluster's first start.
@@ -49,7 +49,7 @@ $guard$;
 do $$
 begin
   if current_setting('server_version_num')::int < 140000 then
-    raise exception 'Resonans needs PostgreSQL 14 or newer, found %', current_setting('server_version');
+    raise exception 'Resotone needs PostgreSQL 14 or newer, found %', current_setting('server_version');
   end if;
 end
 $$;
@@ -81,7 +81,7 @@ create role resonans_app with
 --     -> green, 5 tables
 --
 -- The third is chosen over the second because it grants nothing anyone has to
--- remember to revoke later. Newer Resonans looks the schema up before creating it
+-- remember to revoke later. Newer Resotone looks the schema up before creating it
 -- (internal/persistence/migrate.go, ensureSchema), so the first shape works too —
 -- but this file must not depend on the server being new enough.
 create database resonans owner resonans_migrator;

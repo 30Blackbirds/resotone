@@ -1,6 +1,6 @@
 <!--
 Thanks for the patch. Until the contributor licence agreement exists, a pull request from
-outside KlangHaus will wait rather than be merged — CONTRIBUTING.md, "Licensing of
+outside the maintaining team will wait rather than be merged — CONTRIBUTING.md, "Licensing of
 contributions", says why. It is still worth opening: the discussion is not wasted.
 -->
 

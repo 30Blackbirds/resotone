@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Assets (media library): the space's uploaded images and files. Uploads go to the
-// Resonans asset API (Bunny/in-memory backend); everything is tenant-scoped (RLS).
+// Resotone asset API (Bunny/in-memory backend); everything is tenant-scoped (RLS).
 const { t } = useT()
 const { listAssets, uploadAsset } = useResonans()
 

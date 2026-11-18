@@ -1,4 +1,4 @@
-# Resonans Studio — Nuxt SPA served by the Nitro node-server, multi-stage.
+# Resotone Studio — Nuxt SPA served by the Nitro node-server, multi-stage.
 # The node-server (not a static file host) matters: it injects NUXT_PUBLIC_*
 # runtime config (apiBase, authBase) into the served app at RUNTIME, so one
 # image works across environments.

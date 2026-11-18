@@ -1,6 +1,6 @@
 # The API description
 
-`openapi.yaml` describes every HTTP endpoint Resonans registers — 33 operations
+`openapi.yaml` describes every HTTP endpoint Resotone registers — 33 operations
 across 26 paths, covering the editor API, the delivery API and the four
 unauthenticated ones.
 

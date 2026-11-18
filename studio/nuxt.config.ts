@@ -1,4 +1,4 @@
-// Resonans Studio — the editor SPA. It is schema-driven (renders forms + nav
+// Resotone Studio — the editor SPA. It is schema-driven (renders forms + nav
 // from GET /api/v1/schema) and theme-agnostic (styled via CSS custom properties
 // so grundtone — or any other brand — can be swapped in without touching the
 // components; product-grade requirement for the external-CMS track).
@@ -17,7 +17,7 @@ export default defineNuxtConfig({
       },
     },
   },
-  // Local dev: proxy /api → the Resonans backend so the SPA is same-origin (no
+  // Local dev: proxy /api → the Resotone backend so the SPA is same-origin (no
   // CORS). Override the target via RESONANS_DEV_API. Prod serves Studio behind
   // the same origin as the API, so this proxy is dev-only.
   nitro: {
@@ -43,7 +43,7 @@ export default defineNuxtConfig({
       scopes: 'openid profile email',
       // The editor's public origin; the redirect URI is <editorUrl>/auth/callback.
       editorUrl: '',
-      // Where this server reaches the Resonans API (e.g. http://resonans:3000).
+      // Where this server reaches the Resotone API (e.g. http://resonans:3000).
       apiUrl: '',
       // Seals the session cookie. At least 32 characters; generate with
       // `openssl rand -base64 32`.
@@ -66,7 +66,7 @@ export default defineNuxtConfig({
       // Sentry (SaaS, EU): the DSN is publishable; empty turns Sentry off.
       sentryDsn: process.env.NUXT_PUBLIC_SENTRY_DSN || '',
       sentryEnv: process.env.NUXT_PUBLIC_SENTRY_ENV || 'staging',
-      // Resonans backend base URL.
+      // Resotone backend base URL.
       apiBase: '',
       // Dev-only tenant (sent as X-Dev-Tenant when OIDC is not configured). With
       // OIDC the token supplies the tenant; the API never reads this header

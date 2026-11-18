@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// The editor's preview: Resonans' visual editing (examples/visual-editing in the
-// Resonans repo is the reference). The editor frames this route with a
+// The editor's preview: Resotone's visual editing (examples/visual-editing in the
+// Resotone repo is the reference). The editor frames this route with a
 // short-lived token, so the first paint is the stored DRAFT, rendered here on
 // the server. Then the bridge takes over: every keystroke in the editor arrives
 // as a new envelope and the page re-renders from it — unsaved, no reload. The
@@ -32,7 +32,7 @@ watchEffect(() => {
 })
 onBeforeUnmount(() => (draftHome.value = null))
 
-// Live updates arrive already sanitized: Resonans cleans the unsaved body with
+// Live updates arrive already sanitized: Resotone cleans the unsaved body with
 // the same server-side policy it applies on save (POST /api/v1/preview/envelope).
 // This site runs no sanitizer of its own.
 onMounted(() => {
@@ -67,7 +67,7 @@ useHead({ title: `Forhåndsvisning — ${heading.value}`, meta: [{ name: 'robots
     <h1 class="kh-sec__title" data-resonans-path="data.seoTitle">{{ heading }}</h1>
     <p v-if="str(envelope.data.excerpt)" class="kh-sec__lead" data-resonans-path="data.excerpt">{{ str(envelope.data.excerpt) }}</p>
     <template v-for="(b, i) in components" :key="i">
-      <!-- eslint-disable-next-line vue/no-v-html -- Resonans sanitizes rich text on save and in the live envelope -->
+      <!-- eslint-disable-next-line vue/no-v-html -- Resotone sanitizes rich text on save and in the live envelope -->
       <div v-if="type === 'page' && b._type === 'rich_text'" class="kh-prose" :data-resonans-path="`components.${i}.value`" v-html="withHeadingIds(str(b.value))" />
       <PostBlock v-else :block="b" :index="i" />
     </template>

@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Resonans
+  title: Resotone
   version: '1'
   summary: A self-hosted, multi-tenant headless CMS
   description: 'Two surfaces. /api/v1 is the editor API: the tenant comes from the verified tenant claim
@@ -280,7 +280,7 @@ paths:
   /_assets/{key}:
     get:
       summary: Asset bytes
-      description: Only mounted when Resonans serves the bytes itself. The Content-Type is re-derived
+      description: Only mounted when Resotone serves the bytes itself. The Content-Type is re-derived
         from the  bytes with the same allowlist the upload used, so a file that reached the volume by
         another  route still cannot be served.
       security: []

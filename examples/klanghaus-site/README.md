@@ -1,20 +1,20 @@
-# klanghaus.dk on Resonans
+# klanghaus.dk on Resotone
 
 [klanghaus.dk](https://klanghaus.dk), rebuilt so that every word and photo on it comes from
-Resonans. The front-end decides only how things look — it uses the same
+Resotone. The front-end decides only how things look — it uses the same
 [grundtone](https://github.com/KlangHaus/grundtone) components and the same stylesheets as the
 live site, so the front page renders the same text at the same height (measured against the live
 site at 1280 px: identical `main` text, page height 4950 px on both).
 
 It is also a test bed: a real landing page, a text page, a landing page made only of placeholder
-content, and a blog, all edited in Resonans.
+content, and a blog, all edited in Resotone.
 
-| Route | Resonans document | What it shows |
+| Route | Resotone document | What it shows |
 | --- | --- | --- |
 | `/` | `page` `forside` | klanghaus.dk's front page, text unchanged |
 | `/privatlivspolitik` | `page` `privatlivspolitik` | the privacy policy, text unchanged, marked as a **test copy** |
 | `/bunker-udlejning` | `page` `bunker-udlejning` | a second landing page — **placeholder content**, not an offer |
-| `/blog`, `/blog/:slug` | every published `post` | the blog posts from Resonans' own demo seed |
+| `/blog`, `/blog/:slug` | every published `post` | the blog posts from Resotone's own demo seed |
 
 ## Run it
 
@@ -27,7 +27,7 @@ tilt up -- --dev
 Then press **resonans-seed** (the blog posts) and **klanghaus-site-seed** (the pages and photos) in
 the Tilt UI, and open <http://localhost:3050>.
 
-Without Tilt, against any Resonans running with `RESONANS_DEV_AUTH=1`:
+Without Tilt, against any Resotone running with `RESONANS_DEV_AUTH=1`:
 
 ```bash
 pnpm install
@@ -39,7 +39,7 @@ The seed is safe to run again: a page that exists is updated and republished, no
 
 ## Live preview in the editor
 
-This site is wired into Resonans' visual editing (the reference is
+This site is wired into Resotone's visual editing (the reference is
 `examples/visual-editing`). Open a page in the editor and press **Visuel**: the
 site is framed beside the form, every keystroke re-renders it from the unsaved
 document, and a click on an element in the preview selects its field.
@@ -53,7 +53,7 @@ document, and a click on an element in the preview selects its field.
 - **Bridge:** only the preview route loads `<resonans>/bridge/v1/resonans-bridge.js`
   (`NUXT_PUBLIC_RESONANS_PUBLIC_URL`) and marks values with `data-resonans-path`.
   The public pages get neither.
-- **No sanitizer in the site.** Resonans cleans rich text with one server-side
+- **No sanitizer in the site.** Resotone cleans rich text with one server-side
   policy, both when a document is saved and in the unsaved envelope the editor
   pushes live, so what reaches `v-html` here is already clean.
 - **Set up by the seed:** `pnpm seed` sets the tenant's preview URL to
@@ -62,7 +62,7 @@ document, and a click on an element in the preview selects its field.
 
 ## How a page becomes a landing page
 
-A Resonans `page` is a flat list of blocks. This site reads it as sections:
+A Resotone `page` is a flat list of blocks. This site reads it as sections:
 
 - everything before the first `section_header` is the opening — a `hero`, and a `feature_grid`
   with variant `facts` under it;
@@ -72,10 +72,10 @@ A Resonans `page` is a flat list of blocks. This site reads it as sections:
 - each `section_header` starts a section (`eyebrow`, `heading`, `lead`, `anchor` for `#links`,
   `navLabel` for the menu) that runs until the next one.
 
-The menu is built from the front page's section headers, so adding a section in Resonans adds it
+The menu is built from the front page's section headers, so adding a section in Resotone adds it
 to the menu.
 
-Layout is chosen by the `variant` a block carries. Resonans stores it and never interprets it:
+Layout is chosen by the `variant` a block carries. Resotone stores it and never interprets it:
 
 | Block | `variant` | Renders as |
 | --- | --- | --- |
@@ -105,7 +105,7 @@ studio sits where in the building is layout, not content, and stays in `app/site
 
 ## Known differences from klanghaus.dk
 
-- Photos are served by Resonans as one JPEG each; the live site serves AVIF/WebP/JPEG at two
+- Photos are served by Resotone as one JPEG each; the live site serves AVIF/WebP/JPEG at two
   sizes.
 - The live site is static and has no scripts; this one is a Nuxt app with server-side rendering.
   That is why the privacy policy is marked as a test copy: its own premises describe klanghaus.dk.

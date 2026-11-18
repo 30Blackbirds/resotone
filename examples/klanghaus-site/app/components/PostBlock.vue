@@ -10,7 +10,7 @@ const cells = (b: Block) => (Array.isArray(b.columns) ? (b.columns as Array<{ co
 </script>
 
 <template>
-  <!-- eslint-disable-next-line vue/no-v-html -- Resonans sanitizes rich text on save -->
+  <!-- eslint-disable-next-line vue/no-v-html -- Resotone sanitizes rich text on save -->
   <div v-if="block._type === 'rich_text'" class="kh-prose" v-bind="ed(index, 'value')" v-html="str(block.value)" />
   <div v-else-if="block._type === 'callout'" class="kh-callout" :class="`kh-callout--${str(block.variant) || 'info'}`" role="note" v-bind="ed(index, 'value')">
     <!-- eslint-disable-next-line vue/no-v-html -- sanitized on save -->

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Every other Resonans page: a landing page when it opens with a hero (e.g. the
+// Every other Resotone page: a landing page when it opens with a hero (e.g. the
 // bunker rental page), otherwise a text page in klanghaus.dk's legal-page layout
 // (e.g. the privacy policy).
 import type { Envelope } from '~~/server/utils/resonans'
