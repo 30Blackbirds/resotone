@@ -33,7 +33,7 @@ skip; operator steps are listed there under **ACTION REQUIRED**.
 - [Error monitoring (Sentry, optional)](#error-monitoring-sentry-optional)
 - [Login and roles](#login-and-roles)
 - [Upgrading](#upgrading)
-- [Reference](#reference): [tenant isolation](#tenant-isolation), [content model](#content-model), [HTTP surfaces](#http-surfaces), [deleting content](#deleting-content), [asset storage](#asset-storage)
+- [Reference](#reference): [tenant isolation](#tenant-isolation), [personal data](#personal-data), [content model](#content-model), [HTTP surfaces](#http-surfaces), [deleting content](#deleting-content), [asset storage](#asset-storage)
 - [Development](#development)
 - [Contributing](#contributing) · [Security](#security) · [License](#copyright-and-license) · [Links](#links)
 
@@ -98,8 +98,9 @@ It is for development only, and `RESONANS_DEV_AUTH=1` together with
   your own front-ends, with locales, ETags and preview. OpenAPI reference at `/docs/v1/`.
 - **Multi-tenant from the first commit**, enforced by Postgres row level security rather
   than by remembering a `where` clause ([tenant isolation](#tenant-isolation)).
-- **Standard OpenID Connect login**, four roles and a single-tenant mode. It keeps no
-  users and sends no email ([login and roles](#login-and-roles)).
+- **Standard OpenID Connect login**, four roles and a single-tenant mode. Resotone keeps
+  its own small user table and assigns roles itself; it stores no passwords and sends no
+  email ([login and roles](#login-and-roles), [personal data](#personal-data)).
 - **Refuses to boot into an unsafe state.** No authentication, no database or no durable
   asset storage configured: the server exits instead of starting degraded.
 - **No CDN required.** Assets go on a volume and are served by the app; put a CDN in front
@@ -276,10 +277,12 @@ from [Configuration](#configuration) to be usable.)
 
 ## Login and roles
 
-Resotone keeps no users and no passwords. Editors log in with **standard OpenID Connect**
-at the identity provider you already run — Keycloak, Authentik, Zitadel, Authelia, or
-BetterAuth's OIDC provider, which is what we run. The decision and the alternatives are in
-[ADR 0001](docs/adr/0001-editor-login-with-standard-oidc.md).
+Resotone works with **any standards-compliant OpenID Connect provider** — Keycloak,
+Authentik, Zitadel, Authelia, Dex, BetterAuth's OIDC provider, or a central login of your
+own — and does not depend on any one of them. The provider proves who someone is.
+Resotone keeps its own record of that person and decides **what they may do**: it stores
+users and assigns roles itself, and never sees or stores a password. The decision and the
+alternatives are in [ADR 0001](docs/adr/0001-editor-login-with-standard-oidc.md).
 
 1. Register the editor at your provider as a **confidential** client using the
    authorization code flow with PKCE, redirect URI `<EDITOR_URL>/auth/callback`. If the
@@ -287,26 +290,124 @@ BetterAuth's OIDC provider, which is what we run. The decision and the alternati
    redirect URI `<EDITOR_URL>/login`, and set `OIDC_REQUIRE_PROVIDER_LOGOUT=1` so that
    logout fails rather than ending only the editor's session if the provider ever
    stops advertising it.
-2. Make the provider put an audience (`RESONANS_JWT_AUDIENCE`, e.g. `resotone`) and a
-   **role** into the access token — and, in multi-tenant mode, the tenant id.
+2. Make the provider issue **JWT access tokens** with an audience
+   (`RESONANS_JWT_AUDIENCE`, e.g. `resotone`) and, in multi-tenant mode, the tenant id.
 3. Fill in the login block of [.env.example](.env.example).
+4. [Make the first admin](#the-first-admin), who then assigns everyone else's role.
 
 The editor's server is the OIDC client. It keeps the tokens and gives the browser only a
 sealed `HttpOnly; SameSite=Strict` cookie, so a script that got into the editor page could
 not read a token even if it tried.
 
-Every request needs a role, and there is no default — a token without one gets `403`:
+### Users and roles
+
+A user is a person who has logged in, identified by the provider's **issuer** and the
+token's **`sub`**, within one tenant. Resotone creates the record at the person's first
+successful login, with **no role**. Every request needs a role, and there is no default:
+until an admin assigns one, the person gets `403`. A **disabled** user gets `403` on every
+request, whatever role they hold.
 
 | Role | Can |
 | --- | --- |
 | `viewer` | Read documents, versions, schema, assets and settings. |
 | `editor` | + create and edit drafts, upload assets, preview. |
 | `publisher` | + publish, delete and restore, roll back to an earlier version. |
-| `admin` | + change tenant settings. |
+| `admin` | + change tenant settings, and manage the tenant's users and roles. |
 
-The role claim (`RESONANS_ROLE_CLAIM`, default `resonans_role`) may be a string or an
-array; the highest role wins. To use groups your provider already issues, map them:
-`RESONANS_ROLE_MAP=cms-admins=admin,cms-writers=editor`.
+The four roles are Resotone's own; the provider does not define them. Roles are assigned
+**inside Resotone**, by an admin of the same tenant through the API below. A person who
+works in two tenants has one record, and one role, per tenant. An admin can never see or
+change another tenant's users.
+
+**Last-admin protection.** Demoting, disabling or erasing the last *active* admin of a
+tenant is refused with `409`, so a tenant cannot lock itself out.
+
+#### The first admin
+
+Nobody can assign a role until an admin exists, and there is no open registration window
+and no default role. The operator makes the first admin with a command that needs access
+to the database:
+
+```bash
+docker compose run --rm api admin grant --issuer https://id.example.org --sub <their-sub> --tenant <tenant-uuid>
+```
+
+`api` is the compose service, which already carries the database and issuer settings.
+`--sub` is the `sub` claim in that person's token. The user record is created if they
+have not logged in yet. `--issuer` defaults to `RESONANS_JWT_ISSUER`, and `--tenant` to
+`RESONANS_TENANT_ID` in single-tenant mode, so a one-organization install passes only
+`--sub`. Running it again changes nothing and says so in its log line
+(`userCreated: false, roleChanged: false`). It never re-enables a disabled user, and it
+does not write the subject to the log. Use it again at any time, for instance to recover
+a tenant whose admin has left.
+
+#### Managing users (admin API)
+
+All admin only, reads included, because they hold personal data. The tenant is always the
+caller's own, taken from the verified token; see the OpenAPI reference at `/docs/v1/`.
+
+| Route | Does |
+| --- | --- |
+| `GET /api/v1/users` | List the tenant's users with role and status. |
+| `GET /api/v1/users/{id}` | One user. |
+| `PUT /api/v1/users/{id}/role` | Assign `viewer`, `editor`, `publisher` or `admin`. |
+| `POST /api/v1/users/{id}/disable`, `.../enable` | Block or allow login without losing the record. |
+| `GET /api/v1/users/{id}/export` | The user's data as Resotone holds it, as a JSON download. |
+| `DELETE /api/v1/users/{id}` | Erase the person's data ([see below](#personal-data)). |
+
+Without a database (the in-memory development mode) these answer `501`.
+
+#### The provider's role claim is optional
+
+Earlier versions took the role only from the token. That still works, as an **opt-in**:
+`RESONANS_ROLE_CLAIM` (default `resonans_role`) names the claim, and `RESONANS_ROLE_MAP`
+maps values your provider already issues, such as groups, to roles, e.g.
+`RESONANS_ROLE_MAP=cms-admins=admin,cms-writers=editor`. The claim may be a string or an
+array; its highest role counts. **By default it is ignored.** Set
+`RESONANS_ROLE_CLAIM_GRANTS=1` (exactly `1`) to let it count, and the rule is:
+
+| Assigned in Resotone | Role claim | Effective role |
+| --- | --- | --- |
+| none | any | **none** (without the opt-in) |
+| `editor` | `admin` | `editor` (without the opt-in the higher claim is ignored) |
+| `editor` | `viewer` | `editor` |
+| none | `editor` | `editor` (with the opt-in) |
+| `editor` | `admin` | `admin` (with the opt-in) |
+| `admin` | `viewer` | `admin` (with the opt-in: the higher of the two) |
+
+So the assignment in Resotone is authoritative, and the claim can only ever **add** to it.
+With the opt-in on, removing a role in Resotone does not remove access the provider still
+grants; take it away at the provider too.
+
+**Upgrading from a release that read the role only from the token:** until you assign
+roles in Resotone, or set `RESONANS_ROLE_CLAIM_GRANTS=1`, every existing editor has no
+role and gets `403`. Do one of the two before you upgrade; for the first, start with
+[the first admin](#the-first-admin).
+
+### Standalone: what Resotone asks of a provider
+
+Verified against the code, not assumed:
+
+- **Configured, not built in.** The issuer (`RESONANS_JWT_ISSUER`), the keys
+  (`RESONANS_JWKS_URL`), the audience, and the names of the tenant and role claims are
+  settings. Nothing in the server names a particular provider. The editor's own login
+  discovers every endpoint from the issuer's discovery document.
+- **JWT access tokens**, signed with RS256, ES256 or EdDSA, with the configured issuer
+  (compared exactly, so a trailing slash matters) and audience. Opaque access tokens are
+  refused; some providers need a resource indicator to issue a JWT (`OIDC_RESOURCE`).
+- **A stable `sub`.** Together with the issuer it is the user's identity. If the
+  provider changes someone's `sub`, they become a new user with no role.
+- **Top-level claims only.** The tenant and role claims are read from the top level of
+  the token, as a string (or, for the role, an array of strings). A claim nested in an
+  object, such as Keycloak's `realm_access.roles`, is not read: use a mapper at the
+  provider to put it at the top level, or assign roles in Resotone instead.
+- **Name and email are optional.** They are read from the access token's `name` (or
+  `preferred_username`) and `email` claims, and many providers put them only in the ID
+  token. If absent the user is listed by `sub` alone. They never decide access.
+- **Untested at other providers.** CI logs in through Dex and the authors run
+  BetterAuth; other providers follow the standard but are not part of CI.
+- **Defaults carry one name:** the default role claim is `resonans_role`. It is a
+  default, overridable with `RESONANS_ROLE_CLAIM`.
 
 ### Logging in and out
 
@@ -337,9 +438,11 @@ the logout, and editors stay logged in with a message saying so.
 2. Change `RESONANS_VERSION` to the new exact tag, then `docker compose pull` and
    `docker compose up -d --no-build` (or `git pull` and `up -d --build` when building from
    source). Database migrations run when the stack starts, in the `migrate` service.
-3. After migrating a database you manage yourself, run
+3. Upgrading from a release before Resotone stored users? Read
+   [login and roles](#login-and-roles) first: roles are now assigned inside Resotone.
+4. After migrating a database you manage yourself, run
    [deploy/assert-rls-coverage.sql](deploy/assert-rls-coverage.sql) again.
-4. Take a [backup](#backups) first. Releases are not guaranteed to be reversible.
+5. Take a [backup](#backups) first. Releases are not guaranteed to be reversible.
 
 ## Reference
 
@@ -387,6 +490,46 @@ have to hold, and each is checked in a different place:
    a human executing the same statements as a superuser grants for objects the superuser
    creates — and the app role ends up with nothing once the migrator creates the tables.
    Name the creating role with `for role`. This has already cost one deployment plan.
+
+### Personal data
+
+What Resotone stores about the people who log in, so you can tell them and answer for it.
+You run it, so you decide purpose, legal basis and retention; this is the factual list.
+
+| Field | Where | Source | Why |
+| --- | --- | --- | --- |
+| `sub` and `issuer` | `users` | the access token | Identify the user. |
+| `display_name` | `users` | token claim `name`, else `preferred_username` (may be empty) | Show who is who to admins. |
+| `email` | `users` | token claim `email` (optional) | Show who is who to admins. |
+| `status`, `created_at`, `last_login_at` | `users` | Resotone | Disable a user; the first login; the latest login, rewritten at most every 15 minutes. |
+| `role`, `assigned_at` | `user_roles` | an admin, or `admin grant` | What the user may do. |
+| `deleted_at` | `users` | Resotone | Marks an erased user. |
+
+There are no passwords, credentials or tokens in these tables. Beyond them:
+
+- **Content carries no author.** Documents, versions and assets record no user, so
+  nothing in your content points back to a person.
+- **Traces.** With `OTEL_ENABLED` on, the token's `sub` goes on each request's trace span
+  as `enduser.id`, with the tenant id. It is sent to the collector you configure.
+- **Logs.** Login refusals and admin actions are logged with the user's *id* and tenant,
+  not their name, email or `sub`.
+- **The editor's cookie** is sealed and holds the provider's tokens for that browser
+  session ([login and roles](#login-and-roles)); it is not a copy of the user table.
+- **Your provider** holds the account itself. Erasing a user here does not touch it.
+
+**Disable, or erase.** *Disable* blocks login and keeps the record, so a person who is
+away can come back with the same role. *Erase* (`DELETE /api/v1/users/{id}`)
+pseudonymises: issuer, `sub`, name and email are replaced, the role is removed and the
+user is disabled for good. The row stays, so anything that referenced the user by id keeps
+resolving, but nothing identifies the person. If they log in again at your provider they
+become a new user with no role. Erase does not reach backups you have already taken.
+
+**Export.** `GET /api/v1/users/{id}/export` returns everything Resotone holds about one
+user (the record above and their role) as a JSON file.
+
+**Retention.** Resotone deletes nothing on a schedule. A user record stays until an admin
+erases it, and last-login times are kept while the record is. Set your own policy and use
+erase to carry it out.
 
 ### Content model
 

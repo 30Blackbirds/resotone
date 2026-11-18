@@ -3,6 +3,9 @@
 - **Status:** Implemented in v2.0.0. Not yet proven against a provider other than BetterAuth,
   and not yet running in the authors' production.
 - **Date:** 2026-10-22
+- **Amended 2026-11-18:** §5 below no longer holds. Resotone now stores its own users and
+  assigns roles itself; the provider's role claim is an optional input (see the amendment
+  at §5). Everything else here stands.
 - **Decided by:** Allan (direction, 2026-10-22); this record written by [resotone]
 - **Scope:** Resotone's editor UI (the code in `studio/`) and the editor API (`/api/v1`).
   The delivery API, preview tokens and `RESONANS_DEV_AUTH` are unchanged.
@@ -37,8 +40,8 @@ Measured on `main` `f2114a9`:
   plugin issues. `org` is added only by the `jwt()` plugin's `definePayload`, which serves
   the `/api/auth/token` path the editor uses now.
 
-The README already promises that Resotone "does not manage users or send email. It verifies
-JWTs from an identity provider you already run." The editor UI breaks that promise.
+The README then promised that Resotone "does not manage users or send email. It verifies
+JWTs from an identity provider you already run." The editor UI broke that promise.
 
 ## Decision
 
@@ -120,19 +123,38 @@ both modes: single-tenant is one tenant id, not RLS turned off.
 `RESONANS_TENANT_MODE=multi` (default, today's behaviour) requires the tenant claim and
 refuses a token without it.
 
-### 5. No user database of our own
+### 5. ~~No user database of our own~~ — superseded 2026-11-18
 
-Resotone stores no users, passwords, sessions beyond the editor's own cookie, or e-mail
-addresses. It keeps the token's `sub` where it records who did something. Accounts,
-password reset, MFA and SSO belong to the provider.
+*Original decision (2026-10-22):* Resotone stores no users, passwords, sessions beyond the
+editor's own cookie, or e-mail addresses. It keeps the token's `sub` where it records who
+did something. Accounts, password reset, MFA and SSO belong to the provider.
 
-### 6. 30blackbirds keeps BetterAuth as its OIDC provider
+**Amendment (Allan, 2026-11-18).** Resotone must run standalone with any standards-compliant
+provider, and a central login of the authors' own is only one such provider. So:
+
+- Resotone **stores users**, keyed by (issuer, `sub`) within a tenant, created at the first
+  successful login with no role. Fields: `sub`, issuer, display name, optional email, status
+  (active or disabled), created and last-login times. **Still no passwords or credentials**,
+  and still no e-mail sent. Accounts, password reset, MFA and SSO still belong to the provider.
+- **Roles live inside Resotone.** Each user has one role per tenant, assigned by an admin of
+  that tenant or by the operator's `admin grant` command. The four roles stay Resotone's own
+  definitions. A disabled user, or one with no role, gets 403.
+- The provider's role claim (`RESONANS_ROLE_CLAIM`, `RESONANS_ROLE_MAP`) is **optional and
+  off by default**. With `RESONANS_ROLE_CLAIM_GRANTS=1` it can raise a role above the one
+  assigned in Resotone, never lower it. The safest rule won: the local assignment is
+  authoritative.
+- There is **no default role and no open registration**: the first admin comes from the
+  operator, with database access.
+- Personal data, erasure and export are described in the README ([personal data](../../README.md#personal-data)).
+
+### 6. The authors keep BetterAuth as their OIDC provider
 
 30blackbirds' own deployment uses the same code path as everyone else. The `auth` service
 registers Resotone's editor as a confidential OIDC client in `oauthProvider`, and adds `org`
 and a role to the tokens it issues for that client. The role can come from the existing
 BetterAuth organization membership (`owner`, `admin`, `member`) through
-`RESONANS_ROLE_MAP`, so no new role store is needed.
+`RESONANS_ROLE_MAP`, with `RESONANS_ROLE_CLAIM_GRANTS=1` (§5 amendment), or be assigned inside
+Resotone instead.
 
 The post-logout redirect URI is registered there through the `auth` service's
 `RESONANS_OIDC_POST_LOGOUT_REDIRECT_URIS`, which for production must be exactly
@@ -164,9 +186,10 @@ name `<EDITOR_URL>/login` as well.
 
 ## Rejected alternatives
 
-- **A built-in user database and login.** Passwords, reset e-mails, MFA, lockout and
+- **A built-in login with passwords.** Passwords, reset e-mails, MFA, lockout and
   breach handling would all become Resotone's problem, contradicting "Postgres plus a
-  binary" and the README's own promise. Every provider worth running already does this.
+  binary". Every provider worth running already does this. (This stays rejected; the §5
+  amendment adds user *records and roles*, not credentials.)
 - **Keep BetterAuth-specific login and document it as a requirement.** Forces every
   self-hoster to run our identity stack; that is lock-in, the thing Resotone exists to
   avoid.
