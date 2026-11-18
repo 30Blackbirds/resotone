@@ -1,7 +1,7 @@
 # Contributor Licence Agreement — signatures
 
 This file is the **index** of who has accepted the
-[Resotone Individual Contributor Licence Agreement](legal/individual-cla.md).
+[Resonans Individual Contributor Licence Agreement](legal/individual-cla.md).
 **It is not the evidence.** The evidence is the pull request each contributor opened
 **from their own GitHub account** to add their own line, and the commit they authored in it.
 A line someone else added proves nothing, so the `CLA` check refuses a line whose user ID
