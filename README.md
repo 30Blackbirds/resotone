@@ -30,6 +30,7 @@ skip; operator steps are listed there under **ACTION REQUIRED**.
 - [Is it ready?](#is-it-ready)
 - [Self-hosting in production](#self-hosting-in-production)
 - [Configuration](#configuration)
+- [Error monitoring (Sentry, optional)](#error-monitoring-sentry-optional)
 - [Login and roles](#login-and-roles)
 - [Upgrading](#upgrading)
 - [Reference](#reference): [tenant isolation](#tenant-isolation), [content model](#content-model), [HTTP surfaces](#http-surfaces), [deleting content](#deleting-content), [asset storage](#asset-storage)
@@ -207,12 +208,71 @@ them with the reasoning. The ones that decide whether the server starts at all:
 | --- | --- | --- |
 | `DATABASE_URL` | yes | Postgres DSN. Unset in production the server exits: the in-memory store loses content *and* does not enforce tenant isolation. |
 | `RESONANS_JWT_ISSUER` + `RESONANS_JWKS_URL` | yes, both, and **https** | Editor login. Either one missing and the server exits rather than exposing the editor API to an unauthenticated header. In production both must be `https`, because the JWKS is the trust anchor — over plain http anyone on the path can substitute the signing keys. `RESONANS_ALLOW_INSECURE_JWKS=1` waives it deliberately, and every boot then logs the URL. |
-| `RESONANS_JWT_AUDIENCE` | yes, with the two above | The `aud` your provider puts in Resotone' access tokens. Without it the server exits: it would otherwise accept a token minted for any other service at the same provider. |
+| `RESONANS_JWT_AUDIENCE` | yes, with the two above | The `aud` your provider puts in Resotone's access tokens. Without it the server exits: it would otherwise accept a token minted for any other service at the same provider. |
 | `RESONANS_TENANT_MODE` + `RESONANS_TENANT_ID` | for one organisation | `single` with a UUID serves one tenant and never reads a tenant claim. Default `multi` reads the tenant from `RESONANS_TENANT_CLAIM` (`org`). |
 | `RESONANS_DELIVERY_TOKEN` | yes | Authenticates the trusted read surface. Unset or blank, the server exits: without it `/delivery` would trust a tenant header from anyone. Only `RESONANS_DEV_AUTH=1` outside production starts it without one. |
 | `RESONANS_STORAGE_DIR` *or* all three `BUNNY_STORAGE_*` | yes, one of them | Where asset bytes live. Neither set, the server exits instead of accepting uploads it will drop on restart. |
 | `PUBLIC_URL` | recommended | The API's externally reachable base URL. Asset URLs are built from it, so a wrong value shows up as broken images, not as an error. |
 | `RESONANS_DEV_AUTH` | never | The single value `1` opens the unauthenticated development paths, outside production only. |
+
+## Error monitoring (Sentry, optional)
+
+The editor (Studio) can report browser errors, and problem reports typed in by editors, to
+a [Sentry](https://sentry.io) project that **you** own. It is off unless you set a DSN.
+
+**What is covered:** the editor's browser app only. It captures unhandled errors, and the
+**Help & inspiration → Report a problem** button opens a feedback form whose reports go to
+the same project. **What is not covered:** the Go server (API). It has no Sentry
+integration; its observability path is OpenTelemetry (`OTEL_*`, see
+[.env.example](.env.example)).
+
+**Privacy:** events go to the DSN you configure and nowhere else. Nothing is sent to the
+maintainers of Resotone. With no DSN set, the editor does not start Sentry and sends
+nothing. Errors and feedback can contain page addresses and whatever an editor types into
+the form, so treat the project like any other place that holds your editors' data.
+
+The editor reads two environment variables **at runtime**, when the container starts, so
+there is no code change and no rebuild:
+
+| Variable | Default | What it does |
+| --- | --- | --- |
+| `NUXT_PUBLIC_SENTRY_DSN` | empty (off) | The DSN of your Sentry project. A DSN is not a secret, because it is delivered to every editor's browser. |
+| `NUXT_PUBLIC_SENTRY_ENV` | `staging` | The `environment` tag on events. Set it to `production` on a production site. |
+
+With the reference `compose.yml`, put them in `.env` (it passes both to the `studio`
+service) and restart the editor:
+
+```bash
+NUXT_PUBLIC_SENTRY_DSN=https://<key>@<your-sentry-host>/<project-id>
+NUXT_PUBLIC_SENTRY_ENV=production
+```
+
+```bash
+docker compose up -d studio
+```
+
+Without compose, pass them to the editor image directly:
+
+```bash
+docker run -d -p 8080:3000 \
+  -e NUXT_PUBLIC_SENTRY_DSN=https://<key>@<your-sentry-host>/<project-id> \
+  -e NUXT_PUBLIC_SENTRY_ENV=production \
+  ghcr.io/30blackbirds/resotone-studio:latest
+```
+
+(That command shows only the Sentry variables; the editor also needs its login settings
+from [Configuration](#configuration) to be usable.)
+
+**Using your own Sentry project:**
+
+1. In Sentry, create a project with the platform **JavaScript → Nuxt** (the editor is a
+   Nuxt single-page app; the browser SDK is `@sentry/vue`).
+2. Open **Settings → Projects → your project → Client Keys (DSN)** and copy the DSN.
+3. Set `NUXT_PUBLIC_SENTRY_DSN` as above and restart the editor.
+4. Check that it works: open the editor, choose **Help & inspiration → Report a problem**
+   and send a report. It appears under **User Feedback** in your project. To test error
+   capture, run `setTimeout(() => { throw new Error('sentry test') })` in the browser
+   console on the editor page; the event appears under **Issues**.
 
 ## Login and roles
 
