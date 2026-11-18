@@ -34,7 +34,7 @@ type Config struct {
 	// 🔴 This field exists because the fallback is ALSO a legitimate value:
 	// staging deliberately runs NODE_ENV=development. So a deploy that forgets
 	// the variable is indistinguishable, in the config and in every log line,
-	// from one that chose it on purpose — measured on platform 2026-10-06,
+	// from one that chose it on purpose — measured 2026-10-06,
 	// where the migrate container logged "env":"development" on a production
 	// box because compose declares NODE_ENV on the api service alone and each
 	// service's environment list is its own. A value that is wrong but
