@@ -18,7 +18,7 @@ import (
 // A new route without a deliberate role fails here.
 func TestEveryRouteHasARole(t *testing.T) {
 	routes := (&Handlers{}).Routes()
-	if len(routes) != 25 {
+	if len(routes) != 32 {
 		t.Fatalf("route table has %d routes; update this count when you add one, after choosing its role", len(routes))
 	}
 	seen := map[string]bool{}
@@ -30,9 +30,15 @@ func TestEveryRouteHasARole(t *testing.T) {
 			t.Errorf("%s registered twice", rt.Pattern)
 		}
 		seen[rt.Pattern] = true
-		// Reads are viewer. Anything that is not a GET needs more.
+		// Reads are viewer. Anything that is not a GET needs more. The one
+		// deliberate exception: the user routes are admin only even to read,
+		// because they carry personal data (names, emails, subjects).
 		isRead := strings.HasPrefix(rt.Pattern, "GET ")
-		if isRead && rt.MinRole != auth.RoleViewer {
+		isUsers := strings.Contains(rt.Pattern, " /api/v1/users")
+		if isUsers && rt.MinRole != auth.RoleAdmin {
+			t.Errorf("%s must be admin only, got %v", rt.Pattern, rt.MinRole)
+		}
+		if isRead && !isUsers && rt.MinRole != auth.RoleViewer {
 			t.Errorf("%s is a read but needs %v", rt.Pattern, rt.MinRole)
 		}
 		if !isRead && rt.MinRole == auth.RoleViewer {
@@ -143,12 +149,13 @@ func TestNoRouteServesATenantlessActor(t *testing.T) {
 		{"non-UUID org", "MICf4sccklrys2eMgfww7XVOoA3uQqQL", `{"error":"invalid tenant"}`},
 	} {
 		h := NewRouter(Deps{
-			Store:    content.NewMemoryStore(),
-			Registry: mustRegistry(t),
-			Media:    mediaSvc,
-			Video:    media.NewVimeoProvider(),
-			Settings: settings.NewMemoryStore(),
-			Verifier: fixedVerifier{auth.Actor{Sub: "u", Tenant: tc.tenant, Role: auth.RoleAdmin}},
+			Store:     content.NewMemoryStore(),
+			Registry:  mustRegistry(t),
+			Media:     mediaSvc,
+			Video:     media.NewVimeoProvider(),
+			Settings:  settings.NewMemoryStore(),
+			UserAdmin: failingUsers{},
+			Verifier:  fixedVerifier{auth.Actor{Sub: "u", Tenant: tc.tenant, Role: auth.RoleAdmin}},
 		})
 		checked := 0
 		for _, rt := range (&Handlers{}).Routes() {
@@ -169,10 +176,10 @@ func TestNoRouteServesATenantlessActor(t *testing.T) {
 				}
 			})
 		}
-		// The route table has 25 routes (TestEveryRouteHasARole); 3 are
+		// The route table has 32 routes (TestEveryRouteHasARole); 3 are
 		// tenant-free. A cell that walked none would pass on nothing.
-		if checked != 22 {
-			t.Fatalf("%s: checked %d routes, want 22", tc.name, checked)
+		if checked != 29 {
+			t.Fatalf("%s: checked %d routes, want 29", tc.name, checked)
 		}
 	}
 }

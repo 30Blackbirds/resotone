@@ -235,8 +235,10 @@ func Run(ctx context.Context) error {
 
 	// --- Users: Resotone's own record of who may do what ---
 	var userStore auth.UserStore
+	var userAdmin users.Admin // nil without a database: the user routes answer 501
 	if pool != nil {
-		userStore = users.NewPostgresStore(pool)
+		pgUsers := users.NewPostgresStore(pool)
+		userStore, userAdmin = pgUsers, pgUsers
 	} else {
 		userStore = users.NewMemoryStore()
 	}
@@ -254,6 +256,7 @@ func Run(ctx context.Context) error {
 		Video:         videoProvider,
 		Verifier:      verifier,
 		Users:         userStore,
+		UserAdmin:     userAdmin,
 		ClaimGrants:   cfg.RoleClaimGrants,
 		Settings:      settingsStore,
 		PreviewSecret: cfg.PreviewSecret,

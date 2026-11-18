@@ -16,6 +16,7 @@ import (
 	"github.com/30blackbirds/resotone/internal/auth"
 	"github.com/30blackbirds/resotone/internal/content"
 	"github.com/30blackbirds/resotone/internal/media"
+	"github.com/30blackbirds/resotone/internal/users"
 )
 
 // errStoreDown stands for a store failure the API cannot classify. Its text
@@ -106,6 +107,25 @@ func (failingSettings) PreviewURL(context.Context, uuid.UUID) (string, error) {
 
 func (failingSettings) SetPreviewURL(context.Context, uuid.UUID, string) error { return errStoreDown }
 
+type failingUsers struct{}
+
+func (failingUsers) List(context.Context, uuid.UUID) ([]users.User, error) {
+	return nil, errStoreDown
+}
+
+func (failingUsers) Get(context.Context, uuid.UUID, uuid.UUID) (users.User, error) {
+	return users.User{}, errStoreDown
+}
+
+func (failingUsers) SetRole(context.Context, uuid.UUID, uuid.UUID, auth.Role) error {
+	return errStoreDown
+}
+
+func (failingUsers) SetDisabled(context.Context, uuid.UUID, uuid.UUID, bool) error {
+	return errStoreDown
+}
+func (failingUsers) Erase(context.Context, uuid.UUID, uuid.UUID) error { return errStoreDown }
+
 // Every route that reads or writes a store, with every store failing: each one
 // answers 500 «internal error», the cause is in the log, and the body never
 // carries it. Not 200 with an empty list, which an editor would read as "you
@@ -125,6 +145,7 @@ func TestEveryStoreFailureIsA500WithoutDetail(t *testing.T) {
 		Media:         media.NewService(failingMedia{}, media.NewMemoryBackend(), media.NewURLBuilder("https://cdn.test")),
 		Video:         fakeVideo{},
 		Settings:      failingSettings{},
+		UserAdmin:     failingUsers{},
 		PreviewSecret: previewSecret,
 		Logger:        slog.New(slog.NewTextHandler(&logBuf, nil)),
 		Verifier:      fixedVerifier{auth.Actor{Sub: "u", Tenant: tenantA, Role: auth.RoleAdmin}},
@@ -132,6 +153,7 @@ func TestEveryStoreFailureIsA500WithoutDetail(t *testing.T) {
 	// The smallest body each write needs to get past validation to its store.
 	bodies := map[string]string{
 		"PUT /api/v1/settings":          `{"enabledTypes":[]}`,
+		"PUT /api/v1/users/{id}/role":   `{"role":"editor"}`,
 		"PUT /api/v1/settings/preview":  `{"previewUrl":""}`,
 		"POST /api/v1/documents":        `{"type":"post","slug":"x","title":"x","body":{}}`,
 		"PUT /api/v1/documents/{id}":    `{"title":"x"}`,
@@ -174,8 +196,8 @@ func TestEveryStoreFailureIsA500WithoutDetail(t *testing.T) {
 			t.Errorf("%s answered 500 without logging the cause", rt.Pattern)
 		}
 	}
-	if checked != 21 {
-		t.Fatalf("checked %d store routes, want 21 (25 routes, 4 store-free)", checked)
+	if checked != 28 {
+		t.Fatalf("checked %d store routes, want 28 (32 routes, 4 store-free)", checked)
 	}
 }
 
