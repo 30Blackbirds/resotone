@@ -1,4 +1,4 @@
--- Create the role the Resonans server connects as.
+-- Create the role the Resotone server connects as.
 --
 -- 🔴 DO NOT COPY STATEMENTS OUT OF THIS FILE. Use ../manual-setup.sql instead.
 -- Everything here is correct only because the postgres image executes it as
@@ -11,7 +11,7 @@
 -- copy-safe file rather than a third warning.
 --
 -- This runs once, on the database cluster's FIRST start, before any migration.
--- The split is not ceremony. Resonans isolates tenants with Postgres row level
+-- The split is not ceremony. Resotone isolates tenants with Postgres row level
 -- security, and RLS is bypassed by any role that is SUPERUSER or has BYPASSRLS.
 -- The migrator owns the schema and needs DDL; the server needs rows and nothing
 -- more. Run the server as the owner and every tenant's content becomes readable
@@ -76,7 +76,7 @@ $guard$;
 do $$
 begin
   if current_setting('server_version_num')::int < 140000 then
-    raise exception 'Resonans needs PostgreSQL 14 or newer, found %', current_setting('server_version');
+    raise exception 'Resotone needs PostgreSQL 14 or newer, found %', current_setting('server_version');
   end if;
 end
 $$;
@@ -85,7 +85,7 @@ create role resonans_app with
   login password :'app_password'
   nosuperuser nocreatedb nocreaterole noinherit nobypassrls;
 
--- Resonans keeps its tables in the `resonans_app` SCHEMA, not in `public`.
+-- Resotone keeps its tables in the `resonans_app` SCHEMA, not in `public`.
 -- Create it here so the grants below have something to attach to. Getting this
 -- wrong is not a subtle failure: granting on `public` produced an app role that
 -- could not read its own tables at all, and every request answered

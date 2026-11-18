@@ -1,6 +1,6 @@
-# Resonans Studio
+# Resotone Studio
 
-The Resonans editor — a **schema-driven**, **theme-agnostic** Nuxt 4 SPA. It has
+The Resotone editor — a **schema-driven**, **theme-agnostic** Nuxt 4 SPA. It has
 **no hardcoded content types**: the nav, document lists and forms are all
 rendered from the backend registry (`GET /api/v1/schema`), so the same editor
 serves course and lesson content, blog posts, marketing pages and email — one
@@ -31,7 +31,7 @@ document editor (scalars + field-level da/en). **Sequenced next** (waiting on
 
 ```bash
 pnpm install
-# point at a running Resonans backend + a dev tenant:
+# point at a running Resotone backend + a dev tenant:
 NUXT_PUBLIC_API_BASE=http://localhost:3000 NUXT_PUBLIC_DEV_TENANT=<uuid> pnpm dev
 ```
 

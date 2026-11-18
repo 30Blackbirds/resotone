@@ -1,4 +1,4 @@
-# Resonans — the development stack, run with `tilt up -- --dev` (see Tiltfile).
+# Resotone — the development stack, run with `tilt up -- --dev` (see Tiltfile).
 #
 # Needs NO secrets (see docker-compose.tilt.yml): no login, tenant via
 # X-Dev-Tenant (editor) / X-Scope-OrgID (delivery), boot auto-migrate. The
@@ -37,9 +37,9 @@ local_resource(
     resource_deps=['resonans'],
 )
 
-# --- Example: klanghaus.dk on Resonans (examples/klanghaus-site) ---
+# --- Example: klanghaus.dk on Resotone (examples/klanghaus-site) ---
 # The marketing site, landing pages and blog of klanghaus.dk, with every word and
-# photo served by this Resonans. Press "klanghaus-site-seed" once after
+# photo served by this Resotone. Press "klanghaus-site-seed" once after
 # "resonans-seed" (the blog posts come from that one), then open
 # http://localhost:3050.
 local_resource(
@@ -52,7 +52,7 @@ local_resource(
     trigger_mode=TRIGGER_MODE_MANUAL,
     resource_deps=['resonans'],
 )
-# The editor (Resonans Studio) in dev mode — no login, tenant via X-Dev-Tenant —
+# The editor (Resotone Studio) in dev mode — no login, tenant via X-Dev-Tenant —
 # so live preview works out of the box: open a page and press "Visuel". The
 # site's /preview route accepts frames only from this origin (studioOrigin).
 local_resource(
@@ -63,7 +63,7 @@ local_resource(
         'RESONANS_DEV_API': api_url,
         'NUXT_PUBLIC_DEV_TENANT': '11111111-1111-1111-1111-111111111111',
     },
-    links=[link(studio_url, 'Resonans editor')],
+    links=[link(studio_url, 'Resotone editor')],
     labels=['resonans'],
     resource_deps=['resonans'],
 )
@@ -76,7 +76,7 @@ local_resource(
         'NUXT_PUBLIC_RESONANS_PUBLIC_URL': api_url,
         'NUXT_PUBLIC_STUDIO_ORIGIN': studio_url,
     },
-    links=[link(site_url, 'klanghaus.dk on Resonans')],
+    links=[link(site_url, 'klanghaus.dk on Resotone's)],
     labels=['examples'],
     resource_deps=['resonans'],
 )

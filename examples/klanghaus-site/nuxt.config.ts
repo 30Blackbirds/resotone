@@ -1,10 +1,10 @@
-// klanghaus.dk, rebuilt on Resonans: every word and photo on these pages comes
-// from Resonans' delivery API; the front-end only decides how it looks. It is
+// klanghaus.dk, rebuilt on Resotone: every word and photo on these pages comes
+// from Resotone's delivery API; the front-end only decides how it looks. It is
 // the same site as https://klanghaus.dk — same grundtone components, same
 // styles — so it doubles as the test bed for moving that page onto the CMS.
 //
 // Server-side only: the delivery token and the tenant never reach the browser
-// (server/utils/resonans.ts). Run it through Resonans' Tiltfile, or see README.
+// (server/utils/resonans.ts). Run it through Resotone's Tiltfile, or see README.
 export default defineNuxtConfig({
   compatibilityDate: '2026-10-01',
   devtools: { enabled: false },
@@ -39,7 +39,7 @@ export default defineNuxtConfig({
     '~/assets/styles/site.scss',
   ],
   runtimeConfig: {
-    // Where this server reaches Resonans, and as whom. NUXT_RESONANS_URL etc.
+    // Where this server reaches Resotone, and as whom. NUXT_RESONANS_URL etc.
     resonansUrl: 'http://localhost:3000',
     resonansTenant: '11111111-1111-1111-1111-111111111111',
     // Empty in Tilt: the dev API runs with RESONANS_DEV_AUTH=1 and trusts the
@@ -49,7 +49,7 @@ export default defineNuxtConfig({
       // Visual editing (the /preview route only). The editor's exact origin —
       // the only window allowed to frame a draft or talk to the bridge.
       studioOrigin: 'http://localhost:3030',
-      // Resonans as the BROWSER reaches it, for the bridge script.
+      // Resotone as the BROWSER reaches it, for the bridge script.
       resonansPublicUrl: 'http://localhost:3000',
     },
   },

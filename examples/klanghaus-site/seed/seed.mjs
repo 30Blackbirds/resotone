@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Seeds this example's pages into a Resonans running in dev mode (the Tiltfile's
+// Seeds this example's pages into a Resotone running in dev mode (the Tiltfile's
 // API: RESONANS_DEV_AUTH=1, tenant via X-Dev-Tenant). It goes through the same
 // editor API the editor uses — upload, create or update, publish — so a seed
 // that works is also a small end-to-end check of that API.
@@ -56,7 +56,7 @@ async function resolveImages(value, ids) {
 
 const health = await fetch(`${API}/healthz`).catch(() => null)
 if (!health?.ok) {
-  console.error(`Resonans is not answering at ${API}/healthz — start it first (tilt up).`)
+  console.error(`Resotone is not answering at ${API}/healthz — start it first (tilt up).`)
   process.exit(1)
 }
 
@@ -71,7 +71,7 @@ for (const p of pages) {
   await call('POST', `/api/v1/documents/${doc.id}/publish`)
   console.log(`${found ? 'updated' : 'created'}  page/${p.slug}  ${doc.id}`)
 }
-// Visual editing: the editor frames this URL. {token} is required by Resonans
+// Visual editing: the editor frames this URL. {token} is required by Resotone
 // (http only for localhost); the site's /preview route renders the draft.
 const previewUrl = `${SITE}/preview/{type}/{slug}?token={token}&locale={locale}`
 const set = await call('PUT', '/api/v1/settings/preview', { previewUrl })

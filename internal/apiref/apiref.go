@@ -201,7 +201,7 @@ var pageHTML = []byte(`<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Resonans API</title>
+<title>Resotone API</title>
 <style>
   body { margin: 0; font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; }
   noscript, .fallback { display: block; padding: 2rem; max-width: 46rem; }
@@ -210,14 +210,14 @@ var pageHTML = []byte(`<!doctype html>
 </head>
 <body>
 <noscript class="fallback">
-  <h1>Resonans API</h1>
+  <h1>Resotone API</h1>
   <p>This page renders the specification with JavaScript. Without it, read the
   document directly: <a href="` + SpecPath + `"><code>` + SpecPath + `</code></a></p>
 </noscript>
 <script id="api-reference" data-url="` + SpecPath + `"></script>
 <script src="` + RendererPath + `" onerror="document.body.insertAdjacentHTML('beforeend', document.getElementById('absent').innerHTML)"></script>
 <template id="absent"><div class="fallback">
-  <h1>Resonans API</h1>
+  <h1>Resotone API</h1>
   <p><strong>The renderer is not installed here.</strong> It is fetched when the
   container image is built, so it is absent when the binary runs outside the
   image &mdash; for example under <code>go run ./cmd/resonans</code>.</p>

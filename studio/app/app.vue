@@ -60,7 +60,7 @@ const { $reportProblem } = useNuxtApp()
 async function reportProblem() {
   showHelp.value = false
   if ($reportProblem) await $reportProblem()
-  else window.open('https://github.com/KlangHaus/resonans/issues/new', '_blank')
+  else window.open('https://github.com/30Blackbirds/resotone/issues/new', '_blank')
 }
 </script>
 
@@ -93,9 +93,9 @@ async function reportProblem() {
           <div v-if="showHelp" class="sb-help__menu">
             <div class="sb-help__title">{{ t('How can we help?') }}</div>
             <button type="button" class="sb-help__link" @click="reportProblem">{{ t('Report a problem') }}</button>
-            <a class="sb-help__link" href="https://github.com/KlangHaus/resonans#readme" target="_blank" rel="noopener">{{ t('Documentation') }}</a>
-            <a class="sb-help__link" href="https://github.com/KlangHaus/resonans/blob/main/CHANGELOG.md" target="_blank" rel="noopener">{{ t('Changelog') }}</a>
-            <a class="sb-help__link" href="https://github.com/KlangHaus/resonans/issues" target="_blank" rel="noopener">{{ t('Community') }}</a>
+            <a class="sb-help__link" href="https://github.com/30Blackbirds/resotone#readme" target="_blank" rel="noopener">{{ t('Documentation') }}</a>
+            <a class="sb-help__link" href="https://github.com/30Blackbirds/resotone/blob/main/CHANGELOG.md" target="_blank" rel="noopener">{{ t('Changelog') }}</a>
+            <a class="sb-help__link" href="https://github.com/30Blackbirds/resotone/issues" target="_blank" rel="noopener">{{ t('Community') }}</a>
           </div>
           <button type="button" class="sb-rail__item" :class="{ on: showHelp }" :title="t('Help & inspiration')" @click="showHelp = !showHelp">
             <span class="sb-rail__ic">◎</span> <span class="sb-rail__label">{{ t('Help & inspiration') }}</span>

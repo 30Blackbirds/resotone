@@ -1,6 +1,6 @@
-# Contributing to Resonans
+# Contributing to Resotone
 
-Thanks for being here. Resonans is small and deliberate, so this document is mostly about
+Thanks for being here. Resotone is small and deliberate, so this document is mostly about
 *how we argue about correctness* — that part is unusual and worth reading before you spend
 an evening on a patch.
 
@@ -103,7 +103,7 @@ behaviour is loud instead of invisible.
 
 ## Licensing of contributions
 
-Resonans is [AGPL-3.0](LICENSE); the copyright is held by the authors of the work, not by
+Resotone is [AGPL-3.0](LICENSE); the copyright is held by the authors of the work, not by
 the company that publishes it — [NOTICE](NOTICE) explains why. Everything published here is,
 and stays, AGPL-3.0; that is not what the paragraph below is about.
 

@@ -1,4 +1,4 @@
-# Resonans shared block library. Defined once; each doc-type's `body` field
+# Resotone shared block library. Defined once; each doc-type's `body` field
 # declares an `allow` subset. i18n:true = field-level translated. Field names
 # align to the consumer-locked delivery contract (§F) so delivery is passthrough
 # (image/download/quiz get small delivery-side shaping — see internal/delivery).
@@ -69,7 +69,7 @@ blocks:
   - name: section_header
     fields:
       - { name: anchor, type: string } # URL fragment, e.g. "pricing"
-      - { name: variant, type: string } # a style hint for the front-end, e.g. "band"; Resonans does not interpret it
+      - { name: variant, type: string } # a style hint for the front-end, e.g. "band"; Resotone does not interpret it
       - { name: eyebrow, type: string, i18n: true }
       - { name: navLabel, type: string, i18n: true } # the section's name in a site menu, when it differs from the eyebrow
       - { name: heading, type: string, i18n: true, required: true }

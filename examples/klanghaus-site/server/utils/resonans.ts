@@ -1,4 +1,4 @@
-// Resonans' delivery API, server-side. The tenant and the token are set here and
+// Resotone's delivery API, server-side. The tenant and the token are set here and
 // nowhere else: the browser only ever sees finished HTML.
 
 export interface Component {
@@ -49,7 +49,7 @@ export async function getDocument(type: string, slug: string): Promise<Envelope 
   }
 }
 
-/** Published documents of a type, newest first (Resonans orders them). */
+/** Published documents of a type, newest first (Resotone orders them). */
 export async function listDocuments<T = PostSummary>(type: string): Promise<T[]> {
   const { base, headers } = client()
   const res = await $fetch<{ items?: T[] }>(`${base}/delivery/v1/${type}`, { query: { locale: 'da' }, headers })

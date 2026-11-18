@@ -1,4 +1,4 @@
-// The pages this example seeds into Resonans. The front page and the privacy
+// The pages this example seeds into Resotone. The front page and the privacy
 // policy are klanghaus.dk's own text, moved unchanged; the bunker page is TEST
 // CONTENT written for this example and says so on the page.
 //
@@ -243,13 +243,13 @@ export const pages = [
     title: 'Bunker-udlejning (testside)',
     body: {
       seoTitle: da('Bunkeren — testside — KlangHaus'),
-      seoDescription: da('Testside i Resonans-eksemplet. Ikke et tilbud.'),
+      seoDescription: da('Testside i Resotone-eksemplet. Ikke et tilbud.'),
       body: [
         b('hero', {
-          eyebrow: da('Testside · eksempelindhold i Resonans'),
+          eyebrow: da('Testside · eksempelindhold i Resotone's),
           heading: da('Bunkeren|*en landingsside til test.*'),
           subheading: da(
-            'Denne side er skrevet til Resonans-eksemplet for at vise en landingsside ved siden af forsiden. Den beskriver ikke et rigtigt tilbud, og intet her er en pris, en dato eller et løfte.',
+            'Denne side er skrevet til Resotone-eksemplet for at vise en landingsside ved siden af forsiden. Den beskriver ikke et rigtigt tilbud, og intet her er en pris, en dato eller et løfte.',
           ),
           ctaLabel: da('Se studierne →'),
           ctaHref: '/#studierne',
@@ -260,12 +260,12 @@ export const pages = [
           anchor: 'hvad',
           eyebrow: da('Eksempel'),
           heading: da('Sådan kunne en udlejningsside se ud'),
-          lead: da('Kortene nedenfor viser layoutet. Teksten er pladsholder, så siden kan bruges til at afprøve redigering i Resonans.'),
+          lead: da('Kortene nedenfor viser layoutet. Teksten er pladsholder, så siden kan bruges til at afprøve redigering i Resotone.'),
         }),
         b('feature_grid', {
           variant: 'cards',
           features: [
-            { icon: '◉', title: da('Kort ét'), body: da('Pladsholdertekst til et kort. Ret den i Resonans og se siden skifte ved næste visning.') },
+            { icon: '◉', title: da('Kort ét'), body: da('Pladsholdertekst til et kort. Ret den i Resotone og se siden skifte ved næste visning.') },
             { icon: '⌂', title: da('Kort to'), body: da('Kortene er en feature_grid med variant "cards" — samme blok som forsidens.') },
             { icon: '↯', title: da('Kort tre'), body: da('Tilføj, fjern eller flyt kort i editoren; layoutet følger med.') },
           ],
@@ -279,7 +279,7 @@ export const pages = [
           variant: 'steps',
           features: [
             { title: da('Første trin'), body: da('Trinene nummereres automatisk.') },
-            { title: da('Andet trin'), body: da('Rækkefølgen er rækkefølgen i Resonans.') },
+            { title: da('Andet trin'), body: da('Rækkefølgen er rækkefølgen i Resotone.') },
             { title: da('Tredje trin'), body: da('Variant "steps" på en feature_grid.') },
           ],
         }),
@@ -287,10 +287,10 @@ export const pages = [
           anchor: 'kontakt',
           variant: 'contact',
           heading: da('Spørgsmål til testsiden?'),
-          lead: da('Kontaktfeltet er det samme som forsidens og hentes også fra Resonans.'),
+          lead: da('Kontaktfeltet er det samme som forsidens og hentes også fra Resotone.'),
         }),
         b('cta', { label: da('Til forsiden →'), href: '/' }),
-        b('rich_text', { format: 'html', value: da('<b>Testindhold</b>Ikke et tilbud — en side til at afprøve Resonans.') }),
+        b('rich_text', { format: 'html', value: da('<b>Testindhold</b>Ikke et tilbud — en side til at afprøve Resotone.') }),
       ],
     },
   },

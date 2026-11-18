@@ -1,4 +1,4 @@
-# Resonans — run the whole product locally with Tilt.
+# Resotone — run the whole product locally with Tilt.
 #
 #   tilt up              the README's "Try it" stack: Postgres, migrations, the
 #                        API, the editor and Dex as the login provider
@@ -53,4 +53,4 @@ else:
     dc_resource('api', new_name='resonans-api', labels=['resonans'],
                 links=[link(api_url + '/readyz', 'API'), link(api_url + '/docs/v1/', 'API reference')])
     dc_resource('studio', new_name='resonans-studio', labels=['resonans'],
-                links=[link(editor_url, 'Resonans editor')])
+                links=[link(editor_url, 'Resotone editor')])

@@ -1,6 +1,6 @@
 // Package bridge serves the visual-editing bridge script that a frontend loads
 // on its preview route. The script is embedded, so the version a site loads is
-// the version of the Resonans it talks to — no separate package to keep in sync.
+// the version of the Resotone it talks to — no separate package to keep in sync.
 package bridge
 
 import (

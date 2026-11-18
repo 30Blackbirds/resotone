@@ -1,4 +1,4 @@
-// A Resonans page is a flat list of blocks. A landing page reads it as sections:
+// A Resotone page is a flat list of blocks. A landing page reads it as sections:
 // everything before the first `section_header` is the opening (hero + facts),
 // and each `section_header` starts a section that runs until the next one.
 import type { InjectionKey } from 'vue'
@@ -26,7 +26,7 @@ export function toSections(components: Block[] = []): Section[] {
 
 export const str = (v: unknown): string => (typeof v === 'string' ? v : '')
 
-/** An asset field resolves to an object with a url (Resonans expands asset ids). */
+/** An asset field resolves to an object with a url (Resotone expands asset ids). */
 export function assetUrl(v: unknown): string {
   if (v && typeof v === 'object' && 'url' in v) return str((v as { url: unknown }).url)
   return ''
@@ -62,7 +62,7 @@ export function columnImages(b: Block): Array<{ url: string; alt: string }> {
 
 export const isExternal = (href: string) => /^https?:\/\//.test(href)
 
-/** Resonans' sanitizer keeps rich text to formatting markup and drops `id`
+/** Resotone's sanitizer keeps rich text to formatting markup and drops `id`
  *  attributes, so a link like /privatlivspolitik#venteliste would have nothing
  *  to land on. Every <h2>/<h3> gets an id from its own text instead
  *  ("Venteliste" → "venteliste"), which keeps the anchors klanghaus.dk links to. */

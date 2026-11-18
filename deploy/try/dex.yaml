@@ -12,7 +12,7 @@ connectors:
     name: Try it (no password)
 staticClients:
   - id: resonans-editor
-    name: Resonans editor
+    name: Resotone editor
     secret: try-local-only-client-secret
     # 8080 is the README's port. 3010 is for running beside another stack that
     # holds 8080 (STUDIO_PORT=3010, see Tiltfile).

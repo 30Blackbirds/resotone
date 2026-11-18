@@ -1,11 +1,11 @@
 <script setup lang="ts">
-// The studio overview from klanghaus.dk, driven by a Resonans feature_grid
+// The studio overview from klanghaus.dk, driven by a Resotone feature_grid
 // (variant "plan"): one feature per studio.
 //   title  "Studie 3"       → the number
 //   body   "15 m²"          → the size
 //   icon   "2026-11-01"     → free from that date; empty = not free
 // On klanghaus.dk this lived in studios.ts and changed only with a deploy; here
-// an editor changes it in Resonans and the next request shows it.
+// an editor changes it in Resotone and the next request shows it.
 import { GTButton } from '@grundtone/vue'
 import { SITE, PLAN_TOP, PLAN_BOTTOM } from '~/site'
 import { useEditable, type Feature } from '~/composables/useSections'

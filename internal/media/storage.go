@@ -139,7 +139,7 @@ func safeKey(key string) (string, error) {
 	return clean, nil
 }
 
-// ByteServer is a StorageBackend that can also read its bytes back, so Resonans
+// ByteServer is a StorageBackend that can also read its bytes back, so Resotone
 // can serve /_assets itself. BunnyBackend deliberately does not implement it:
 // its bytes are served by the CDN, and pulling them back through the origin
 // would defeat the point of having a CDN at all.
@@ -149,7 +149,7 @@ type ByteServer interface {
 }
 
 // DiskBackend stores asset bytes on the local filesystem under a root
-// directory. It is what makes Resonans self-hostable without a CDN account: a
+// directory. It is what makes Resotone self-hostable without a CDN account: a
 // mounted volume is the only dependency, and the bytes survive a restart —
 // which the in-memory backend does not.
 //

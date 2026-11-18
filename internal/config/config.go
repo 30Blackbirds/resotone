@@ -1,9 +1,9 @@
-// Package config loads the Resonans CMS configuration from the process
+// Package config loads the Resotone CMS configuration from the process
 // environment with a hand-rolled pattern: "empty string means unset" coercion,
 // return-error-not-os.Exit so tests decide behavior.
 //
 // Deploy contract: DATABASE_URL + PUBLIC_URL come from the environment, a
-// reverse proxy forwards to port 3000 — so PORT defaults to 3000. Resonans
+// reverse proxy forwards to port 3000 — so PORT defaults to 3000. Resotone
 // expects its own database, not a schema inside somebody else's.
 package config
 
@@ -122,13 +122,13 @@ type Config struct {
 
 	// StorageDir is the root directory of the local-disk asset backend
 	// (RESONANS_STORAGE_DIR). It is the self-host path: a mounted volume and
-	// nothing else, with Resonans serving the bytes at /_assets itself. Bunny
+	// nothing else, with Resotone serving the bytes at /_assets itself. Bunny
 	// wins when both are set — a CDN in front is strictly better than an
 	// origin serving image bytes.
 	StorageDir string
 
 	// SourceURL is where this build's Corresponding Source can be obtained.
-	// AGPL-3.0 §13 obliges whoever OFFERS Resonans to users over a network to
+	// AGPL-3.0 §13 obliges whoever OFFERS Resotone to users over a network to
 	// give those users its source — so a self-hoster who modified the code has
 	// to be able to point at THEIR repository, not ours. Defaulting to upstream
 	// and leaving it overridable is what makes the obligation satisfiable by
@@ -251,7 +251,7 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("RESONANS_SOURCE_URL: must be an http(s) URL, got %q", cfg.SourceURL)
 	}
 
-	// An unset CDN base follows PUBLIC_URL to Resonans' own /_assets route
+	// An unset CDN base follows PUBLIC_URL to Resotone's own /_assets route
 	// (media.AssetPath). It used to default to a hardcoded localhost:3000,
 	// which a deploy inherits whenever it passes BUNNY_CDN_BASE through as an
 	// empty string: every public asset URL then pointed at the VISITOR's own

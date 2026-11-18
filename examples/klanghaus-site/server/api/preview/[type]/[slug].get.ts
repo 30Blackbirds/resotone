@@ -1,6 +1,6 @@
 // GET /api/preview/:type/:slug?token=…&locale=… → the DRAFT envelope, for the
-// editor's preview iframe. The token is what Resonans issued to the editor
-// (scoped to one tenant, type and slug, 15 minutes); Resonans checks it. No
+// editor's preview iframe. The token is what Resotone issued to the editor
+// (scoped to one tenant, type and slug, 15 minutes); Resotone checks it. No
 // token, a wrong one or an expired one is an error, never content.
 export default defineEventHandler(async (event) => {
   const type = getRouterParam(event, 'type') ?? ''

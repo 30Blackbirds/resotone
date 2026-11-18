@@ -1,6 +1,6 @@
--- Resonans content model — multi-tenant documents (Fase 0 foundation).
+-- Resotone content model — multi-tenant documents (Fase 0 foundation).
 --
--- Resonans is a broad, content-type-agnostic headless CMS: a `document` holds
+-- Resotone is a broad, content-type-agnostic headless CMS: a `document` holds
 -- any content type (course, module, lesson, page, post, resource, ...). The
 -- concrete per-type field/block schema is validated by the schema-registry
 -- (Fase 1); at the storage layer a document is a typed, tenant-scoped JSONB

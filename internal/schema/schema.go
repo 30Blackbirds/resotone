@@ -1,4 +1,4 @@
-// Package schema is the Resonans content schema-registry: the code-defined,
+// Package schema is the Resotone content schema-registry: the code-defined,
 // declarative content model (Beslutning 4+5). Doc-types and the shared block
 // library are authored as YAML in schema/ and loaded at boot. The registry
 // drives (a) storage validation of a document's JSONB body (validate.go) and
@@ -6,7 +6,7 @@
 // this registry, which is why the registry is the M5 content-enabler and the
 // hard prerequisite for the Fase 4 editor.
 //
-// Resonans is broad and content-type-agnostic: the course types (course,
+// Resotone is broad and content-type-agnostic: the course types (course,
 // module, lesson) are one set of schemas; blog (post) + marketing (page) are
 // others. The block library is shared across all doc-types; each doc-type's
 // blocks field declares an `allow` list, so one library yields the right blocks
