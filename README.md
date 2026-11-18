@@ -448,6 +448,9 @@ the logout, and editors stay logged in with a message saying so.
 
 ## Upgrading
 
+> **Coming from a release before Resotone stored users?** Read step 4 first: without
+> `resotone admin grant` or `RESONANS_ROLE_CLAIM_GRANTS=1`, every editor gets `403`.
+
 1. Read [CHANGELOG.md](CHANGELOG.md) for **every** version between yours and the target.
    Steps you must take are listed there under **ACTION REQUIRED**.
 2. Change `RESONANS_VERSION` to the new exact tag, then `docker compose pull` and
@@ -465,8 +468,14 @@ the logout, and editors stay logged in with a message saying so.
    A rename clears a password that is stored as MD5, so set both passwords again with
    `alter role ... password '...'` if a login then fails. Point `DATABASE_URL` at the new
    names.
-4. Upgrading from a release before Resotone stored users? Read
-   [login and roles](#login-and-roles) first: roles are now assigned inside Resotone.
+4. **ACTION REQUIRED when upgrading from a release before Resotone stored users.** Roles
+   are now assigned inside Resotone, and the identity provider's role claim is ignored by
+   default. Until you act, every editor, existing ones included, has no role and gets
+   `403`. Before you start the new version do one of these:
+   - run `docker compose run --rm api admin grant --sub <their-sub>` for your first admin
+     ([the first admin](#the-first-admin)), who then assigns the others; or
+   - set `RESONANS_ROLE_CLAIM_GRANTS=1` to keep taking roles from your provider's claim
+     as before ([how the two combine](#the-providers-role-claim-is-optional)).
 5. After migrating a database you manage yourself, run
    [deploy/assert-rls-coverage.sql](deploy/assert-rls-coverage.sql) again.
 6. Take a [backup](#backups) first. Releases are not guaranteed to be reversible.
