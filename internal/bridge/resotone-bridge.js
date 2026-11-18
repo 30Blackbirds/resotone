@@ -3,7 +3,7 @@
  *
  * Include it on the frontend's PREVIEW route only:
  *
- *   <script src="https://<resonans>/bridge/v1/resonans-bridge.js"></script>
+ *   <script src="https://<resotone>/bridge/v1/resotone-bridge.js"></script>
  *   ResonansBridge.init({
  *     studioOrigin: 'https://studio.example',   // exact origin, no path
  *     onUpdate: function (envelope) { render(envelope) },
@@ -11,8 +11,8 @@
  *   })
  *
  * and mark editable elements with the path of the value they render, using the
- * delivery envelope's own shape: data-resonans-path="data.title" or
- * data-resonans-path="components.2.heading".
+ * delivery envelope's own shape: data-resotone-path="data.title" or
+ * data-resotone-path="components.2.heading".
  *
  * Security model: messages are accepted ONLY from window.parent AND only when
  * event.origin equals studioOrigin exactly; messages are posted ONLY to
@@ -22,11 +22,11 @@
   'use strict'
 
   var VERSION = 1
-  var FROM_STUDIO = 'resonans-studio'
-  var FROM_BRIDGE = 'resonans-bridge'
+  var FROM_STUDIO = 'resotone-studio'
+  var FROM_BRIDGE = 'resotone-bridge'
   var ORIGIN_RE = /^https?:\/\/[^/?#\s]+$/
   var PATH_RE = /^[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+){0,19}$/
-  var ATTR = 'data-resonans-path'
+  var ATTR = 'data-resotone-path'
 
   function inactive(reason) {
     return { active: false, reason: reason, destroy: function () {} }
@@ -59,7 +59,7 @@
     // They are independent, so hovering elsewhere never drops the selection.
     function overlay(css, labelCss) {
       var box = doc.createElement('div')
-      box.setAttribute('data-resonans-overlay', '')
+      box.setAttribute('data-resotone-overlay', '')
       box.style.cssText =
         'position:fixed;z-index:2147483646;pointer-events:none;display:none;box-sizing:border-box;' + css
       var label = doc.createElement('span')
@@ -177,7 +177,7 @@
     }
   }
 
-  // attr(path) -> { 'data-resonans-path': path } for spreading onto elements.
+  // attr(path) -> { 'data-resotone-path': path } for spreading onto elements.
   function attr(path) {
     var o = {}
     o[ATTR] = path

@@ -1,4 +1,4 @@
-module github.com/KlangHaus/resonans
+module github.com/30blackbirds/resotone
 
 go 1.26.11
 

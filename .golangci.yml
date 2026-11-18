@@ -35,4 +35,4 @@ formatters:
   settings:
     goimports:
       local-prefixes:
-        - github.com/KlangHaus/resonans
+        - github.com/30blackbirds/resotone

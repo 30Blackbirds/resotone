@@ -29,7 +29,7 @@ func parseLevel(level string) slog.Level {
 // Every entry point builds its own logger and so has to say this itself.
 //
 // 🔴 The first version of this line (#102) was in Run() alone — the server —
-// while the observation that motivated it came from the `resonans-migrate`
+// while the observation that motivated it came from the `resotone-migrate`
 // container, which logged "env":"development" on a production box (measured
 // 2026-10-06) and never calls Run(). A line absent from the one surface where
 // the question gets asked is not a measurement. The one-shots now carry it too.

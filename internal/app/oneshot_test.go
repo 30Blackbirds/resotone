@@ -8,7 +8,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/media"
+	"github.com/30blackbirds/resotone/internal/media"
 )
 
 // Each one-shot refuses to run without a database, naming its own command, and

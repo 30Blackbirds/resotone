@@ -1,6 +1,6 @@
-# klanghaus.dk on Resotone
+# 30blackbirds.dk on Resotone
 
-[klanghaus.dk](https://klanghaus.dk), rebuilt so that every word and photo on it comes from
+[30blackbirds.dk](https://30blackbirds.dk), rebuilt so that every word and photo on it comes from
 Resotone. The front-end decides only how things look — it uses the same
 [grundtone](https://github.com/KlangHaus/grundtone) components and the same stylesheets as the
 live site, so the front page renders the same text at the same height (measured against the live
@@ -11,7 +11,7 @@ content, and a blog, all edited in Resotone.
 
 | Route | Resotone document | What it shows |
 | --- | --- | --- |
-| `/` | `page` `forside` | klanghaus.dk's front page, text unchanged |
+| `/` | `page` `forside` | 30blackbirds.dk's front page, text unchanged |
 | `/privatlivspolitik` | `page` `privatlivspolitik` | the privacy policy, text unchanged, marked as a **test copy** |
 | `/bunker-udlejning` | `page` `bunker-udlejning` | a second landing page — **placeholder content**, not an offer |
 | `/blog`, `/blog/:slug` | every published `post` | the blog posts from Resotone's own demo seed |
@@ -24,7 +24,7 @@ With Tilt, from the repository root:
 tilt up -- --dev
 ```
 
-Then press **resonans-seed** (the blog posts) and **klanghaus-site-seed** (the pages and photos) in
+Then press **resotone-seed** (the blog posts) and **30blackbirds-site-seed** (the pages and photos) in
 the Tilt UI, and open <http://localhost:3050>.
 
 Without Tilt, against any Resotone running with `RESONANS_DEV_AUTH=1`:
@@ -50,8 +50,8 @@ document, and a click on an element in the preview selects its field.
 - **Fenced off:** `Content-Security-Policy: frame-ancestors <editor origin>`,
   `Cache-Control: no-store`, `X-Robots-Tag: noindex` — on that route only. The
   editor origin is `NUXT_PUBLIC_STUDIO_ORIGIN`, never read from the URL.
-- **Bridge:** only the preview route loads `<resonans>/bridge/v1/resonans-bridge.js`
-  (`NUXT_PUBLIC_RESONANS_PUBLIC_URL`) and marks values with `data-resonans-path`.
+- **Bridge:** only the preview route loads `<resotone>/bridge/v1/resotone-bridge.js`
+  (`NUXT_PUBLIC_RESONANS_PUBLIC_URL`) and marks values with `data-resotone-path`.
   The public pages get neither.
 - **No sanitizer in the site.** Resotone cleans rich text with one server-side
   policy, both when a document is saved and in the unsaved envelope the editor
@@ -67,7 +67,7 @@ A Resotone `page` is a flat list of blocks. This site reads it as sections:
 - everything before the first `section_header` is the opening — a `hero`, and a `feature_grid`
   with variant `facts` under it;
 - a `hero` heading uses `|` for a line break and `*…*` for the emphasised part
-  (`KlangHaus er ikke et studie.|Det er *et hjem for musikere.*`): the editor
+  (`30blackbirds er ikke et studie.|Det er *et hjem for musikere.*`): the editor
   edits headings in a single-line field, where a newline would be lost;
 - each `section_header` starts a section (`eyebrow`, `heading`, `lead`, `anchor` for `#links`,
   `navLabel` for the menu) that runs until the next one.
@@ -92,7 +92,7 @@ Layout is chosen by the `variant` a block carries. Resotone stores it and never 
 ### The studio overview
 
 A `feature_grid` with variant `plan`, one feature per studio: `title` "Studie 3", `body` "15 m²",
-and `icon` the date it is free from (`2026-11-01`), or empty when it is not. On klanghaus.dk this
+and `icon` the date it is free from (`2026-11-01`), or empty when it is not. On 30blackbirds.dk this
 lives in code and changes with a deploy; here an editor changes it and the next request shows it.
 "Fra 1. november" turns into "nu" on the day, because the page is rendered per request. Which
 studio sits where in the building is layout, not content, and stays in `app/site.ts`.
@@ -100,13 +100,13 @@ studio sits where in the building is layout, not content, and stays in `app/site
 ## Not content, on purpose
 
 - The header and footer frame (`app/site.ts`): name, logo, e-mail, the company line.
-- `assets/styles/brand.scss` and `landing.scss` are klanghaus.dk's own, copied unchanged;
+- `assets/styles/brand.scss` and `landing.scss` are 30blackbirds.dk's own, copied unchanged;
   `site.scss` adds only what its one-pager never needed (rich text, callouts, code, the blog).
 
-## Known differences from klanghaus.dk
+## Known differences from 30blackbirds.dk
 
 - Photos are served by Resotone as one JPEG each; the live site serves AVIF/WebP/JPEG at two
   sizes.
 - The live site is static and has no scripts; this one is a Nuxt app with server-side rendering.
-  That is why the privacy policy is marked as a test copy: its own premises describe klanghaus.dk.
+  That is why the privacy policy is marked as a test copy: its own premises describe 30blackbirds.dk.
 - The live site's JSON-LD and `llms.txt` are not reproduced.

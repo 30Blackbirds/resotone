@@ -9,7 +9,7 @@ import (
 	"net/textproto"
 	"testing"
 
-	"github.com/KlangHaus/resonans/internal/media"
+	"github.com/30blackbirds/resotone/internal/media"
 )
 
 func uploadAsset(t *testing.T, h http.Handler, tenant, filename, mime string, data []byte) *httptest.ResponseRecorder {

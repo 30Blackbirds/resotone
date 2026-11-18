@@ -31,7 +31,7 @@ on:
   # Nu kører den på push til main og MÅLER i stedet, før den skærer noget:
   # `scripts/release_gate.py` kræver at `Lint + Test` fra app 15368 (GitHub
   # Actions, ci-go.yml) er SUCCESS på præcis dette sha. Indtil 2026-10-22 var
-  # det `jenkins/Lint + Test` fra app 4785909; resonans er offentligt, og et
+  # det `jenkins/Lint + Test` fra app 4785909; resotone er offentligt, og et
   # offentligt repo kører sin CI i Actions (Allan 2026-10-22). Navn OG app-id
   # skiftede sammen — et nyt navn med det gamle id ville aldrig blive fundet,
   # og navnet alene kan enhver publicere. Enhver måde ikke at vide på er sin egen
@@ -49,7 +49,7 @@ on:
 # Release-gaten læser check-runs, og den rettighed stod ikke på listen, så
 # GitHub gav 403 på hvert eneste opslag — i 1800 sekunder, på et check der
 # beviseligt var grønt efter 2 min 46 s (kørsel 35494091081, sikkerheds
-# måling på resonans#62). Tilføjer man et trin der LÆSER noget nyt, skal man
+# måling på resotone#62). Tilføjer man et trin der LÆSER noget nyt, skal man
 # spørge hvad blokken siger om præcis dét — ikke om det, der stod der før.
 permissions:
   contents: write # opret tags + commit CHANGELOG
@@ -249,7 +249,7 @@ jobs:
           if [ -z "$FALLBACK" ]; then
             echo "::error title=Udgivelsens identitet ikke afgjort::Trinnet der fastslår identiteten producerede ingen værdi — det kørte ikke, eller det fejlede. Vi ved derfor IKKE hvem der pushede taget. Dette er ikke det samme som at alt gik godt: værnet kunne ikke måle, og en umålt udgivelse behandles som en fejlet."
           else
-            echo "::error title=Udgivelse under fallback-identitet::Taget blev pushet af GITHUB_TOKEN, ikke App-identiteten. To følger: (1) tag-pushet trigger ikke release.yml — hos resonans bygges imaget via workflow_call-kaldet uanset, så denne følge gælder os IKKE; (2) hele release-leddet — commits, tags, GitHub-release — bærer GITHUB_TOKENs identitet, ikke App'ens."
+            echo "::error title=Udgivelse under fallback-identitet::Taget blev pushet af GITHUB_TOKEN, ikke App-identiteten. To følger: (1) tag-pushet trigger ikke release.yml — hos resotone bygges imaget via workflow_call-kaldet uanset, så denne følge gælder os IKKE; (2) hele release-leddet — commits, tags, GitHub-release — bærer GITHUB_TOKENs identitet, ikke App'ens."
           fi
           echo "Mint-trinnets udfald: $MINT_UDFALD (forklaring, ikke betingelse — betingelsen er at det BRUGTE token var tomt eller uafgjort)."
           exit 1

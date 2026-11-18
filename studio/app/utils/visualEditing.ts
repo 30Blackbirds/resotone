@@ -8,8 +8,8 @@
 // sit at the body root, and `components` is the doc-type's blocks field.
 
 export const BRIDGE_VERSION = 1
-export const FROM_STUDIO = 'resonans-studio'
-export const FROM_BRIDGE = 'resonans-bridge'
+export const FROM_STUDIO = 'resotone-studio'
+export const FROM_BRIDGE = 'resotone-bridge'
 
 // Same grammar as the bridge: dot-separated [A-Za-z0-9_-] segments, max 20.
 const PATH_RE = /^[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+){0,19}$/

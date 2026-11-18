@@ -1,17 +1,14 @@
-# CLAUDE.md — resonans
+# CLAUDE.md — resotone
 
 Project-level instructions for any Claude session working in this repo.
 Personal preferences live in your global memory; everything here is repo-wide.
 
 ## Worker-ejer
 
-**[resonans]** (builder under [infra] CTO) — prompt:
-`klanghaus/.orchestration/prompts/resonans.md`.
-
 Resotone = 30blackbirds' eget self-hostede headless CMS (Go). Open source under
 AGPL-3.0 (offentligt repo siden 2026-10-12, Allans instruks); dogfoodes internt.
 Produkt-brief:
-`klanghaus/docs/product-briefs/resonans/index.md`.
+`30blackbirds/docs/product-briefs/resotone/index.md`.
 
 ## Låste beslutninger (denne service)
 
@@ -28,9 +25,9 @@ Produkt-brief:
 
 ## Standing rules (link, ikke duplikat)
 
-- Quality gates: `klanghaus/.orchestration/QUALITY-GATES.md` (L+M+N fra dag ét;
+- Quality gates: `30blackbirds/.orchestration/QUALITY-GATES.md` (L+M+N fra dag ét;
   70% branch default, 90% på penge-/auth-nær kode).
-- PLAN + låste beslutninger: `klanghaus/.orchestration/PLAN.md`.
+- PLAN + låste beslutninger: `30blackbirds/.orchestration/PLAN.md`.
 - **INGEN `Co-Authored-By` i commits** (org-konvention).
 - **Conventional commits + commitlint.** Issue-first (Beslutning M): PR-body
   `Closes #N`. Branch: `<type>/<issue#>-<slug>`.
@@ -53,7 +50,7 @@ Produkt-brief:
 | Test      | `go test -race ./...` |
 | Test (én) | `python3 scripts/gotest_run_guard.py <mønster> [pakker]` |
 | Build     | `go build ./...`      |
-| Dev       | `go run ./cmd/resonans` (eller `docker compose -f docker-compose.tilt.yml up`) |
+| Dev       | `go run ./cmd/resotone` (eller `docker compose -f docker-compose.tilt.yml up`) |
 
 🔴 **Kør ALDRIG `go test -run <mønster>` direkte for at verificere noget.** Et
 mønster der ikke matcher noget printer `ok ... [no tests to run]` og giver
@@ -66,7 +63,7 @@ og blev sprunget over». Synsfelt: **kun Go**; `pytest -k`, `vitest -t` og
 
 ## Layout
 
-- `cmd/resonans/` — entrypoint (run + healthcheck + version).
+- `cmd/resotone/` — entrypoint (run + healthcheck + version).
 - `internal/app/` — boot-wiring (config → otel → jwt → db/migrate → router → shutdown).
 - `internal/config/` — env-config (honour the deploy contract in README).
 - `internal/content/` — domæne: Document + tenant-scoped Store (Postgres+RLS + in-memory).

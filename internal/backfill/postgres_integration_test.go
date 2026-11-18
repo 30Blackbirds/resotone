@@ -23,9 +23,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/KlangHaus/resonans/internal/persistence"
-	"github.com/KlangHaus/resonans/internal/schema"
-	"github.com/KlangHaus/resonans/internal/testpg"
+	"github.com/30blackbirds/resotone/internal/persistence"
+	"github.com/30blackbirds/resotone/internal/schema"
+	"github.com/30blackbirds/resotone/internal/testpg"
 )
 
 const dirty = `{"body":[{"_type":"rich_text","format":"html","value":{"da":"<p>ok</p><img src=x onerror=alert(1)>"}}]}`

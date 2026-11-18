@@ -2,7 +2,7 @@
 // everything before the first `section_header` is the opening (hero + facts),
 // and each `section_header` starts a section that runs until the next one.
 import type { InjectionKey } from 'vue'
-import type { Component } from '~~/server/utils/resonans'
+import type { Component } from '~~/server/utils/resotone'
 
 /** A block plus `_i`, its index in the envelope's `components`. The index is
  *  what an editable path is built from ("components.3.heading"), and sectioning
@@ -33,7 +33,7 @@ export function assetUrl(v: unknown): string {
 }
 
 /** Headings may carry a line break and one emphasis (*like this*), which is all
- *  klanghaus.dk's hero uses. The line break is `|`, not a newline: the editor
+ *  30blackbirds.dk's hero uses. The line break is `|`, not a newline: the editor
  *  edits a heading in a single-line input, which shows a newline as nothing and
  *  drops it on the first save (measured in the editor). A newline still works for
  *  content written before. Escaped first, so no other HTML gets in. */
@@ -65,7 +65,7 @@ export const isExternal = (href: string) => /^https?:\/\//.test(href)
 /** Resotone's sanitizer keeps rich text to formatting markup and drops `id`
  *  attributes, so a link like /privatlivspolitik#venteliste would have nothing
  *  to land on. Every <h2>/<h3> gets an id from its own text instead
- *  ("Venteliste" → "venteliste"), which keeps the anchors klanghaus.dk links to. */
+ *  ("Venteliste" → "venteliste"), which keeps the anchors 30blackbirds.dk links to. */
 export function withHeadingIds(html: string): string {
   return html.replace(/<(h[23])>([\s\S]*?)<\/\1>/g, (_, tag: string, inner: string) => {
     const id = inner
@@ -79,14 +79,14 @@ export function withHeadingIds(html: string): string {
 }
 
 // ── Visual editing ──────────────────────────────────────────────────────────
-// On the preview route only, rendered values carry `data-resonans-path`, the
+// On the preview route only, rendered values carry `data-resotone-path`, the
 // path of the value in the delivery envelope, so a click in the editor's preview
 // selects its field. Everywhere else the helper returns nothing: the public site
 // gets no attributes and no bridge.
-export const PREVIEW_KEY: InjectionKey<boolean> = Symbol('resonans-preview')
+export const PREVIEW_KEY: InjectionKey<boolean> = Symbol('resotone-preview')
 
 export function useEditable() {
   const on = inject(PREVIEW_KEY, false)
   return (path: string | number | undefined, ...rest: Array<string | number>) =>
-    on && path !== undefined ? { 'data-resonans-path': [`components.${path}`, ...rest].join('.') } : {}
+    on && path !== undefined ? { 'data-resotone-path': [`components.${path}`, ...rest].join('.') } : {}
 }

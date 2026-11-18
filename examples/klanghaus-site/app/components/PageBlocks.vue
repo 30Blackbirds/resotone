@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// Renders a Resotone page as klanghaus.dk's landing-page sections. The markup and
-// class names are klanghaus.dk's own, so its stylesheet applies unchanged; which
+// Renders a Resotone page as 30blackbirds.dk's landing-page sections. The markup and
+// class names are 30blackbirds.dk's own, so its stylesheet applies unchanged; which
 // layout a block gets is decided by the block's `variant` (feature_grid,
 // section_header) — a hint Resotone stores and never interprets.
 import { GTButton } from '@grundtone/vue'

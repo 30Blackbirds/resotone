@@ -9,8 +9,8 @@
   "cases": [
     { "name": "formatting survives", "input": "<p>ok <strong>fed</strong> <em>skrå</em></p>", "mustContain": ["<p>", "<strong>fed</strong>", "<em>skrå</em>"], "mustNotContain": [] },
     { "name": "lists and headings survive", "input": "<h2>A</h2><ul><li>x</li></ul><ol><li>y</li></ol><blockquote>q</blockquote>", "mustContain": ["<h2>A</h2>", "<li>x</li>", "<li>y</li>", "<blockquote>q</blockquote>"], "mustNotContain": [] },
-    { "name": "https link survives", "input": "<a href=\"https://klanghaus.dk/\">kh</a>", "mustContain": ["href=\"https://klanghaus.dk/\"", ">kh</a>"], "mustNotContain": [] },
-    { "name": "mailto link survives", "input": "<a href=\"mailto:mail@klanghaus.dk\">m</a>", "mustContain": ["href=\"mailto:mail@klanghaus.dk\""], "mustNotContain": [] },
+    { "name": "https link survives", "input": "<a href=\"https://30blackbirds.dk/\">kh</a>", "mustContain": ["href=\"https://30blackbirds.dk/\"", ">kh</a>"], "mustNotContain": [] },
+    { "name": "mailto link survives", "input": "<a href=\"mailto:mail@30blackbirds.dk\">m</a>", "mustContain": ["href=\"mailto:mail@30blackbirds.dk\""], "mustNotContain": [] },
     { "name": "img onerror", "input": "<p>ok</p><img src=x onerror=alert(1)>", "mustContain": ["<p>ok</p>"], "mustNotContain": ["onerror", "<img"] },
     { "name": "script and its content", "input": "<p>a</p><script>alert(1)</script><p>b</p>", "mustContain": ["<p>a</p>", "<p>b</p>"], "mustNotContain": ["<script", "alert(1)"] },
     { "name": "style and its content", "input": "<style>body{display:none}</style><p>x</p>", "mustContain": ["<p>x</p>"], "mustNotContain": ["<style", "display:none"] },

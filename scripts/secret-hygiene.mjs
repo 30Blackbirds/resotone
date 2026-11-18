@@ -64,7 +64,7 @@ import {
   WORKFLOW_DIR,
 } from './lib/secret-hygiene.mjs'
 
-const REPO = process.env.GITHUB_REPOSITORY ?? 'KlangHaus/resonans'
+const REPO = process.env.GITHUB_REPOSITORY ?? '30blackbirds/resotone'
 
 const EXIT_OK = 0
 const EXIT_VIOLATION = 1

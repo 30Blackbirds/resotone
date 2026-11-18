@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KlangHaus/resonans/internal/auth"
-	"github.com/KlangHaus/resonans/internal/content"
-	"github.com/KlangHaus/resonans/internal/media"
-	"github.com/KlangHaus/resonans/internal/settings"
+	"github.com/30blackbirds/resotone/internal/auth"
+	"github.com/30blackbirds/resotone/internal/content"
+	"github.com/30blackbirds/resotone/internal/media"
+	"github.com/30blackbirds/resotone/internal/settings"
 )
 
 // The role table is the only way onto the mux, so this is the whole surface.

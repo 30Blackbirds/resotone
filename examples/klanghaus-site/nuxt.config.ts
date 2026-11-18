@@ -1,10 +1,10 @@
-// klanghaus.dk, rebuilt on Resotone: every word and photo on these pages comes
+// 30blackbirds.dk, rebuilt on Resotone: every word and photo on these pages comes
 // from Resotone's delivery API; the front-end only decides how it looks. It is
-// the same site as https://klanghaus.dk — same grundtone components, same
+// the same site as https://30blackbirds.dk — same grundtone components, same
 // styles — so it doubles as the test bed for moving that page onto the CMS.
 //
 // Server-side only: the delivery token and the tenant never reach the browser
-// (server/utils/resonans.ts). Run it through Resotone's Tiltfile, or see README.
+// (server/utils/resotone.ts). Run it through Resotone's Tiltfile, or see README.
 export default defineNuxtConfig({
   compatibilityDate: '2026-10-01',
   devtools: { enabled: false },
@@ -16,7 +16,7 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'theme-color', content: '#16213e' },
       ],
-      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/klanghaus-logo.svg' }],
+      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/30blackbirds-logo.svg' }],
     },
   },
   build: {
@@ -24,7 +24,7 @@ export default defineNuxtConfig({
   },
   css: [
     '@grundtone/vue/css',
-    // Self-hosted fonts, as on klanghaus.dk: latin + latin-ext only.
+    // Self-hosted fonts, as on 30blackbirds.dk: latin + latin-ext only.
     '@fontsource/ibm-plex-sans/latin-400.css',
     '@fontsource/ibm-plex-sans/latin-600.css',
     '@fontsource/ibm-plex-sans/latin-700.css',
@@ -32,7 +32,7 @@ export default defineNuxtConfig({
     '@fontsource/ibm-plex-sans/latin-ext-600.css',
     '@fontsource/ibm-plex-sans/latin-ext-700.css',
     '@fontsource/ibm-plex-mono/latin-600.css',
-    // brand.scss + landing.scss are klanghaus.dk's own, copied unchanged;
+    // brand.scss + landing.scss are 30blackbirds.dk's own, copied unchanged;
     // site.scss adds only what that one-pager never needed (blog, generic pages).
     '~/assets/styles/brand.scss',
     '~/assets/styles/landing.scss',

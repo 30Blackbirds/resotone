@@ -1,5 +1,5 @@
 # Contributor licence agreement check. The model is [jura]'s (docs 52cbb84,
-# legal/cla-resonans-udkast.md §C.3): a contributor signs by adding their OWN
+# legal/cla-resotone-udkast.md §C.3): a contributor signs by adding their OWN
 # line to CLA.md in a pull request from their own account, and the decisive rule
 # is that the line's user ID is the pull request author's. scripts/cla_check.py
 # holds the rules and says why each one exists.
@@ -23,7 +23,7 @@
 # once it is merged — which is the point.
 #
 # The exception to "never pull_request_target" is [sikkerhed]'s, given on
-# resonans#158 on these conditions, and ENFORCED, not remembered: the selftest
+# resotone#158 on these conditions, and ENFORCED, not remembered: the selftest
 # (cla-selftest.yml, scripts/cla_check.py check_workflow) reads this file and
 # fails if any of them stops holding — one trigger, read-only permissions, no
 # secrets, checkout of the base commit without credentials, actions pinned to a

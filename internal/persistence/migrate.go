@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/KlangHaus/resonans/migrations"
+	"github.com/30blackbirds/resotone/migrations"
 )
 
 // Migrate runs all embedded *.sql migrations that have not yet been applied, in

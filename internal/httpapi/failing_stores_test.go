@@ -13,9 +13,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/auth"
-	"github.com/KlangHaus/resonans/internal/content"
-	"github.com/KlangHaus/resonans/internal/media"
+	"github.com/30blackbirds/resotone/internal/auth"
+	"github.com/30blackbirds/resotone/internal/content"
+	"github.com/30blackbirds/resotone/internal/media"
 )
 
 // errStoreDown stands for a store failure the API cannot classify. Its text

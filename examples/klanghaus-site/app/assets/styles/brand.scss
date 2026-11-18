@@ -1,4 +1,4 @@
-// KlangHaus-brand → grundtone-tokens (OVERRIDE-LAG).
+// 30blackbirds-brand → grundtone-tokens (OVERRIDE-LAG).
 //
 // Stedet hvor brandets FARVEVÆRDIER defineres — alt semantisk går herigennem.
 // Præcisering ([review]-fund på #9, min tidligere formulering "eneste sted med hex"
@@ -9,7 +9,7 @@
 //   (b) `theme-color` i nuxt.config.ts: et <meta>-tag kan ikke referere en CSS-variabel.
 //       Duplikatet er markeret dér med en synk-note.
 // Alt ANDET — flader, tekst, kanter, handling, radii — defineres her og kun her. Forlægget
-// (docs/design/klanghaus/prototypes/landing-lejer.html) er bygget i logoets
+// (docs/design/30blackbirds/prototypes/landing-lejer.html) er bygget i logoets
 // palette — navy ×2, coral, gold + hvid-tints — og intet udenfor den
 // (landing-lejer.NOTES.md, Note 6). Komponenterne refererer KUN tokens.
 //

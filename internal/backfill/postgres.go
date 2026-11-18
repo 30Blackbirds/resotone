@@ -10,7 +10,7 @@ import (
 )
 
 // PostgresStore reads across tenants, so it must run as the migrator role
-// (BYPASSRLS), like `resonans migrate`. Writes still set app.tenant_id per row,
+// (BYPASSRLS), like `resotone migrate`. Writes still set app.tenant_id per row,
 // so an update can only ever touch the row's own tenant.
 type PostgresStore struct{ Pool *pgxpool.Pool }
 

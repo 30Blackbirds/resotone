@@ -632,7 +632,7 @@ paths:
           description: No or invalid credentials
         '404':
           description: Not found for this tenant
-  /bridge/v1/resonans-bridge.js:
+  /bridge/v1/resotone-bridge.js:
     get:
       summary: Visual-editing bridge script
       description: Public, carries no tenant data.

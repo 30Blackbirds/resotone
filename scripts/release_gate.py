@@ -78,7 +78,7 @@ def fetch(repo, sha, token):
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {token}",
             "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "resonans-release-gate",
+            "User-Agent": "resotone-release-gate",
         },
     )
     with urllib.request.urlopen(req, timeout=30) as r:

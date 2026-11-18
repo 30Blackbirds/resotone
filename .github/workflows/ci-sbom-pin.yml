@@ -1,6 +1,6 @@
 # The Syft version that anchore/sbom-action bundles must not move silently.
 #
-# resonans#115 bumped the action 0.24.0 -> 0.24.3 and moved the SBOM generator
+# resotone#115 bumped the action 0.24.0 -> 0.24.3 and moved the SBOM generator
 # from Syft v1.42.3 to v1.54.0 - twelve minor versions of the tool that produces
 # the document we attest. The diff showed a commit SHA and a version comment.
 # The review-time rule that should have caught it fails open and silently, so

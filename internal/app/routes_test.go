@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/KlangHaus/resonans/internal/apiref"
+	"github.com/30blackbirds/resotone/internal/apiref"
 )
 
 // The MOUNTED patterns, which nothing measured before this file existed:

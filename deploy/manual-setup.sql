@@ -18,7 +18,7 @@
 --
 -- Then run the migrations as the migrator, and only then start the server:
 --
---   DATABASE_URL=postgres://resonans_migrator:...@HOST:5432/resonans resonans migrate
+--   DATABASE_URL=postgres://resonans_migrator:...@HOST:5432/resotone resotone migrate
 --
 -- Three things below are load-bearing and each has a measurement behind it.
 -- They are numbered so a code review can point at one.
@@ -34,13 +34,13 @@
 -- block: psql does not interpolate `:'name'` inside a dollar-quoted body, and that
 -- form fails at parse time on the server.
 \o /dev/null
-select set_config('resonans.mp', :'migrator_password', false);
-select set_config('resonans.ap', :'app_password', false);
+select set_config('resotone.mp', :'migrator_password', false);
+select set_config('resotone.ap', :'app_password', false);
 \o
 do $guard$
 begin
-  if coalesce(current_setting('resonans.mp', true), '') = ''
-     or coalesce(current_setting('resonans.ap', true), '') = '' then
+  if coalesce(current_setting('resotone.mp', true), '') = ''
+     or coalesce(current_setting('resotone.ap', true), '') = '' then
     raise exception 'RESONANS_MIGRATOR_PASSWORD and RESONANS_APP_PASSWORD must both be set — refusing to create passwordless roles';
   end if;
 end
@@ -74,26 +74,26 @@ create role resonans_app with
 -- same role shape in one run:
 --
 --   superuser owns the db, schema pre-created, no CREATE granted
---     -> resonans migrate: permission denied for database (42501), 0 tables
---   same, plus `grant create on database resonans to resonans_migrator`
+--     -> resotone migrate: permission denied for database (42501), 0 tables
+--   same, plus `grant create on database resotone to resonans_migrator`
 --     -> green, 5 tables
---   `create database resonans owner resonans_migrator`   (this file)
+--   `create database resotone owner resonans_migrator`   (this file)
 --     -> green, 5 tables
 --
 -- The third is chosen over the second because it grants nothing anyone has to
 -- remember to revoke later. Newer Resotone looks the schema up before creating it
 -- (internal/persistence/migrate.go, ensureSchema), so the first shape works too —
 -- but this file must not depend on the server being new enough.
-create database resonans owner resonans_migrator;
+create database resotone owner resonans_migrator;
 
 -- (3) NOW CHANGE DATABASE. This is a command, not a comment.
--- Everything below belongs to `resonans`. Run it while still connected to
+-- Everything below belongs to `resotone`. Run it while still connected to
 -- `postgres` and the schema lands in the WRONG database: measured, the schema
--- appeared in `postgres` and `resonans` had none, and the only instruction to
--- reconnect was a comment in an earlier draft of this setup. `resonans migrate`
+-- appeared in `postgres` and `resotone` had none, and the only instruction to
+-- reconnect was a comment in an earlier draft of this setup. `resotone migrate`
 -- then failed with a named error and 0 tables — loudly, which is the one mercy —
 -- but the deploy still stopped. A step a human has to remember is not a step.
-\connect resonans
+\connect resotone
 
 -- The tables live in the `resonans_app` SCHEMA, not in `public`. Granting on
 -- `public` produced an app role that could not read its own tables at all, and
@@ -105,7 +105,7 @@ grant usage on schema resonans_app to resonans_app;
 -- (4) `FOR ROLE` IS LOAD-BEARING.
 -- `alter default privileges` attaches to the role that RUNS it unless `for role`
 -- says otherwise, and it is per-SCHEMA. You are running this as a third role; the
--- TABLES will be created by resonans_migrator during `resonans migrate`. Without
+-- TABLES will be created by resonans_migrator during `resotone migrate`. Without
 -- `for role` the defaults attach to YOU, the migrator's tables get nothing, and
 -- the app role answers `permission denied for table documents` on every request.
 -- Measured against postgres:16-alpine with the working variant as the control in

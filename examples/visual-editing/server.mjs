@@ -11,7 +11,7 @@
 // A real site does the same three things:
 //   1. render the DRAFT server-side from GET /delivery/v1/preview/{type}/{slug}?token=…
 //   2. load the bridge script on the preview route only, with its own studioOrigin
-//   3. mark rendered values with data-resonans-path and re-render on onUpdate
+//   3. mark rendered values with data-resotone-path and re-render on onUpdate
 import { createServer } from 'node:http'
 import { readFile } from 'node:fs/promises'
 
@@ -41,7 +41,7 @@ createServer(async (req, res) => {
   const html = page
     // `?started=` busts the browser cache when Resotone is restarted with a new
     // bridge during local development; a real site can load the plain URL.
-    .replace('__BRIDGE_SRC__', `${RESONANS_URL}/bridge/v1/resonans-bridge.js?started=${STARTED}`)
+    .replace('__BRIDGE_SRC__', `${RESONANS_URL}/bridge/v1/resotone-bridge.js?started=${STARTED}`)
     .replace('__STUDIO_ORIGIN__', JSON.stringify(STUDIO_ORIGIN))
     // "<" escaped so a draft string cannot close the script tag.
     .replace('__ENVELOPE__', JSON.stringify(envelope).replace(/</g, '\\u003c'))

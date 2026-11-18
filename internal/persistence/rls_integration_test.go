@@ -27,7 +27,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/KlangHaus/resonans/internal/testpg"
+	"github.com/30blackbirds/resotone/internal/testpg"
 )
 
 const testDSNEnv = testpg.DSNEnv

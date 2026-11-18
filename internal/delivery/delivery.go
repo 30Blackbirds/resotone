@@ -24,10 +24,10 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/auth"
-	"github.com/KlangHaus/resonans/internal/content"
-	"github.com/KlangHaus/resonans/internal/preview"
-	"github.com/KlangHaus/resonans/internal/schema"
+	"github.com/30blackbirds/resotone/internal/auth"
+	"github.com/30blackbirds/resotone/internal/content"
+	"github.com/30blackbirds/resotone/internal/preview"
+	"github.com/30blackbirds/resotone/internal/schema"
 )
 
 // maxList is the largest catalog page, and the page a request gets when it

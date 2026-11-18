@@ -8,7 +8,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/schema"
+	"github.com/30blackbirds/resotone/internal/schema"
 )
 
 type memStore struct {

@@ -63,11 +63,11 @@
 -- `:` and errors at character 62. Measured; it took the whole init down while the
 -- canary reported a clean zero, which is what a broken instrument looks like.
 \o /dev/null
-select set_config('resonans.app_password', :'app_password', false);
+select set_config('resotone.app_password', :'app_password', false);
 \o
 do $guard$
 begin
-  if coalesce(current_setting('resonans.app_password', true), '') = '' then
+  if coalesce(current_setting('resotone.app_password', true), '') = '' then
     raise exception 'RESONANS_APP_PASSWORD is empty or unset — refusing to create a passwordless resonans_app role';
   end if;
 end

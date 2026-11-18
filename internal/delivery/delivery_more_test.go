@@ -16,8 +16,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/content"
-	"github.com/KlangHaus/resonans/internal/preview"
+	"github.com/30blackbirds/resotone/internal/content"
+	"github.com/30blackbirds/resotone/internal/preview"
 )
 
 // errDB stands for a failure the store cannot classify. Its text must reach

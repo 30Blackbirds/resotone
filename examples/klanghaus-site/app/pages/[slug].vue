@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // Every other Resotone page: a landing page when it opens with a hero (e.g. the
-// bunker rental page), otherwise a text page in klanghaus.dk's legal-page layout
+// bunker rental page), otherwise a text page in 30blackbirds.dk's legal-page layout
 // (e.g. the privacy policy).
-import type { Envelope } from '~~/server/utils/resonans'
+import type { Envelope } from '~~/server/utils/resotone'
 import { str, withHeadingIds } from '~/composables/useSections'
 
 const route = useRoute()
@@ -12,11 +12,11 @@ if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Siden find
 
 const isLanding = computed(() => page.value?.components?.[0]?._type === 'hero')
 // The delivery envelope carries the page's fields, not its document title, so a
-// text page takes its heading from the SEO title: "Privatlivspolitik — KlangHaus".
+// text page takes its heading from the SEO title: "Privatlivspolitik — 30blackbirds".
 const seoTitle = computed(() => str(page.value?.data.seoTitle))
 const heading = computed(() => seoTitle.value.split(' — ')[0] || slug.value)
 useHead({
-  title: seoTitle.value || 'KlangHaus',
+  title: seoTitle.value || '30blackbirds',
   meta: [{ name: 'description', content: str(page.value.data.seoDescription) }],
 })
 </script>
@@ -26,7 +26,7 @@ useHead({
     <PageBlocks :components="page?.components ?? []" />
   </main>
   <main v-else class="kh-legal">
-    <p class="kh-sec__eyebrow">klanghaus.dk</p>
+    <p class="kh-sec__eyebrow">30blackbirds.dk</p>
     <h1 class="kh-sec__title">{{ heading }}</h1>
     <template v-for="(b, i) in page?.components ?? []" :key="i">
       <div v-if="b._type === 'callout'" class="kh-callout" :class="`kh-callout--${str(b.variant) || 'info'}`" role="note">

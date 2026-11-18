@@ -13,7 +13,7 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwt"
 )
 
-const testAudience = "resonans"
+const testAudience = "resotone"
 
 // mint signs a token with arbitrary claims. iss, sub, iat and exp are filled in
 // unless the claims set them.

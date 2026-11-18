@@ -280,7 +280,7 @@ console.log(
 
 const ctx = {
   cwd: process.cwd(),
-  options: { repositoryUrl: 'https://github.com/KlangHaus/resonans' },
+  options: { repositoryUrl: 'https://github.com/30blackbirds/resotone' },
   lastRelease: { gitTag: 'v0.0.0' },
   nextRelease: { gitTag: 'v0.0.1', version: '0.0.1' },
   commits: [

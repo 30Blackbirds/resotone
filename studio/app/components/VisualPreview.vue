@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // VisualPreview — the preview pane of visual editing (prototype:
-// docs/design/resonans/prototypes/preview-split-screen.html, #4). It loads the
+// docs/design/resotone/prototypes/preview-split-screen.html, #4). It loads the
 // tenant's frontend in draft mode (with a short-lived token), pushes the
 // envelope of the UNSAVED body into it on every edit, and exchanges the selected
 // element both ways. All postMessage traffic is pinned to one origin — the one
@@ -46,7 +46,7 @@ const frameWidth = computed(() => VIEWPORTS.find((v) => v.id === viewport.value)
 
 // Fallback when the space has no usable preview URL. Also when the URL points at
 // the Studio's OWN origin: allow-scripts + allow-same-origin on our own origin
-// would let the framed page remove its sandbox (resonans#50).
+// would let the framed page remove its sandbox (resotone#50).
 const sameOrigin = computed(
   () => !!props.settings.previewOrigin && props.settings.previewOrigin === globalThis.location.origin,
 )

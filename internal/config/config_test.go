@@ -34,9 +34,9 @@ func TestLoadDefaults(t *testing.T) {
 
 func TestAuthEnabled(t *testing.T) {
 	t.Setenv("NODE_ENV", "development")
-	t.Setenv("RESONANS_JWT_ISSUER", "https://auth.klanghaus.dk")
-	t.Setenv("RESONANS_JWKS_URL", "https://auth.klanghaus.dk/.well-known/jwks.json")
-	t.Setenv("RESONANS_JWT_AUDIENCE", "resonans")
+	t.Setenv("RESONANS_JWT_ISSUER", "https://auth.30blackbirds.dk")
+	t.Setenv("RESONANS_JWKS_URL", "https://auth.30blackbirds.dk/.well-known/jwks.json")
+	t.Setenv("RESONANS_JWT_AUDIENCE", "resotone")
 	cfg, err := Load()
 	if err != nil {
 		t.Fatalf("Load: %v", err)
@@ -71,7 +71,7 @@ func TestLoadInvalidIssuerURL(t *testing.T) {
 
 func TestLoadProductionFlag(t *testing.T) {
 	t.Setenv("NODE_ENV", "production")
-	t.Setenv("PUBLIC_URL", "https://indhold.klanghaus.dk")
+	t.Setenv("PUBLIC_URL", "https://indhold.30blackbirds.dk")
 	cfg, err := Load()
 	if err != nil {
 		t.Fatalf("Load: %v", err)
@@ -134,7 +134,7 @@ func setDevAuthEnv(t *testing.T, c devAuthCase) {
 	if c.jwt {
 		t.Setenv("RESONANS_JWT_ISSUER", "https://auth.example")
 		t.Setenv("RESONANS_JWKS_URL", "https://auth.example/jwks.json")
-		t.Setenv("RESONANS_JWT_AUDIENCE", "resonans")
+		t.Setenv("RESONANS_JWT_AUDIENCE", "resotone")
 	}
 	if c.deliveryToken {
 		t.Setenv("RESONANS_DELIVERY_TOKEN", "svc")
@@ -168,9 +168,9 @@ func TestStorageBackendNameMakesProductionChooseOnPurpose(t *testing.T) {
 		wantErr error
 	}{
 		{"production without any storage refuses to start", Config{NodeEnv: "production"}, "", ErrNoStorage},
-		{"production with a disk root picks disk", Config{NodeEnv: "production", StorageDir: "/var/lib/resonans/assets"}, "disk", nil},
+		{"production with a disk root picks disk", Config{NodeEnv: "production", StorageDir: "/var/lib/resotone/assets"}, "disk", nil},
 		{"production with bunny picks bunny", Config{NodeEnv: "production", StorageEndpoint: "storage.bunnycdn.com", StorageZone: "z", StorageKey: "k"}, "bunny", nil},
-		{"bunny wins over a disk root", Config{NodeEnv: "production", StorageDir: "/var/lib/resonans/assets", StorageEndpoint: "storage.bunnycdn.com", StorageZone: "z", StorageKey: "k"}, "bunny", nil},
+		{"bunny wins over a disk root", Config{NodeEnv: "production", StorageDir: "/var/lib/resotone/assets", StorageEndpoint: "storage.bunnycdn.com", StorageZone: "z", StorageKey: "k"}, "bunny", nil},
 		{"development without storage still gets memory", Config{NodeEnv: "development"}, "memory", nil},
 		// A half-set Bunny config is the shape a deploy actually lands in when
 		// one variable is forgotten. It must not count as configured.
@@ -238,7 +238,7 @@ func TestSourceOfferMustBeAnHTTPURL(t *testing.T) {
 	// all of the above.
 	for _, good := range []string{
 		"https://git.example.org/our-fork",
-		"http://git.internal.example/resonans",
+		"http://git.internal.example/resotone",
 	} {
 		t.Setenv("RESONANS_SOURCE_URL", good)
 		cfg, err := Load()
@@ -290,10 +290,10 @@ func TestProductionDemandsHTTPSForTheTrustAnchor(t *testing.T) {
 			t.Setenv("NODE_ENV", tc.nodeEnv)
 			t.Setenv("RESONANS_JWT_ISSUER", tc.issuer)
 			t.Setenv("RESONANS_JWKS_URL", tc.jwks)
-			t.Setenv("RESONANS_JWT_AUDIENCE", "resonans")
+			t.Setenv("RESONANS_JWT_AUDIENCE", "resotone")
 			t.Setenv("RESONANS_ALLOW_INSECURE_JWKS", tc.waive)
 			t.Setenv("RESONANS_DELIVERY_TOKEN", "t")
-			t.Setenv("RESONANS_STORAGE_DIR", "/tmp/resonans-assets")
+			t.Setenv("RESONANS_STORAGE_DIR", "/tmp/resotone-assets")
 			t.Setenv("DATABASE_URL", "postgres://x@localhost:5432/x")
 
 			cfg, err := Load()

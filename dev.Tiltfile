@@ -22,41 +22,41 @@ os.putenv('RESONANS_PG_PORT', pg_port)
 docker_compose('docker-compose.tilt.yml')
 
 # Tilt builds the Go image from the compose `build:` context and live-reloads on
-# source changes. Group everything under a 'resonans' label.
-dc_resource('postgres', labels=['resonans'])
-dc_resource('resonans', labels=['resonans'])
+# source changes. Group everything under a 'resotone' label.
+dc_resource('postgres', labels=['resotone'])
+dc_resource('resotone', labels=['resotone'])
 
 # Manual button: seed the explainers demo course (all block types + quiz + page)
 # for the dev tenant 11111111-1111-1111-1111-111111111111. Run once after up.
 local_resource(
-    'resonans-seed',
-    cmd='docker compose -f docker-compose.tilt.yml --profile seed run --rm resonans-seed',
-    labels=['resonans'],
+    'resotone-seed',
+    cmd='docker compose -f docker-compose.tilt.yml --profile seed run --rm resotone-seed',
+    labels=['resotone'],
     auto_init=False,
     trigger_mode=TRIGGER_MODE_MANUAL,
-    resource_deps=['resonans'],
+    resource_deps=['resotone'],
 )
 
-# --- Example: klanghaus.dk on Resotone (examples/klanghaus-site) ---
-# The marketing site, landing pages and blog of klanghaus.dk, with every word and
-# photo served by this Resotone. Press "klanghaus-site-seed" once after
-# "resonans-seed" (the blog posts come from that one), then open
+# --- Example: 30blackbirds.dk on Resotone (examples/30blackbirds-site) ---
+# The marketing site, landing pages and blog of 30blackbirds.dk, with every word and
+# photo served by this Resotone. Press "30blackbirds-site-seed" once after
+# "resotone-seed" (the blog posts come from that one), then open
 # http://localhost:3050.
 local_resource(
-    'klanghaus-site-seed',
+    '30blackbirds-site-seed',
     cmd='node seed/seed.mjs',
-    dir='examples/klanghaus-site',
+    dir='examples/30blackbirds-site',
     env={'RESONANS_URL': api_url, 'RESONANS_TENANT': '11111111-1111-1111-1111-111111111111'},
     labels=['examples'],
     auto_init=False,
     trigger_mode=TRIGGER_MODE_MANUAL,
-    resource_deps=['resonans'],
+    resource_deps=['resotone'],
 )
 # The editor (Resotone Studio) in dev mode — no login, tenant via X-Dev-Tenant —
 # so live preview works out of the box: open a page and press "Visuel". The
 # site's /preview route accepts frames only from this origin (studioOrigin).
 local_resource(
-    'resonans-studio',
+    'resotone-studio',
     serve_cmd='pnpm install --frozen-lockfile && pnpm dev --port ' + studio_port,
     serve_dir='studio',
     serve_env={
@@ -64,19 +64,19 @@ local_resource(
         'NUXT_PUBLIC_DEV_TENANT': '11111111-1111-1111-1111-111111111111',
     },
     links=[link(studio_url, 'Resotone editor')],
-    labels=['resonans'],
-    resource_deps=['resonans'],
+    labels=['resotone'],
+    resource_deps=['resotone'],
 )
 local_resource(
-    'klanghaus-site',
+    '30blackbirds-site',
     serve_cmd='pnpm install --frozen-lockfile && pnpm dev --port ' + site_port,
-    serve_dir='examples/klanghaus-site',
+    serve_dir='examples/30blackbirds-site',
     serve_env={
         'NUXT_RESONANS_URL': api_url,
         'NUXT_PUBLIC_RESONANS_PUBLIC_URL': api_url,
         'NUXT_PUBLIC_STUDIO_ORIGIN': studio_url,
     },
-    links=[link(site_url, 'klanghaus.dk on Resotone')],
+    links=[link(site_url, '30blackbirds.dk on Resotone')],
     labels=['examples'],
-    resource_deps=['resonans'],
+    resource_deps=['resotone'],
 )

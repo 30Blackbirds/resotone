@@ -21,8 +21,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/persistence"
-	"github.com/KlangHaus/resonans/internal/testpg"
+	"github.com/30blackbirds/resotone/internal/persistence"
+	"github.com/30blackbirds/resotone/internal/testpg"
 )
 
 // stores migrates this build's own database and returns the store as the app
@@ -131,7 +131,7 @@ func TestPostgresLifecycle(t *testing.T) {
 	}
 
 	// A second edit and publish, so there are two snapshots to choose from.
-	if _, err := app.Update(ctx, tenant, d.ID, UpdateInput{Title: strPtr("About KlangHaus")}); err != nil {
+	if _, err := app.Update(ctx, tenant, d.ID, UpdateInput{Title: strPtr("About 30blackbirds")}); err != nil {
 		t.Fatalf("second Update: %v", err)
 	}
 	if _, err := app.Publish(ctx, tenant, d.ID); err != nil {
@@ -141,7 +141,7 @@ func TestPostgresLifecycle(t *testing.T) {
 	if err != nil || len(versions) != 2 || versions[0].Version <= versions[1].Version {
 		t.Fatalf("ListVersions = %d versions (%v); want 2, newest first", len(versions), err)
 	}
-	if versions[1].Title != "About us" || versions[0].Title != "About KlangHaus" {
+	if versions[1].Title != "About us" || versions[0].Title != "About 30blackbirds" {
 		t.Fatalf("snapshot titles = %q, %q", versions[1].Title, versions[0].Title)
 	}
 

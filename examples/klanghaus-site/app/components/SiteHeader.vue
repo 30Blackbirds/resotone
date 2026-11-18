@@ -5,7 +5,7 @@
 import { GTButton } from '@grundtone/vue'
 import { SITE } from '~/site'
 import { str, type Block } from '~/composables/useSections'
-import type { Envelope } from '~~/server/utils/resonans'
+import type { Envelope } from '~~/server/utils/resotone'
 
 const route = useRoute()
 const onHome = computed(() => route.path === '/')

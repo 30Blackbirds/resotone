@@ -1,5 +1,5 @@
-// klanghaus.dk — forside (one-pager). BEM, 1:1 mod
-// docs/design/klanghaus/prototypes/landing-lejer.html (v1.1).
+// 30blackbirds.dk — forside (one-pager). BEM, 1:1 mod
+// docs/design/30blackbirds/prototypes/landing-lejer.html (v1.1).
 //
 // Forlæggets `.kh`-ramme (1120px, kant, radius 14px) er et PREVIEW-bur på den
 // grå designside — ikke en del af siden. Her er siden selv lærredet: body =
@@ -380,7 +380,7 @@ body {
 }
 
 // ── Studieoversigt (plan + ledigt-kort) ──────────────────────────────────────
-// Forlæg: docs/design/klanghaus/prototypes/studie-oversigt.html. To rækker omkring en gang; under
+// Forlæg: docs/design/30blackbirds/prototypes/studie-oversigt.html. To rækker omkring en gang; under
 // $bp-mobile roteres planen 90° (samme DOM) — 12 felter i én række ville være ulæseligt smalle ved 375 px.
 .kh-sizes {
   list-style: none;

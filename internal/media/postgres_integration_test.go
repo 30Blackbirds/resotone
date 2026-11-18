@@ -17,8 +17,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/persistence"
-	"github.com/KlangHaus/resonans/internal/testpg"
+	"github.com/30blackbirds/resotone/internal/persistence"
+	"github.com/30blackbirds/resotone/internal/testpg"
 )
 
 func assetStores(t *testing.T) (app, migrator *PostgresStore) {

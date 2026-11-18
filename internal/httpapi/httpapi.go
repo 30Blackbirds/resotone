@@ -19,13 +19,13 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/auth"
-	"github.com/KlangHaus/resonans/internal/content"
-	"github.com/KlangHaus/resonans/internal/delivery"
-	"github.com/KlangHaus/resonans/internal/media"
-	"github.com/KlangHaus/resonans/internal/preview"
-	"github.com/KlangHaus/resonans/internal/schema"
-	"github.com/KlangHaus/resonans/internal/settings"
+	"github.com/30blackbirds/resotone/internal/auth"
+	"github.com/30blackbirds/resotone/internal/content"
+	"github.com/30blackbirds/resotone/internal/delivery"
+	"github.com/30blackbirds/resotone/internal/media"
+	"github.com/30blackbirds/resotone/internal/preview"
+	"github.com/30blackbirds/resotone/internal/schema"
+	"github.com/30blackbirds/resotone/internal/settings"
 )
 
 // maxUploadBytes caps an asset upload (25 MiB).

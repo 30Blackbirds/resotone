@@ -1,6 +1,6 @@
 // Package apispec embeds the OpenAPI document so the binary can serve it
 // without a filesystem dependency -- the runtime image is distroless and has
-// no shell, and `go run ./cmd/resonans` has no image at all.
+// no shell, and `go run ./cmd/resotone` has no image at all.
 //
 // It lives NEXT TO the specification rather than copying it into a Go package,
 // because `go:embed` cannot reach a parent directory and a second copy of a

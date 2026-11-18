@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KlangHaus/resonans/internal/auth"
+	"github.com/30blackbirds/resotone/internal/auth"
 )
 
 // clearAuthEnv makes a test independent of the developer's shell.
@@ -34,12 +34,12 @@ func TestAudienceIsRequiredWithJWT(t *testing.T) {
 	if _, err := Load(); !errors.Is(err, ErrNoAudience) {
 		t.Fatalf("Load without audience: err = %v, want ErrNoAudience", err)
 	}
-	t.Setenv("RESONANS_JWT_AUDIENCE", "resonans")
+	t.Setenv("RESONANS_JWT_AUDIENCE", "resotone")
 	cfg, err := Load()
 	if err != nil {
 		t.Fatalf("Load with audience: %v", err)
 	}
-	if cfg.JWTAudience != "resonans" {
+	if cfg.JWTAudience != "resotone" {
 		t.Fatalf("JWTAudience = %q", cfg.JWTAudience)
 	}
 }

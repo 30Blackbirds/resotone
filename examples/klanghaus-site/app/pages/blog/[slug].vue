@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // One blog post, rendered block by block (PostBlock).
-import type { Envelope } from '~~/server/utils/resonans'
+import type { Envelope } from '~~/server/utils/resotone'
 
 type Post = Envelope & { title: string }
 import { str } from '~/composables/useSections'
@@ -17,7 +17,7 @@ const date = computed(() =>
     ? new Date(post.value.publishedAt).toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' })
     : '',
 )
-useHead({ title: `${title.value} — KlangHaus`, meta: [{ name: 'description', content: str(post.value.data.excerpt) }] })
+useHead({ title: `${title.value} — 30blackbirds`, meta: [{ name: 'description', content: str(post.value.data.excerpt) }] })
 </script>
 
 <template>

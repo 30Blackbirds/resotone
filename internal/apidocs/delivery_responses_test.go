@@ -23,10 +23,10 @@ import (
 	"github.com/getkin/kin-openapi/routers"
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/content"
-	"github.com/KlangHaus/resonans/internal/delivery"
-	"github.com/KlangHaus/resonans/internal/preview"
-	"github.com/KlangHaus/resonans/internal/schema"
+	"github.com/30blackbirds/resotone/internal/content"
+	"github.com/30blackbirds/resotone/internal/delivery"
+	"github.com/30blackbirds/resotone/internal/preview"
+	"github.com/30blackbirds/resotone/internal/schema"
 )
 
 // The delivery surface is what other teams build against, so its responses are

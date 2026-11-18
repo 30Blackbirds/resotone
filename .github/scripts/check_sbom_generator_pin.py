@@ -3,7 +3,7 @@
 
 The action pin already determines the SBOM generator - the version is a
 compile-time constant in the action's own bundle, not resolved at run time. That
-makes it invisible: resonans#115 moved Syft v1.42.3 -> v1.54.0 and the diff
+makes it invisible: resotone#115 moved Syft v1.42.3 -> v1.54.0 and the diff
 showed a commit SHA and a version comment, nothing else.
 
 This check reads the pin out of release.yml, fetches the bundle at that exact

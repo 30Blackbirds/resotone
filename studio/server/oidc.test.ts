@@ -42,7 +42,7 @@ class HttpError extends Error {
 
 const settings = {
   issuer: 'https://idp.example',
-  clientId: 'resonans-editor',
+  clientId: 'resotone-editor',
   clientSecret: 'client-secret',
   scopes: '',
   editorUrl: 'https://cms.example/',
@@ -565,7 +565,7 @@ describe('POST /auth/logout', () => {
     expect(endSession.mock.calls[0][1]).toMatchObject({ method: 'POST', redirect: 'manual' })
     expect(Object.fromEntries(sent())).toEqual({
       id_token_hint: 'the-id-token',
-      client_id: 'resonans-editor',
+      client_id: 'resotone-editor',
       post_logout_redirect_uri: after,
     })
     expect(event.sessions.resonans_session).toEqual({})

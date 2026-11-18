@@ -3,7 +3,7 @@
 - **Status:** Implemented in v2.0.0. Not yet proven against a provider other than BetterAuth,
   and not yet running in the authors' production.
 - **Date:** 2026-10-22
-- **Decided by:** Allan (direction, 2026-10-22); this record written by [resonans]
+- **Decided by:** Allan (direction, 2026-10-22); this record written by [resotone]
 - **Scope:** Resotone's editor UI (the code in `studio/`) and the editor API (`/api/v1`).
   The delivery API, preview tokens and `RESONANS_DEV_AUTH` are unchanged.
 
@@ -59,7 +59,7 @@ login form remains in Resotone.
   only an `HttpOnly; Secure; SameSite=Strict` session cookie. Editor API calls go through
   it and get the bearer added there.
   - Why not a public client in the browser: a CMS editor renders user-authored HTML, and
-    Resotone has a stored-XSS history (resonans#52). A token that no script can read is
+    Resotone has a stored-XSS history (resotone#52). A token that no script can read is
     the one an XSS cannot steal. This follows the IETF best current practice for
     browser-based apps.
   - The current "JWT in memory only" rule is kept in spirit and strengthened: the browser
@@ -136,7 +136,7 @@ BetterAuth organization membership (`owner`, `admin`, `member`) through
 
 The post-logout redirect URI is registered there through the `auth` service's
 `RESONANS_OIDC_POST_LOGOUT_REDIRECT_URIS`, which for production must be exactly
-`https://cms.klanghaus.dk/login`. The service's development default is
+`https://cms.30blackbirds.dk/login`. The service's development default is
 `http://localhost:3000/`, a different path, so for a local editor that variable has to
 name `<EDITOR_URL>/login` as well.
 
@@ -192,7 +192,7 @@ Each step ships on its own. Until step 5, 30blackbirds keeps today's login.
 ## Open questions (UNMEASURED)
 
 - Whether `@better-auth/oauth-provider` access tokens are JWTs Resotone can verify
-  locally, and which `iss` they carry (`https://auth.klanghaus.dk` or `…/api/auth`). If
+  locally, and which `iss` they carry (`https://auth.30blackbirds.dk` or `…/api/auth`). If
   they are opaque, step 4 needs token introspection or a JWT-format option.
 - Whether a token minted for another 30blackbirds service passes Resotone today (the
   audience gap above). To be measured by [sikkerhed] before step 1 ships, not after.

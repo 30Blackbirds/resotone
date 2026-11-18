@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/content"
+	"github.com/30blackbirds/resotone/internal/content"
 )
 
 const (
