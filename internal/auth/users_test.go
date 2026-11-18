@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/google/uuid"
@@ -54,7 +55,7 @@ func run(t *testing.T, users UserStore, claimGrants bool, claimRole string) (int
 	t.Helper()
 	priv, set := testKeys(t)
 	v := verifierWith(t, set, VerifierConfig{})
-	claims := map[string]any{DefaultTenantClaim: tenantUUID, "name": "Ada", "email": "ada@example.org"}
+	claims := map[string]any{DefaultTenantClaim: tenantUUID, "name": "Ada", "email": "ada@example.org", "email_verified": true}
 	if claimRole != "" {
 		claims[DefaultRoleClaim] = claimRole
 	}
@@ -164,5 +165,93 @@ func TestVerifierProfileClaimsAreBounded(t *testing.T) {
 	}
 	if a.Issuer != testIssuer {
 		t.Errorf("issuer = %q", a.Issuer)
+	}
+}
+
+func TestEmailIsKeptOnlyWhenTheProviderVerifiedIt(t *testing.T) {
+	priv, set := testKeys(t)
+	strict := verifierWith(t, set, VerifierConfig{})
+	lax := verifierWith(t, set, VerifierConfig{AllowUnverifiedEmail: true})
+	email := func(v Verifier, claims map[string]any) string {
+		t.Helper()
+		claims["email"] = "ada@example.org"
+		a, err := v.Verify(context.Background(), mint(t, priv, claims))
+		if err != nil {
+			t.Fatal(err)
+		}
+		return a.Email
+	}
+	for name, c := range map[string]struct {
+		claims map[string]any
+		strict string
+		lax    string
+	}{
+		"verified bool":   {map[string]any{"email_verified": true}, "ada@example.org", "ada@example.org"},
+		"verified string": {map[string]any{"email_verified": "true"}, "ada@example.org", "ada@example.org"},
+		"not verified":    {map[string]any{"email_verified": false}, "", "ada@example.org"},
+		"claim absent":    {map[string]any{}, "", "ada@example.org"},
+		"odd value":       {map[string]any{"email_verified": 1}, "", "ada@example.org"},
+		"string false":    {map[string]any{"email_verified": "false"}, "", "ada@example.org"},
+	} {
+		if got := email(strict, c.claims); got != c.strict {
+			t.Errorf("%s, default: email %q, want %q", name, got, c.strict)
+		}
+		if got := email(lax, cloneClaims(c.claims)); got != c.lax {
+			t.Errorf("%s, requirement off: email %q, want %q", name, got, c.lax)
+		}
+	}
+}
+
+func cloneClaims(m map[string]any) map[string]any {
+	out := map[string]any{}
+	for k, v := range m {
+		out[k] = v
+	}
+	return out
+}
+
+// The user store is asked about the identity in the verified access token and
+// nothing else. Headers, query parameters and a body that name another subject,
+// tenant or email (as a forwarded ID token's claims would) change nothing.
+func TestIdentityComesOnlyFromTheVerifiedAccessToken(t *testing.T) {
+	priv, set := testKeys(t)
+	v := verifierWith(t, set, VerifierConfig{})
+	store := &fakeUsers{rec: UserRecord{ID: uuid.New()}}
+	var seen Actor
+	var ok bool
+	h := NewMiddleware(v, Options{Users: store})(capture(&seen, &ok))
+
+	req := httptest.NewRequest(http.MethodPost, "/x?sub=mallory&issuer=https://evil.example&tenant=ffffffff-ffff-4fff-8fff-ffffffffffff&email=evil@example.org",
+		strings.NewReader(`{"sub":"mallory","email":"evil@example.org","issuer":"https://evil.example"}`))
+	req.Header.Set("Authorization", "Bearer "+mint(t, priv, map[string]any{DefaultTenantClaim: tenantUUID, "email": "ada@example.org", "email_verified": true}))
+	for _, hdr := range []string{"X-User", "X-User-Sub", "X-Forwarded-User", "X-Forwarded-Email", "X-Id-Token", "X-Auth-Request-User", "X-Auth-Request-Email", "X-Dev-Tenant", "X-Scope-OrgID", "Remote-User"} {
+		req.Header.Set(hdr, "mallory")
+	}
+	req.Header.Set("X-Id-Token", mint(t, priv, map[string]any{"sub": "mallory", DefaultTenantClaim: tenantUUID, "email": "evil@example.org", "email_verified": true}))
+	h.ServeHTTP(httptest.NewRecorder(), req)
+
+	if !ok || len(store.calls) != 1 {
+		t.Fatalf("handler reached %v, store calls %d", ok, len(store.calls))
+	}
+	got := store.calls[0]
+	if got.Sub != "user-1" || got.Issuer != testIssuer || got.Tenant.String() != tenantUUID || got.Email != "ada@example.org" {
+		t.Fatalf("store was asked about %+v; want only the access token's identity", got)
+	}
+	if seen.Sub != "user-1" {
+		t.Errorf("actor sub %q", seen.Sub)
+	}
+}
+
+// Dev mode (no verifier) never touches the user store: its actor is not a login.
+func TestDevModeNeverConsultsTheUserStore(t *testing.T) {
+	store := &fakeUsers{err: errors.New("must not be called")}
+	var seen Actor
+	var ok bool
+	h := NewMiddleware(nil, Options{Users: store})(capture(&seen, &ok))
+	req := httptest.NewRequest(http.MethodGet, "/x", nil)
+	req.Header.Set(devTenantHeader, tenantUUID)
+	h.ServeHTTP(httptest.NewRecorder(), req)
+	if !ok || len(store.calls) != 0 {
+		t.Fatalf("dev actor reached %v, store calls %d; want reached and none", ok, len(store.calls))
 	}
 }

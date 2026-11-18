@@ -36,7 +36,7 @@ var bearerRe = regexp.MustCompile(`(?i)^bearer\s+(\S+)\s*$`)
 //     can exercise tenant scoping without minting JWTs.
 //
 // OTel spans get enduser.id + tenant.id attributes (per-span, never on the
-// resource — Beslutning J2c).
+// resource), so traces cannot leak a tenant list.
 func Middleware(verifier Verifier, logger *slog.Logger) func(http.Handler) http.Handler {
 	return NewMiddleware(verifier, Options{Logger: logger})
 }
@@ -105,6 +105,12 @@ func NewMiddleware(verifier Verifier, opts Options) func(http.Handler) http.Hand
 
 // resolveUser finds or creates the user record, refuses a disabled user and
 // sets the effective role. It writes the response and returns false on refusal.
+//
+// Identity comes from ONE place: the Actor the verifier built from the verified
+// ACCESS token (issuer, sub, and the optional name and email claims). Nothing the
+// caller adds to the request, and nothing the editor's server forwards from an ID
+// token, is read here: a header, query parameter or body naming another subject
+// changes nothing, because the store is only ever asked about this Actor.
 func resolveUser(w http.ResponseWriter, r *http.Request, opts Options, actor Actor) (Actor, bool) {
 	claim := actor.Role
 	actor.Role = RoleNone // nothing is granted until the rules below say so

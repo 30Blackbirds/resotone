@@ -14,7 +14,7 @@ func clearAuthEnv(t *testing.T) {
 	for _, k := range []string{
 		"NODE_ENV", "RESONANS_JWT_ISSUER", "RESONANS_JWKS_URL", "RESONANS_JWT_AUDIENCE",
 		"RESONANS_TENANT_CLAIM", "RESONANS_ROLE_CLAIM", "RESONANS_ROLE_MAP",
-		"RESONANS_TENANT_MODE", "RESONANS_TENANT_ID", "RESONANS_ROLE_CLAIM_GRANTS",
+		"RESONANS_TENANT_MODE", "RESONANS_TENANT_ID", "RESONANS_ROLE_CLAIM_GRANTS", "RESONANS_REQUIRE_EMAIL_VERIFIED",
 	} {
 		t.Setenv(k, "")
 	}
@@ -128,6 +128,23 @@ func TestRoleClaimGrantsIsAnExactOptIn(t *testing.T) {
 		}
 		if cfg.RoleClaimGrants != want {
 			t.Errorf("RESONANS_ROLE_CLAIM_GRANTS=%q -> %v, want %v", val, cfg.RoleClaimGrants, want)
+		}
+	}
+}
+
+// Verified email is required unless the value is exactly 0.
+func TestRequireEmailVerifiedIsOnUnlessExactlyZero(t *testing.T) {
+	for val, want := range map[string]bool{"": false, "1": false, "true": false, "false": false, "0": true} {
+		clearAuthEnv(t)
+		withJWT(t)
+		t.Setenv("RESONANS_JWT_AUDIENCE", "resotone")
+		t.Setenv("RESONANS_REQUIRE_EMAIL_VERIFIED", val)
+		cfg, err := Load()
+		if err != nil {
+			t.Fatalf("Load(%q): %v", val, err)
+		}
+		if cfg.AllowUnverifiedEmail != want {
+			t.Errorf("RESONANS_REQUIRE_EMAIL_VERIFIED=%q -> AllowUnverifiedEmail %v, want %v", val, cfg.AllowUnverifiedEmail, want)
 		}
 	}
 }
