@@ -265,6 +265,10 @@ func TestRunRefusesARoleThatBypassesRLSInProduction(t *testing.T) {
 	}
 
 	t.Setenv("DATABASE_URL", appDSN)
+	// This cell measures row level security, not role assignment: let the token's
+	// claim grant viewer, so "another tenant lists 0" is the policy talking and not
+	// a 403 for having no role.
+	t.Setenv("RESONANS_ROLE_CLAIM_GRANTS", "1")
 	stop = start(t, ctx, base)
 	bearer := func(tid string) map[string]string {
 		return map[string]string{"Authorization": "Bearer " + sign(tid, "viewer")}
@@ -272,8 +276,8 @@ func TestRunRefusesARoleThatBypassesRLSInProduction(t *testing.T) {
 	if code, n := countFor(bearer(tenant.String())); code != http.StatusOK || n != want {
 		t.Errorf("app role, own tenant: %d with %d documents; want 200 and the %d seeded", code, n, want)
 	}
-	if _, n := countFor(bearer(uuid.NewString())); n != 0 {
-		t.Errorf("app role, another tenant listed %d documents, want 0", n)
+	if code, n := countFor(bearer(uuid.NewString())); code != http.StatusOK || n != 0 {
+		t.Errorf("app role, another tenant: %d with %d documents, want 200 and 0", code, n)
 	}
 	if code, _ := fetch(t, http.MethodGet, base+"/api/v1/documents", nil); code != http.StatusUnauthorized {
 		t.Errorf("no token = %d, want 401", code)
