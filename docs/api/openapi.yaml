@@ -5,8 +5,9 @@ info:
   summary: A self-hosted, multi-tenant headless CMS
   description: 'Two surfaces. /api/v1 is the editor API: the tenant comes from the verified tenant claim
     of a JWT (or the configured tenant in single-tenant mode), never from a body or a header. Every route
-    also needs a role from the token (viewer, editor, publisher, admin); too low a role is 403 with
-    `requires role <name>`, and a token with no recognised role gets 403 on every route. /delivery/v1 is a trusted server-to-server read surface for
+    also needs a role (viewer, editor, publisher, admin), assigned inside Resotone to the user the token
+    identifies; too low a role is 403 with `requires role <name>`, a user with no role or a disabled user
+    gets 403 on every route, and the provider''s role claim counts only if the operator opted in. /delivery/v1 is a trusted server-to-server read surface for
     your own front-ends: the caller authenticates with a service token and passes the tenant in X-Scope-OrgID,
     which is trusted ONLY because the token matched. Never call /delivery from a browser.
 
@@ -27,7 +28,8 @@ components:
       bearerFormat: JWT
       description: An access token from your OpenID Connect provider, verified against its JWKS (issuer,
         audience, RS256/ES256/EdDSA only). The tenant is RESONANS_TENANT_CLAIM (default `org`) unless
-        single-tenant mode fixes it; the role is RESONANS_ROLE_CLAIM (default `resonans_role`).
+        single-tenant mode fixes it. The role is assigned in Resotone; RESONANS_ROLE_CLAIM (default `resonans_role`)
+        is an optional input, used only with RESONANS_ROLE_CLAIM_GRANTS=1.
     deliveryToken:
       type: http
       scheme: bearer
