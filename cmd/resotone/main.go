@@ -5,11 +5,13 @@
 //	resotone              run the server (default)
 //	resotone healthcheck  probe /healthz on PORT and exit 0/1 (distroless
 //	                      HEALTHCHECK — no curl/wget in the image)
+//	resotone admin grant  make a user an administrator of a tenant (first admin)
 //	resotone version      print the build version
 package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -29,6 +31,8 @@ func main() {
 			os.Exit(healthcheck())
 		case "migrate":
 			os.Exit(runMigrate())
+		case "admin":
+			os.Exit(runAdmin(os.Args[2:]))
 		case "seed":
 			os.Exit(runSeed())
 		case "sanitize-backfill":
@@ -118,6 +122,34 @@ func runSeed() int {
 	return 0
 }
 
+// runAdmin handles `resotone admin grant`: make one user an administrator of a
+// tenant. This is how the first admin comes to exist; it needs the database, so
+// whoever can run it already controls the install.
+func runAdmin(args []string) int {
+	if len(args) == 0 || args[0] != "grant" {
+		fmt.Fprintln(os.Stderr, "admin: the only subcommand is `grant` (see `resotone help`)")
+		return 2
+	}
+	fs := flag.NewFlagSet("admin grant", flag.ContinueOnError)
+	issuer := fs.String("issuer", "", "the identity provider's issuer URL (default RESONANS_JWT_ISSUER)")
+	sub := fs.String("sub", "", "the `sub` claim in the person's token (required)")
+	tenant := fs.String("tenant", "", "tenant uuid (default RESONANS_TENANT_ID in single-tenant mode)")
+	if err := fs.Parse(args[1:]); err != nil {
+		return 2
+	}
+	if fs.NArg() != 0 {
+		fmt.Fprintf(os.Stderr, "admin grant: unexpected argument %q\n", fs.Arg(0))
+		return 2
+	}
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	if err := app.AdminGrant(ctx, *issuer, *sub, *tenant); err != nil {
+		slog.Error("admin grant failed", "error", err)
+		return 1
+	}
+	return 0
+}
+
 // runSanitizeBackfill cleans stored rich text, and labels rich_text that the
 // interim editor stored as HTML without a format so it gets sanitized at all.
 // Rows it cannot classify are reported, never guessed at. Dry-run unless
@@ -159,6 +191,9 @@ func usage(w *os.File) {
 Usage:
   resotone              run the server
   resotone migrate      run pending DB migrations and exit (as migrator role)
+  resotone admin grant [--issuer URL] --sub SUB [--tenant UUID]
+                        make a user an administrator of a tenant: the first admin.
+                        Idempotent; creates the user record if they have not logged in
   resotone seed         insert the explainers demo dataset (RESONANS_SEED_TENANT) and exit
   resotone sanitize-backfill [--apply]
                         clean stored rich text in documents + document_versions
