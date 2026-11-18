@@ -33,6 +33,14 @@ components:
       scheme: bearer
       description: RESONANS_DELIVERY_TOKEN. Server-to-server only.
   parameters:
+    UserID:
+      name: id
+      in: path
+      required: true
+      description: User identifier, a UUID. Anything else is a 400; a user of another tenant is a 404.
+      schema:
+        type: string
+        format: uuid
     AssetID:
       name: id
       in: path
@@ -561,6 +569,162 @@ paths:
           description: Not found for this tenant
     parameters:
     - $ref: '#/components/parameters/DocType'
+  /api/v1/users:
+    get:
+      summary: "List the tenant's users"
+      description: "Admin only. Holds personal data (subject, name, email). Another tenant's users never appear."
+      security:
+      - editorJWT: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad id or body
+        '401':
+          description: No or invalid credentials
+        '403':
+          description: Not an admin
+        '404':
+          description: No such user in this tenant
+        '409':
+          description: Would remove the tenant's last active admin, or the user's data was erased
+        '501':
+          description: No database, so no user store
+  /api/v1/users/{id}:
+    get:
+      summary: "One user"
+      description: "Admin only."
+      security:
+      - editorJWT: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad id or body
+        '401':
+          description: No or invalid credentials
+        '403':
+          description: Not an admin
+        '404':
+          description: No such user in this tenant
+        '409':
+          description: Would remove the tenant's last active admin, or the user's data was erased
+        '501':
+          description: No database, so no user store
+    delete:
+      summary: "Erase a user's data"
+      description: "Admin only. Pseudonymises the user (issuer, subject, name and email replaced, role removed, disabled for good) and keeps the row. 409 for the last active admin. Idempotent."
+      security:
+      - editorJWT: []
+      responses:
+        '204':
+          description: No content
+        '400':
+          description: Bad id or body
+        '401':
+          description: No or invalid credentials
+        '403':
+          description: Not an admin
+        '404':
+          description: No such user in this tenant
+        '409':
+          description: Would remove the tenant's last active admin, or the user's data was erased
+        '501':
+          description: No database, so no user store
+    parameters:
+    - $ref: '#/components/parameters/UserID'
+  /api/v1/users/{id}/export:
+    get:
+      summary: "Export one user's data"
+      description: "Admin only. The record Resotone holds for this user, as a JSON download."
+      security:
+      - editorJWT: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad id or body
+        '401':
+          description: No or invalid credentials
+        '403':
+          description: Not an admin
+        '404':
+          description: No such user in this tenant
+        '409':
+          description: Would remove the tenant's last active admin, or the user's data was erased
+        '501':
+          description: No database, so no user store
+    parameters:
+    - $ref: '#/components/parameters/UserID'
+  /api/v1/users/{id}/role:
+    put:
+      summary: "Assign a role"
+      description: "Admin only. Body {\"role\": \"viewer|editor|publisher|admin\"}. Demoting the last active admin is a 409."
+      security:
+      - editorJWT: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad id or body
+        '401':
+          description: No or invalid credentials
+        '403':
+          description: Not an admin
+        '404':
+          description: No such user in this tenant
+        '409':
+          description: Would remove the tenant's last active admin, or the user's data was erased
+        '501':
+          description: No database, so no user store
+    parameters:
+    - $ref: '#/components/parameters/UserID'
+  /api/v1/users/{id}/disable:
+    post:
+      summary: "Disable a user"
+      description: "Admin only. A disabled user gets 403 on every request. Disabling the last active admin is a 409."
+      security:
+      - editorJWT: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad id or body
+        '401':
+          description: No or invalid credentials
+        '403':
+          description: Not an admin
+        '404':
+          description: No such user in this tenant
+        '409':
+          description: Would remove the tenant's last active admin, or the user's data was erased
+        '501':
+          description: No database, so no user store
+    parameters:
+    - $ref: '#/components/parameters/UserID'
+  /api/v1/users/{id}/enable:
+    post:
+      summary: "Enable a user"
+      description: "Admin only."
+      security:
+      - editorJWT: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad id or body
+        '401':
+          description: No or invalid credentials
+        '403':
+          description: Not an admin
+        '404':
+          description: No such user in this tenant
+        '409':
+          description: Would remove the tenant's last active admin, or the user's data was erased
+        '501':
+          description: No database, so no user store
+    parameters:
+    - $ref: '#/components/parameters/UserID'
   /api/v1/settings:
     get:
       summary: Per-tenant content settings

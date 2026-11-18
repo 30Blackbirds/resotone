@@ -18,6 +18,6 @@
     "github.com/30blackbirds/resotone/internal/media": 92,
     "github.com/30blackbirds/resotone/internal/persistence": 64,
     "github.com/30blackbirds/resotone/internal/settings": 95,
-    "github.com/30blackbirds/resotone/internal/users": 80
+    "github.com/30blackbirds/resotone/internal/users": 84
   }
 }
