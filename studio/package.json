@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@sentry/vue": "^10.76.2",
+    "jose": "6.2.13",
     "openid-client": "6.8.8"
   },
   "pnpm": {

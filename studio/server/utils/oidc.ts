@@ -15,6 +15,7 @@
 //    the configured one. Nothing here names a provider.
 import type { H3Event } from 'h3'
 import * as client from 'openid-client'
+import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose'
 
 export interface OidcSettings {
   issuer: string
@@ -62,6 +63,7 @@ export function oidcSettings(): OidcSettings | null {
     requireProviderLogout: str('requireProviderLogout') === '1',
     resource: str('resource'),
   }
+  warnIfInsecure(s)
   const missing = (['clientId', 'clientSecret', 'editorUrl', 'apiUrl', 'sessionSecret'] as const).filter((k) => !s[k])
   if (missing.length) {
     throw createError({ statusCode: 500, statusMessage: `OIDC issuer is set but ${missing.join(', ')} is not` })
@@ -70,6 +72,54 @@ export function oidcSettings(): OidcSettings | null {
     throw createError({ statusCode: 500, statusMessage: 'NUXT_OIDC_SESSION_SECRET must be at least 32 characters' })
   }
   return s
+}
+
+let warnedInsecure = false
+/** Waiving transport checks is for a throwaway local stack. Say so on every
+ *  process start that does it, so it cannot sit unnoticed in a real deploy. */
+function warnIfInsecure(s: OidcSettings) {
+  if (!s.allowInsecure || warnedInsecure) return
+  warnedInsecure = true
+  console.warn(
+    'NUXT_OIDC_ALLOW_INSECURE=1: the provider is reached over plain http. ' +
+      'Use it only for a local trial, never in production.',
+  )
+}
+
+/** The signing algorithms accepted for an ID token: the same set the API takes
+ *  for access tokens. `none` and the HMAC family are never on it. */
+export const ID_TOKEN_ALGORITHMS = ['RS256', 'ES256', 'EdDSA']
+
+const keySets = new Map<string, ReturnType<typeof createRemoteJWKSet>>()
+
+/** Verifies an ID token against the keys the provider publishes: signature,
+ *  pinned algorithm, issuer, audience, expiry, nonce and a non-empty subject.
+ *  Throws on any failure. The token-endpoint response is trusted over TLS by
+ *  the OIDC spec, but the signature is checked anyway, so a token is never
+ *  believed on the strength of the channel alone. */
+export async function verifyIdToken(
+  s: OidcSettings,
+  config: client.Configuration,
+  idToken: string,
+  nonce: string,
+): Promise<JWTPayload & { sub: string }> {
+  const meta = config.serverMetadata()
+  if (!meta.jwks_uri) throw new Error('provider publishes no jwks_uri')
+  let keys = keySets.get(meta.jwks_uri)
+  if (!keys) {
+    keys = createRemoteJWKSet(new URL(meta.jwks_uri))
+    keySets.set(meta.jwks_uri, keys)
+  }
+  const { payload } = await jwtVerify(idToken, keys, {
+    algorithms: ID_TOKEN_ALGORITHMS,
+    issuer: meta.issuer ?? s.issuer,
+    audience: s.clientId,
+    requiredClaims: ['exp', 'sub'],
+    clockTolerance: 60,
+  })
+  if (payload.nonce !== nonce) throw new Error('ID token nonce mismatch')
+  if (typeof payload.sub !== 'string' || !payload.sub) throw new Error('ID token has no subject')
+  return payload as JWTPayload & { sub: string }
 }
 
 let discovered: { key: string; config: client.Configuration } | null = null
