@@ -1,5 +1,5 @@
 name: Bug report
-description: Something in Resonans does not do what the docs or the code say it should.
+description: Something in Resotone does not do what the docs or the code say it should.
 labels: ["bug"]
 body:
   - type: markdown
@@ -7,11 +7,11 @@ body:
       value: |
         Thanks for taking the time. **If this could let one tenant read or write another
         tenant's content, bypass authentication, or execute served content, stop here** and
-        use [private vulnerability reporting](https://github.com/KlangHaus/resonans/security/advisories/new)
-        instead — see [SECURITY.md](https://github.com/KlangHaus/resonans/blob/main/SECURITY.md).
+        use [private vulnerability reporting](https://github.com/30Blackbirds/resotone/security/advisories/new)
+        instead — see [SECURITY.md](https://github.com/30Blackbirds/resotone/blob/main/SECURITY.md).
 
-        Resonans is in **beta**. A behaviour that changed between versions may be intended;
-        check [CHANGELOG.md](https://github.com/KlangHaus/resonans/blob/main/CHANGELOG.md)
+        Resotone is in **beta**. A behaviour that changed between versions may be intended;
+        check [CHANGELOG.md](https://github.com/30Blackbirds/resotone/blob/main/CHANGELOG.md)
         first, and say in the report if it was not mentioned there.
   - type: input
     id: version

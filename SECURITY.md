@@ -1,7 +1,7 @@
 # Reporting a vulnerability
 
 **Please do not open a public issue.** Use GitHub's private vulnerability reporting:
-**[Report a vulnerability](https://github.com/KlangHaus/resonans/security/advisories/new)**.
+**[Report a vulnerability](https://github.com/30Blackbirds/resotone/security/advisories/new)**.
 It is private to you and the maintainers, and it gives us a place to write the fix and the
 advisory together.
 
@@ -14,7 +14,7 @@ channel.
 
 ## What we consider a vulnerability
 
-Resonans is multi-tenant and self-hosted, so the things we care about most:
+Resotone is multi-tenant and self-hosted, so the things we care about most:
 
 - **Cross-tenant access.** Any way to read or write another tenant's content, including
   through the delivery API, preview tokens, asset URLs, or a crafted `org` claim.
@@ -37,7 +37,7 @@ Resonans is multi-tenant and self-hosted, so the things we care about most:
 - Vulnerability-scanner output with no reachable call path. We will read a report that
   names the path; we will not act on a CVE list.
 
-## If you run Resonans
+## If you run Resotone
 
 Pin a released version rather than `latest`, keep `RESONANS_DEV_AUTH` unset, and do not
 give the role in `DATABASE_URL` `SUPERUSER` or `BYPASSRLS` — that single change removes

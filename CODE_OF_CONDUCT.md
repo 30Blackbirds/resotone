@@ -37,7 +37,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at the maintainers, privately, using [GitHub's private report form](https://github.com/KlangHaus/resonans/security/advisories/new). That form is nominally for security reports; we use it here because it is the one channel that is private to you and the maintainers without asking anyone to publish a personal address. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at the maintainers, privately, using [GitHub's private report form](https://github.com/30Blackbirds/resotone/security/advisories/new). That form is nominally for security reports; we use it here because it is the one channel that is private to you and the maintainers without asking anyone to publish a personal address. All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 

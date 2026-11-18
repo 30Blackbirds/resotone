@@ -1,19 +1,19 @@
 name: Feature request
-description: Propose something Resonans does not do yet.
+description: Propose something Resotone does not do yet.
 labels: ["enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
         Before writing this, skim "What we will probably say no to" in
-        [CONTRIBUTING.md](https://github.com/KlangHaus/resonans/blob/main/CONTRIBUTING.md#what-we-will-probably-say-no-to).
-        Resonans stays small on purpose: Postgres plus one binary, tenant from a verified
+        [CONTRIBUTING.md](https://github.com/30Blackbirds/resotone/blob/main/CONTRIBUTING.md#what-we-will-probably-say-no-to).
+        Resotone stays small on purpose: Postgres plus one binary, tenant from a verified
         token only, guards that refuse rather than degrade.
   - type: textarea
     id: problem
     attributes:
       label: The problem
-      description: What are you trying to do, and where does Resonans get in the way? Describe the situation, not the solution yet.
+      description: What are you trying to do, and where does Resotone get in the way? Describe the situation, not the solution yet.
     validations:
       required: true
   - type: textarea
@@ -26,7 +26,7 @@ body:
     id: alternatives
     attributes:
       label: What you tried or considered instead
-      description: Including doing it outside Resonans — in your own service, your reverse proxy, or your frontend.
+      description: Including doing it outside Resotone — in your own service, your reverse proxy, or your frontend.
     validations:
       required: false
   - type: checkboxes
