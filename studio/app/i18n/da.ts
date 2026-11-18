@@ -25,7 +25,7 @@ export const da: Record<string, string> = {
   'Project settings': 'Projekt settings',
 
   // Login
-  'Log in to Resotone's: 'Log ind i Resotone's,
+  'Log in to Resotone': 'Log ind i Resotone',
   'No login service is configured for this environment, so login is turned off. Resotone is running in development mode.':
     'Der er ingen login-tjeneste konfigureret for dette miljø, så login er slået fra. Resotone kører i udviklingstilstand.',
   'We could not reach the login service. You have not been logged out; we just do not know whether you are logged in.':

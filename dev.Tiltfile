@@ -76,7 +76,7 @@ local_resource(
         'NUXT_PUBLIC_RESONANS_PUBLIC_URL': api_url,
         'NUXT_PUBLIC_STUDIO_ORIGIN': studio_url,
     },
-    links=[link(site_url, 'klanghaus.dk on Resotone's)],
+    links=[link(site_url, 'klanghaus.dk on Resotone')],
     labels=['examples'],
     resource_deps=['resonans'],
 )

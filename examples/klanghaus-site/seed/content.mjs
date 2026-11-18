@@ -246,7 +246,7 @@ export const pages = [
       seoDescription: da('Testside i Resotone-eksemplet. Ikke et tilbud.'),
       body: [
         b('hero', {
-          eyebrow: da('Testside · eksempelindhold i Resotone's),
+          eyebrow: da('Testside · eksempelindhold i Resotone'),
           heading: da('Bunkeren|*en landingsside til test.*'),
           subheading: da(
             'Denne side er skrevet til Resotone-eksemplet for at vise en landingsside ved siden af forsiden. Den beskriver ikke et rigtigt tilbud, og intet her er en pris, en dato eller et løfte.',

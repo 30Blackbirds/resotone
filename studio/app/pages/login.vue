@@ -30,7 +30,7 @@ onMounted(async () => {
 <template>
   <div class="lg">
     <div class="lg__card">
-      <h1 class="lg__h">{{ t('Log in to Resotone's) }}</h1>
+      <h1 class="lg__h">{{ t('Log in to Resotone') }}</h1>
 
       <p v-if="ready && !enabled" class="lg__note">
         {{ t('No login service is configured for this environment, so login is turned off. Resotone is running in development mode.') }}
