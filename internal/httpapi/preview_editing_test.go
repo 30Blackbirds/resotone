@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KlangHaus/resonans/internal/content"
+	"github.com/30blackbirds/resotone/internal/content"
 )
 
 func TestPreviewEnvelopeBuildsFromUnsavedBody(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/KlangHaus/resonans/internal/config"
+	"github.com/30blackbirds/resotone/internal/config"
 )
 
 func TestMigrateRequiresDatabaseURL(t *testing.T) {
@@ -34,7 +34,7 @@ func TestHealthPayloadReportsStampedIdentity(t *testing.T) {
 	}
 	for field, want := range map[string]string{
 		"status":   "ok",
-		"service":  "resonans",
+		"service":  "resotone",
 		"version":  "9.9.9",
 		"revision": "0123456789abcdef0123456789abcdef01234567",
 		// AGPL-3.0 §13: the source offer must be the one THIS build was
@@ -59,7 +59,7 @@ func TestSourceOfferDefaultsToUpstreamAndIsOverridable(t *testing.T) {
 	if err != nil {
 		t.Fatalf("load: %v", err)
 	}
-	const upstream = "https://github.com/KlangHaus/resonans"
+	const upstream = "https://github.com/30blackbirds/resotone"
 	if cfg.SourceURL != upstream {
 		t.Fatalf("SourceURL = %q, want the upstream default %q", cfg.SourceURL, upstream)
 	}

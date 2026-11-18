@@ -3,7 +3,7 @@ name: Gitleaks
 # Kun pull_request — pre-merge secret-scan fanger secrets før de når main
 # (ingen duplicate push-scan; [review] systemic fund 06-18).
 on:
-  # No `branches:` filter, on purpose (KlangHaus/platform#125): with one, a PR
+  # No `branches:` filter, on purpose (30blackbirds/platform#125): with one, a PR
   # against a feature branch never runs this job and passes without the gate.
   pull_request:
 
@@ -25,7 +25,7 @@ jobs:
 
       # gitleaks CLI, pinned version, and the download is verified against its
       # sha256 BEFORE it is unpacked. As in the shared template
-      # (KlangHaus/platform packages/quality-config/templates), plus retries. The
+      # (30blackbirds/platform packages/quality-config/templates), plus retries. The
       # tarball and binary go to $RUNNER_TEMP so the checkout stays untouched;
       # .gitleaks.toml is still auto-loaded from the repository being scanned.
       - name: Run gitleaks (CLI v8.30.1)

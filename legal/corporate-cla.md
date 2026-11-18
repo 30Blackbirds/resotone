@@ -1,6 +1,6 @@
 <!--
 Version: ccla-1.0
-Source: KlangHaus [jura], docs repository commit 1ed74f0 (legal/cla-resonans-udkast.md,
+Source: 30blackbirds [jura], docs repository commit 1ed74f0 (legal/cla-resotone-udkast.md,
 section B.1), published here unchanged.
 
 Clauses 2 and 3 of the Individual Contributor Licence Agreement
@@ -8,7 +8,7 @@ Clauses 2 and 3 of the Individual Contributor Licence Agreement
 and 6-9 apply to it: two texts for one right could drift apart; one text cannot.
 
 A company signs by opening an issue first (see CONTRIBUTING.md). Once the signed
-agreement is with KlangHaus, the company's signatory opens a pull request adding the
+agreement is with 30blackbirds, the company's signatory opens a pull request adding the
 company line and its Schedule to legal/corporate-signatures.md, the register clause 6
 describes; a maintainer checks it against the signed agreement before merging.
 -->
@@ -20,20 +20,20 @@ This agreement supplements the Individual Contributor Licence Agreement (`cla-1.
 
 **1. Who signs.** The Company named below, through a person authorised to bind it.
 
-**2. Rights granted.** The Company grants KlangHaus the same rights, on the same
+**2. Rights granted.** The Company grants 30blackbirds the same rights, on the same
 terms, as clauses 2 and 3 of the ICLA, for every Contribution made by a Scheduled
 Person. **Clauses 2 and 3 of the ICLA are incorporated into this agreement by
 reference and are not repeated here.**
 
 **3. Scheduled Persons.** The persons listed in the Schedule. The Company may add or
-remove persons by written notice to KlangHaus. **Removing a person does not affect
+remove persons by written notice to 30blackbirds. **Removing a person does not affect
 Contributions already made**: the Schedule records the date from which that person is
 no longer covered, and Contributions made before that date remain licensed.
 
 **4. The Company's assurance.** The Company confirms that it owns or otherwise
 controls the rights in the Scheduled Persons' Contributions, and that it may grant the
 rights in clause 2. **If that turns out not to be so for a given Contribution, the
-Company will tell KlangHaus without undue delay.**
+Company will tell 30blackbirds without undue delay.**
 
 **5. Moral rights.** Clause 4 of the ICLA applies: nothing here asks any individual to
 waive moral rights, and naming in version history satisfies section 3(1) of the Danish

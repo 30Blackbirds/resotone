@@ -1,5 +1,5 @@
 // The pages this example seeds into Resotone. The front page and the privacy
-// policy are klanghaus.dk's own text, moved unchanged; the bunker page is TEST
+// policy are 30blackbirds.dk's own text, moved unchanged; the bunker page is TEST
 // CONTENT written for this example and says so on the page.
 //
 // `img('name')` is replaced by the uploaded asset id (seed.mjs uploads
@@ -10,7 +10,7 @@ const da = (s) => ({ da: s })
 const b = (type, fields) => ({ _type: type, ...fields })
 export const img = (name) => ({ __img: name })
 
-const MAIL = 'mail@klanghaus.dk'
+const MAIL = 'mail@30blackbirds.dk'
 const WAITLIST_URL = 'https://forms.clickup.com/90122143481/f/2kxv5hqt-732/JU53YTR3DCQXV9JFHT'
 
 const studio = (nr, m2, availableFrom = '') =>
@@ -24,19 +24,19 @@ export const pages = [
     slug: 'forside',
     title: 'Forside',
     body: {
-      seoTitle: da('KlangHaus — lydstudier til leje i København'),
+      seoTitle: da('30blackbirds — lydstudier til leje i København'),
       seoDescription: da(
         'Ti lydregulerede studier til leje på Amager, København S — dit eget rum på løbende lejemål, ikke et øvelokale du booker i timer. Musikerdrevet siden 2015.',
       ),
       body: [
         b('hero', {
           eyebrow: da('Lydstudier til leje · Raffinaderivej, København S · Amager'),
-          heading: da('KlangHaus er ikke et studie.|Det er *et hjem for musikere.*'),
+          heading: da('30blackbirds er ikke et studie.|Det er *et hjem for musikere.*'),
           subheading: da(
             'Ti lydregulerede studier i ét hus, drevet af musikere siden 2015. Dit eget faste rum — og et hus fuld af folk der laver det samme som dig.',
           ),
           image: img('studie-lydisolering-1000'),
-          imageAlt: da('Tomt lydstudie hos KlangHaus med synlig akustik-lamelvæg og vindue'),
+          imageAlt: da('Tomt lydstudie hos 30blackbirds med synlig akustik-lamelvæg og vindue'),
           ctaLabel: da('Hør om ledige studier →'),
           ctaHref: '#kontakt',
           secondaryCtaLabel: da('Se studierne'),
@@ -122,11 +122,11 @@ export const pages = [
         }),
         imagesRow(
           ['facade-gaardareal-1200', 'Facaden på Raffinaderivej i solskin — rød murstensbygning med gårdareal og bordbænkesæt'],
-          ['faelleskoekken-1200', "Fælleskøkkenet med KlangHaus' logo i dørglasset og åben dør til haven"],
+          ['faelleskoekken-1200', "Fælleskøkkenet med 30blackbirds' logo i dørglasset og åben dør til haven"],
         ),
         b('quote', {
           quote: da('Vi er bevidst ikke en korporat udlejningsvirksomhed. Vi er en del af det miljø vi lejer ud til.'),
-          author: "Fra KlangHaus' manifest",
+          author: "Fra 30blackbirds' manifest",
         }),
         b('feature_grid', {
           variant: 'checklist',
@@ -134,7 +134,7 @@ export const pages = [
             {
               title: da('Drevet af musikere.'),
               body: da(
-                'KlangHaus er en familievirksomhed startet i 2015 af to brødre, begge tidligere musikere og producere. Du taler med dem der driver huset — ikke en ejendomsadministration.',
+                '30blackbirds er en familievirksomhed startet i 2015 af to brødre, begge tidligere musikere og producere. Du taler med dem der driver huset — ikke en ejendomsadministration.',
               ),
             },
             {
@@ -204,12 +204,12 @@ export const pages = [
             'Skriv til os. Vi svarer personligt — du taler direkte med dem der driver huset. Fortæl hvad du laver, hvor meget plads du har brug for, og hvornår du gerne vil i gang.',
           ),
         }),
-        b('cta', { label: da('Hør om ledige studier →'), href: `mailto:${MAIL}?subject=Ledige%20studier%20hos%20KlangHaus` }),
+        b('cta', { label: da('Hør om ledige studier →'), href: `mailto:${MAIL}?subject=Ledige%20studier%20hos%2030blackbirds` }),
         b('rich_text', {
           format: 'html',
           value: da(
             `<b>Kontakt</b><a href="mailto:${MAIL}">${MAIL}</a><br />` +
-              '<b>Instagram</b><a href="https://www.instagram.com/klanghaus.dk/" target="_blank" rel="noopener">@klanghaus.dk</a><br />' +
+              '<b>Instagram</b><a href="https://www.instagram.com/30blackbirds.dk/" target="_blank" rel="noopener">@30blackbirds.dk</a><br />' +
               '<b>Adresse</b>Raffinaderivej 20H, 2300 København S (Amager)<br />' +
               '<b>Selskab</b>Asp Productions ApS · CVR 36708077',
           ),
@@ -222,15 +222,15 @@ export const pages = [
     slug: 'privatlivspolitik',
     title: 'Privatlivspolitik',
     body: {
-      seoTitle: da('Privatlivspolitik — KlangHaus'),
-      seoDescription: da('Privatlivspolitik for klanghaus.dk — hvad vi behandler når du besøger siden eller skriver til os.'),
+      seoTitle: da('Privatlivspolitik — 30blackbirds'),
+      seoDescription: da('Privatlivspolitik for 30blackbirds.dk — hvad vi behandler når du besøger siden eller skriver til os.'),
       body: [
         // This test site runs scripts and a server; the policy's own premises
-        // (no scripts, no cookies) describe klanghaus.dk, not this copy.
+        // (no scripts, no cookies) describe 30blackbirds.dk, not this copy.
         b('callout', {
           variant: 'warn',
           value: da(
-            '<p><strong>Testkopi.</strong> Denne tekst er kopieret fra klanghaus.dk til et testprojekt og gælder ikke her. Den gældende privatlivspolitik står på <a href="https://klanghaus.dk/privatlivspolitik/">klanghaus.dk</a>.</p>',
+            '<p><strong>Testkopi.</strong> Denne tekst er kopieret fra 30blackbirds.dk til et testprojekt og gælder ikke her. Den gældende privatlivspolitik står på <a href="https://30blackbirds.dk/privatlivspolitik/">30blackbirds.dk</a>.</p>',
           ),
         }),
         b('rich_text', { format: 'html', value: da(readFileSync(new URL('./privatlivspolitik.html', import.meta.url), 'utf8')) }),
@@ -242,7 +242,7 @@ export const pages = [
     slug: 'bunker-udlejning',
     title: 'Bunker-udlejning (testside)',
     body: {
-      seoTitle: da('Bunkeren — testside — KlangHaus'),
+      seoTitle: da('Bunkeren — testside — 30blackbirds'),
       seoDescription: da('Testside i Resotone-eksemplet. Ikke et tilbud.'),
       body: [
         b('hero', {

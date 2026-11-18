@@ -11,7 +11,7 @@ coverage/
 .idea/
 
 # Go
-/resonans
+/resotone
 coverage.out
 # The Go test report SonarQube reads, written by sonar.yml.
 go-test-report.json

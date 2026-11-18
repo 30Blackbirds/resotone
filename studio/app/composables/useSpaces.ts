@@ -13,8 +13,8 @@ export interface Space {
   createdAt: string
 }
 
-const LS_SPACES = 'resonans.spaces'
-const LS_ACTIVE = 'resonans.activeSpace'
+const LS_SPACES = 'resotone.spaces'
+const LS_ACTIVE = 'resotone.activeSpace'
 
 // crypto.randomUUID is [SecureContext]-gated and MISSING on WG-internal staging
 // (plain HTTP) — clicking "Create" would throw silently (#25). getRandomValues is

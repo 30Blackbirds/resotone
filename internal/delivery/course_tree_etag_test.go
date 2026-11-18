@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KlangHaus/resonans/internal/content"
+	"github.com/30blackbirds/resotone/internal/content"
 )
 
 // The expanded course tree carries its lessons' titles. A lesson renamed and

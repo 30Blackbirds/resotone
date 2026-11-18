@@ -18,7 +18,7 @@
 // from disk. That keeps `go build` offline and reproducible -- the binary does
 // not need the asset -- and puts the download where the pin can be verified.
 //
-// The consequence, stated rather than hidden: `go run ./cmd/resonans` has no
+// The consequence, stated rather than hidden: `go run ./cmd/resotone` has no
 // image, so the renderer is ABSENT in development. The page then says so and
 // links the specification, which is a degradation a reader can act on. It
 // must never be a blank page: a renderer that fails silently looks like a
@@ -34,7 +34,7 @@ import (
 	"strings"
 	"time"
 
-	apispec "github.com/KlangHaus/resonans/docs/api"
+	apispec "github.com/30blackbirds/resotone/docs/api"
 )
 
 // Mount paths. The version is in the path so a breaking change to the page
@@ -58,7 +58,7 @@ const (
 const rendererName = "renderer.js.gz"
 
 // candidate is one place to look: where the Dockerfile COPYs the bundle, and a
-// repository-relative directory for `go run ./cmd/resonans` (gitignored, so a
+// repository-relative directory for `go run ./cmd/resotone` (gitignored, so a
 // developer drops a copy there and the page renders locally too).
 type candidate struct {
 	fsys  fs.FS
@@ -220,7 +220,7 @@ var pageHTML = []byte(`<!doctype html>
   <h1>Resotone API</h1>
   <p><strong>The renderer is not installed here.</strong> It is fetched when the
   container image is built, so it is absent when the binary runs outside the
-  image &mdash; for example under <code>go run ./cmd/resonans</code>.</p>
+  image &mdash; for example under <code>go run ./cmd/resotone</code>.</p>
   <p>The specification itself is served and complete:
   <a href="` + SpecPath + `"><code>` + SpecPath + `</code></a></p>
 </div></template>

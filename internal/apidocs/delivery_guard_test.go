@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KlangHaus/resonans/internal/content"
-	"github.com/KlangHaus/resonans/internal/delivery"
-	"github.com/KlangHaus/resonans/internal/schema"
+	"github.com/30blackbirds/resotone/internal/content"
+	"github.com/30blackbirds/resotone/internal/delivery"
+	"github.com/30blackbirds/resotone/internal/schema"
 )
 
 // The delivery surface is trusted server-to-server: the caller authenticates with

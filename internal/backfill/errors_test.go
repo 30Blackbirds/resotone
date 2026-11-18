@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KlangHaus/resonans/internal/schema"
+	"github.com/30blackbirds/resotone/internal/schema"
 )
 
 // A failure the backfill cannot classify stops the run and is returned,

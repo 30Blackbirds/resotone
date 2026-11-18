@@ -9,8 +9,8 @@ RESONANS_JWT_ISSUER=http://dex.localhost:5556/dex
 RESONANS_JWKS_URL=http://dex.localhost:5556/dex/keys
 RESONANS_ALLOW_INSECURE_JWKS=1
 # Dex sets the access token's audience to the client id.
-RESONANS_JWT_AUDIENCE=resonans-editor
-OIDC_CLIENT_ID=resonans-editor
+RESONANS_JWT_AUDIENCE=resotone-editor
+OIDC_CLIENT_ID=resotone-editor
 OIDC_CLIENT_SECRET=try-local-only-client-secret
 OIDC_SCOPES=openid profile email groups offline_access
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // The blog: every published `post` in Resotone, newest first.
-import type { PostSummary } from '~~/server/utils/resonans'
+import type { PostSummary } from '~~/server/utils/resotone'
 
 const { data: posts } = await useFetch<PostSummary[]>('/api/posts', { key: 'posts' })
-useHead({ title: 'Blog — KlangHaus' })
+useHead({ title: 'Blog — 30blackbirds' })
 
 const date = (iso?: string) =>
   iso ? new Date(iso).toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' }) : ''

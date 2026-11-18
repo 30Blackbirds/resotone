@@ -14,7 +14,7 @@ search cluster.
 
 > **Name note.** The project was called Resonans. The name in this README is now
 > **Resotone**, but the container images, the Go binary, the environment variables and
-> the database objects still carry the old name (`resonans`, `RESONANS_*`), and this
+> the database objects still carry the old name (`resotone`, `RESONANS_*`), and this
 > document uses them exactly as they are.
 
 **Status: beta.** The API (`/api/v1`), the configuration and the content model can still
@@ -47,8 +47,8 @@ few minutes.
 No login provider of your own needed:
 
 ```bash
-git clone https://github.com/KlangHaus/resonans.git
-cd resonans
+git clone https://github.com/30blackbirds/resotone.git
+cd resotone
 docker compose --env-file deploy/try/env -f compose.yml -f compose.try.yml up -d --build
 ```
 
@@ -80,7 +80,7 @@ Editor at <http://localhost:8080>, content API at <http://localhost:3000>.
 ### Without Docker
 
 ```bash
-RESONANS_DEV_AUTH=1 go run ./cmd/resonans
+RESONANS_DEV_AUTH=1 go run ./cmd/resotone
 ```
 
 That runs with an in-memory store and no login, taking the tenant from an `X-Dev-Tenant`
@@ -128,7 +128,7 @@ environment, never from a file in an image.
 
 ### Use the published images
 
-The images `ghcr.io/klanghaus/resonans` (API) and `ghcr.io/klanghaus/resonans-studio`
+The images `ghcr.io/30blackbirds/resotone` (API) and `ghcr.io/30blackbirds/resotone-studio`
 (editor) are public, so no login is needed. They are built for **amd64 only**: on Apple
 Silicon or another arm64 machine, build from source as above.
 
@@ -161,8 +161,8 @@ RESONANS_MIGRATOR_PASSWORD=$(openssl rand -hex 24) \
 RESONANS_APP_PASSWORD=$(openssl rand -hex 24) \
   psql -v ON_ERROR_STOP=1 -U postgres -d postgres -f deploy/manual-setup.sql
 
-DATABASE_URL='postgres://resonans_migrator:...@HOST:5432/resonans' resonans migrate
-psql -v ON_ERROR_STOP=1 -U postgres -d resonans -f deploy/assert-rls-coverage.sql
+DATABASE_URL='postgres://resonans_migrator:...@HOST:5432/resotone' resotone migrate
+psql -v ON_ERROR_STOP=1 -U postgres -d resotone -f deploy/assert-rls-coverage.sql
 ```
 
 Two files rather than one because they run in **different contexts**, and three statements
@@ -178,12 +178,12 @@ Use **hex**, not base64: a `/` in a base64 password breaks DSN parsing in severa
 
 ### Backups
 
-State lives in two places, and a backup needs both: the Postgres database (`resonans`) and
-the asset files (the `assets_data` volume, mounted at `/var/lib/resonans/assets`, unless
+State lives in two places, and a backup needs both: the Postgres database (`resotone`) and
+the asset files (the `assets_data` volume, mounted at `/var/lib/resotone/assets`, unless
 you use Bunny storage). With the bundled Postgres, a database dump looks like this:
 
 ```bash
-docker compose exec -T postgres pg_dump -U resonans_migrator -Fc resonans > resonans.dump
+docker compose exec -T postgres pg_dump -U resonans_migrator -Fc resotone > resotone.dump
 ```
 
 Back the asset volume up with whatever you already use for Docker volumes, and test a
@@ -227,7 +227,7 @@ BetterAuth's OIDC provider, which is what we run. The decision and the alternati
    redirect URI `<EDITOR_URL>/login`, and set `OIDC_REQUIRE_PROVIDER_LOGOUT=1` so that
    logout fails rather than ending only the editor's session if the provider ever
    stops advertising it.
-2. Make the provider put an audience (`RESONANS_JWT_AUDIENCE`, e.g. `resonans`) and a
+2. Make the provider put an audience (`RESONANS_JWT_AUDIENCE`, e.g. `resotone`) and a
    **role** into the access token — and, in multi-tenant mode, the tenant id.
 3. Fill in the login block of [.env.example](.env.example).
 
@@ -383,7 +383,7 @@ every route above. The delivery API's responses carry schemas, and a test checks
 handlers' responses against them; the editor API's response bodies are not described yet.
 
 **Unauthenticated** — `/healthz`, `/readyz`, the API reference under `/docs/v1/`, the
-visual-editing script at `/bridge/v1/resonans-bridge.js`, and `/_assets/{key}` when
+visual-editing script at `/bridge/v1/resotone-bridge.js`, and `/_assets/{key}` when
 Resotone serves asset bytes itself.
 
 ### Deleting content
@@ -478,7 +478,7 @@ Please do not open a public issue for a vulnerability. Use GitHub's
 
 ## Copyright and license
 
-Copyright (C) 2026 The Resonans Authors. Published by **KlangHaus**, the trading name of
+Copyright (C) 2026 The Resonans Authors. Published by **30blackbirds**, the trading name of
 Asp Productions ApS (CVR 36708077, Denmark). Licensed under the
 [GNU AGPL-3.0](LICENSE) — [NOTICE](NOTICE) says why the holder is the authors and not the
 company.

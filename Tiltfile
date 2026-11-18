@@ -43,14 +43,14 @@ else:
     docker_compose(
         ['compose.yml', 'compose.try.yml'],
         env_file='deploy/try/env',
-        project_name='resonans',
+        project_name='resotone',
     )
 
-    dc_resource('postgres', new_name='resonans-postgres', labels=['resonans'])
-    dc_resource('migrate', new_name='resonans-migrate', labels=['resonans'])
-    dc_resource('dex', new_name='resonans-dex', labels=['resonans'],
+    dc_resource('postgres', new_name='resotone-postgres', labels=['resotone'])
+    dc_resource('migrate', new_name='resotone-migrate', labels=['resotone'])
+    dc_resource('dex', new_name='resotone-dex', labels=['resotone'],
                 links=[link('http://dex.localhost:5556/dex/.well-known/openid-configuration', 'Dex discovery')])
-    dc_resource('api', new_name='resonans-api', labels=['resonans'],
+    dc_resource('api', new_name='resotone-api', labels=['resotone'],
                 links=[link(api_url + '/readyz', 'API'), link(api_url + '/docs/v1/', 'API reference')])
-    dc_resource('studio', new_name='resonans-studio', labels=['resonans'],
+    dc_resource('studio', new_name='resotone-studio', labels=['resotone'],
                 links=[link(editor_url, 'Resotone editor')])

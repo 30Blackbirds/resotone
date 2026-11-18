@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """CLA check: may this pull request be merged under the contributor agreement?
 
-The signature model ([jura], docs 52cbb84, legal/cla-resonans-udkast.md §C.3):
+The signature model ([jura], docs 52cbb84, legal/cla-resotone-udkast.md §C.3):
 a contributor signs by adding ONE line to CLA.md in a pull request FROM THEIR OWN
 ACCOUNT. The pull request and the commit they authored are the evidence; the file
 is only the index. So the decisive rule is not the line's format but WHO added it:
@@ -33,7 +33,7 @@ register, never in the exemption list: an exemption whose reason is "there is an
 agreement" would record the opposite of the truth.
 
 Exemption is by NAME, never by role ([jura], 2026-10-28). A GitHub role grants
-access, not rights in the work: nobody at KlangHaus is employed, so no employer
+access, not rights in the work: nobody at 30blackbirds is employed, so no employer
 rule covers them, and a friend with collaborator access or a freelancer is covered
 by nothing at all. A bot is exempt only when it is listed, and it is listed only
 when its changes are machine-generated — a bot that lands a patch a person wrote
@@ -313,7 +313,7 @@ ALLOWED_EXPRESSIONS = {"github.event.pull_request.base.sha", "github.token"}
 
 def check_workflow(root="."):
     """[sikkerhed]'s conditions for running this check on pull_request_target
-    (resonans#158), as a cell that fails closed: the job may see a foreign pull
+    (resotone#158), as a cell that fails closed: the job may see a foreign pull
     request only while it holds no write token, no secrets and no foreign code.
     Returns a list of broken conditions; empty means all hold. Comments are
     stripped first, since the file's own comments name what it must not do."""

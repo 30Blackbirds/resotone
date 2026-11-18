@@ -14,7 +14,7 @@
     "Check the tree with:         python3 scripts/coverage_gate.py"
   ],
   "_zeros_are_decisions_not_gaps": {
-    "github.com/KlangHaus/resonans/internal/persistence": [
+    "github.com/30blackbirds/resotone/internal/persistence": [
       "0% here is misleading on purpose and must not be 'fixed' by deleting a build tag.",
       "This package IS covered \u2014 by the integration cells in rls_integration_test.go, which",
       "carry //go:build integration and need a real postgres. The `Tenant isolation` check runs",
@@ -22,27 +22,27 @@
       "guard is elsewhere. Anyone raising this number by moving those tests out from behind",
       "the tag would make `go test ./...` require a database."
     ],
-    "github.com/KlangHaus/resonans/cmd/resonans": [
+    "github.com/30blackbirds/resotone/cmd/resotone": [
       "Argument parsing and process exit. Reachable only by running the binary, which the",
       "container HEALTHCHECK and the deploy do. UNMEASURED rather than covered: nothing here",
       "asserts the subcommands dispatch correctly."
     ],
-    "github.com/KlangHaus/resonans/internal/observability": [
+    "github.com/30blackbirds/resotone/internal/observability": [
       "OTel wiring. Exercised in every test that boots the app, but it reports 0% because",
       "the assertions are about the app, not about the exporters. UNMEASURED."
     ],
-    "github.com/KlangHaus/resonans/internal/apidocs": [
+    "github.com/30blackbirds/resotone/internal/apidocs": [
       "Holds one file: the drift cell that keeps docs/api/openapi.yaml honest. It has tests and",
       "NO statements of its own, which is a THIRD output shape go test prints and which this",
       "gate was blind to until this package existed. A floor of 0 is correct here and means",
       "'nothing to cover', not 'untested'."
     ],
-    "github.com/KlangHaus/resonans/migrations": [
+    "github.com/30blackbirds/resotone/migrations": [
       "Embedded .sql plus embed.go. The SQL is measured by applying it against a real",
       "postgres in the `Tenant isolation` check, which is the only measurement that means",
       "anything for a migration."
     ],
-    "github.com/KlangHaus/resonans/internal/deploycheck": [
+    "github.com/30blackbirds/resotone/internal/deploycheck": [
       "Holds one file: the guard that keeps the shipped deploy SQL from echoing secrets.",
       "It has tests and NO statements of its own \u2014 the same third output shape internal/apidocs",
       "has, which this gate prints as `coverage: [no statements]`. A floor of 0 is correct and",
@@ -50,7 +50,7 @@
       "unmeasured here is the end-to-end canary against a real postgres, which is by hand until",
       "CI has a database (KH-1220) \u2014 this package only reads the files."
     ],
-    "github.com/KlangHaus/resonans/docs/api": [
+    "github.com/30blackbirds/resotone/docs/api": [
       "Holds one file: an embed directive and a var, and ZERO functions \u2014 so this is a",
       "fourth output shape again, `[no test files]`, and there is nothing a test could",
       "call. A floor of 0 means 'nothing to cover', not 'untested'.",
@@ -61,26 +61,26 @@
     ]
   },
   "floors": {
-    "github.com/KlangHaus/resonans/cmd/resonans": 0,
-    "github.com/KlangHaus/resonans/internal/apidocs": 0,
-    "github.com/KlangHaus/resonans/internal/app": 66,
-    "github.com/KlangHaus/resonans/internal/auth": 97,
-    "github.com/KlangHaus/resonans/internal/backfill": 52,
-    "github.com/KlangHaus/resonans/internal/bridge": 100,
-    "github.com/KlangHaus/resonans/internal/config": 93,
-    "github.com/KlangHaus/resonans/internal/content": 45,
-    "github.com/KlangHaus/resonans/internal/delivery": 92,
-    "github.com/KlangHaus/resonans/internal/httpapi": 93,
-    "github.com/KlangHaus/resonans/internal/media": 71,
-    "github.com/KlangHaus/resonans/internal/observability": 0,
-    "github.com/KlangHaus/resonans/internal/persistence": 0,
-    "github.com/KlangHaus/resonans/internal/preview": 90,
-    "github.com/KlangHaus/resonans/internal/schema": 93,
-    "github.com/KlangHaus/resonans/internal/seed": 98,
-    "github.com/KlangHaus/resonans/internal/settings": 44,
-    "github.com/KlangHaus/resonans/migrations": 0,
-    "github.com/KlangHaus/resonans/internal/deploycheck": 0,
-    "github.com/KlangHaus/resonans/docs/api": 0,
-    "github.com/KlangHaus/resonans/internal/apiref": 91
+    "github.com/30blackbirds/resotone/cmd/resotone": 0,
+    "github.com/30blackbirds/resotone/internal/apidocs": 0,
+    "github.com/30blackbirds/resotone/internal/app": 66,
+    "github.com/30blackbirds/resotone/internal/auth": 97,
+    "github.com/30blackbirds/resotone/internal/backfill": 52,
+    "github.com/30blackbirds/resotone/internal/bridge": 100,
+    "github.com/30blackbirds/resotone/internal/config": 93,
+    "github.com/30blackbirds/resotone/internal/content": 45,
+    "github.com/30blackbirds/resotone/internal/delivery": 92,
+    "github.com/30blackbirds/resotone/internal/httpapi": 93,
+    "github.com/30blackbirds/resotone/internal/media": 71,
+    "github.com/30blackbirds/resotone/internal/observability": 0,
+    "github.com/30blackbirds/resotone/internal/persistence": 0,
+    "github.com/30blackbirds/resotone/internal/preview": 90,
+    "github.com/30blackbirds/resotone/internal/schema": 93,
+    "github.com/30blackbirds/resotone/internal/seed": 98,
+    "github.com/30blackbirds/resotone/internal/settings": 44,
+    "github.com/30blackbirds/resotone/migrations": 0,
+    "github.com/30blackbirds/resotone/internal/deploycheck": 0,
+    "github.com/30blackbirds/resotone/docs/api": 0,
+    "github.com/30blackbirds/resotone/internal/apiref": 91
   }
 }

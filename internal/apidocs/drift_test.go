@@ -31,9 +31,9 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/KlangHaus/resonans/internal/apiref"
-	"github.com/KlangHaus/resonans/internal/bridge"
-	"github.com/KlangHaus/resonans/internal/media"
+	"github.com/30blackbirds/resotone/internal/apiref"
+	"github.com/30blackbirds/resotone/internal/bridge"
+	"github.com/30blackbirds/resotone/internal/media"
 )
 
 // specPath is the document under test, relative to this package.
@@ -52,7 +52,7 @@ var sourceDirs = []string{
 // answering a request. They are not endpoints and are not documented.
 // mountPrefixes is this cell's DENOMINATOR, and it is the thing to update
 // when a new surface is mounted -- not something to work around. Measured
-// 2026-10-02: /healthz, /readyz and /bridge/v1/resonans-bridge.js are
+// 2026-10-02: /healthz, /readyz and /bridge/v1/resotone-bridge.js are
 // registered and fall outside it, so this cell's green says "every route
 // under these prefixes", not "every route". /docs/ was added when the API
 // reference was mounted, because the alternative was a public surface living

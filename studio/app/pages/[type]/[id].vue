@@ -3,7 +3,7 @@
 // render one SchemaField per field, save (PUT) / publish. Same editor for every
 // content type — the "one editor, many domains" core.
 //
-// Visual mode (prototype #4, docs/design/resonans/prototypes/preview-split-screen.html)
+// Visual mode (prototype #4, docs/design/resotone/prototypes/preview-split-screen.html)
 // splits the canvas: the form in a 290px editor column, the tenant's frontend in
 // draft mode next to it, updated live from the unsaved body. Selection works
 // both ways: click an element in the preview → its block/field is selected in

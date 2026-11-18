@@ -7,7 +7,7 @@
 // wherever it runs.
 export default defineEventHandler(() => ({
   status: 'ok',
-  service: 'resonans-studio',
+  service: 'resotone-studio',
   version: process.env.RESONANS_STUDIO_VERSION || '0.0.0',
   revision: process.env.RESONANS_STUDIO_REVISION || 'unknown',
 }))

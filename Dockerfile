@@ -48,8 +48,8 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath \
-    -ldflags="-s -w -X github.com/KlangHaus/resonans/internal/app.version=${VERSION} -X github.com/KlangHaus/resonans/internal/app.revision=${REVISION}" \
-    -o /out/resonans ./cmd/resonans
+    -ldflags="-s -w -X github.com/30blackbirds/resotone/internal/app.version=${VERSION} -X github.com/30blackbirds/resotone/internal/app.revision=${REVISION}" \
+    -o /out/resotone ./cmd/resotone
 
 # ─── API-reference renderer ──────────────────────────────────────────────────
 # Fetched HERE rather than vendored into git. Measured 2026-10-02: the bundle is
@@ -114,7 +114,7 @@ RUN wget -q -O /tmp/renderer.js \
 # golang stages above; the same REVISIT note applies.
 FROM gcr.io/distroless/static-debian12:nonroot@sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab
 WORKDIR /app
-COPY --from=build /out/resonans /app/resonans
+COPY --from=build /out/resotone /app/resotone
 # The renderer, pre-gzipped. internal/apiref serves it with Content-Encoding:
 # gzip, so these bytes are never decompressed on our side at all.
 COPY --from=apidocs /out/renderer.js.gz /app/apidocs/renderer.js.gz
@@ -128,5 +128,5 @@ EXPOSE 3000
 # Distroless ships no shell or wget/curl, so the healthcheck invokes the binary
 # itself in `healthcheck` mode (probes /healthz on the configured PORT).
 HEALTHCHECK --interval=15s --timeout=3s --start-period=10s --retries=5 \
-    CMD ["/app/resonans", "healthcheck"]
-ENTRYPOINT ["/app/resonans"]
+    CMD ["/app/resotone", "healthcheck"]
+ENTRYPOINT ["/app/resotone"]

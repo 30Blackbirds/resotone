@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/content"
+	"github.com/30blackbirds/resotone/internal/content"
 )
 
 // byIDStore holds, for tenant A: a published course, a draft course, a published

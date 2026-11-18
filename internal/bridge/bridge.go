@@ -8,13 +8,13 @@ import (
 	"net/http"
 )
 
-//go:embed resonans-bridge.js
+//go:embed resotone-bridge.js
 var script []byte
 
 // Path is where the script is served. The protocol version is in the path, so
 // a breaking protocol change gets a new path instead of silently changing the
 // behavior of every site that already loads v1.
-const Path = "/bridge/v1/resonans-bridge.js"
+const Path = "/bridge/v1/resotone-bridge.js"
 
 // Handler serves the script. It is public (it contains no tenant data) and is
 // loaded cross-origin via <script src>, which needs no CORS headers.

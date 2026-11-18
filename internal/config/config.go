@@ -18,7 +18,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/auth"
+	"github.com/30blackbirds/resotone/internal/auth"
 )
 
 // localePattern is the shape of a language tag: en, da, pt-BR, zh-Hant.
@@ -211,12 +211,12 @@ func Load() (*Config, error) {
 		StorageDir:      getenvOptional("RESONANS_STORAGE_DIR"),
 		VideoProvider:   getenvOptional("RESONANS_VIDEO_PROVIDER"),
 
-		SourceURL: getenv("RESONANS_SOURCE_URL", "https://github.com/KlangHaus/resonans"),
+		SourceURL: getenv("RESONANS_SOURCE_URL", "https://github.com/30blackbirds/resotone"),
 
 		DefaultLocale: getenv("RESONANS_DEFAULT_LOCALE", "da"),
 
-		OTelServiceName:      getenv("OTEL_SERVICE_NAME", "resonans"),
-		OTelServiceNamespace: getenv("OTEL_SERVICE_NAMESPACE", "resonans"),
+		OTelServiceName:      getenv("OTEL_SERVICE_NAME", "resotone"),
+		OTelServiceNamespace: getenv("OTEL_SERVICE_NAMESPACE", "resotone"),
 		OTelEnabled:          getbool("OTEL_ENABLED", false),
 	}
 

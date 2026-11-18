@@ -1,6 +1,6 @@
 <!--
 Version: cla-1.0
-Source: KlangHaus [jura], docs repository commit 52cbb84 (legal/cla-resonans-udkast.md,
+Source: 30blackbirds [jura], docs repository commit 52cbb84 (legal/cla-resotone-udkast.md,
 section A), published here unchanged because that repository is private and a
 contributor has to be able to read what they sign.
 
@@ -12,14 +12,14 @@ only by the version name above: a name can be edited in place, a commit cannot.
 **Resonans — Individual Contributor Licence Agreement**
 
 This agreement is between **you** ("You") and **Asp Productions ApS**, CVR 36708077,
-Raffinaderivej 20, 2300 Copenhagen S, Denmark, trading as **KlangHaus** ("KlangHaus"),
+Raffinaderivej 20, 2300 Copenhagen S, Denmark, trading as **30blackbirds** ("30blackbirds"),
 and applies to any Contribution You submit to the **Resonans** project ("the Project").
 
 **1. Definitions.** "Contribution" means any work of authorship You submit to the
 Project, in any form and by any means, including code, documentation, designs, tests
 and translations.
 
-**2. Copyright licence.** You grant KlangHaus a **perpetual, worldwide, non-exclusive,
+**2. Copyright licence.** You grant 30blackbirds a **perpetual, worldwide, non-exclusive,
 irrevocable, royalty-free** licence to:
 **(a)** reproduce the Contribution, and **modify, adapt, translate, split, refactor and
 combine** it with other material;
@@ -37,7 +37,7 @@ further consent from You**.
 not stated is not granted (Ophavsretsloven § 53(3)), and neither the right to modify nor
 the right to transfer onward is implied (§ 56).*
 
-**3. Patent licence.** You grant KlangHaus and recipients of the Project a **perpetual,
+**3. Patent licence.** You grant 30blackbirds and recipients of the Project a **perpetual,
 worldwide, non-exclusive, irrevocable, royalty-free** patent licence to make, have made,
 use, offer to sell, sell and import the Contribution, to the extent Your patent claims
 are necessarily infringed by the Contribution alone or in combination with the Project.
@@ -63,12 +63,12 @@ signed the Corporate CLA**; and the Contribution does not, to Your knowledge, in
 anyone's rights. **Third-party material included in the Contribution is identified as
 such, with its licence.**
 
-**6. No obligation.** KlangHaus is not obliged to use the Contribution.
+**6. No obligation.** 30blackbirds is not obliged to use the Contribution.
 
 **7. No warranty.** Except as stated in clause 5, the Contribution is provided **as is**,
 without warranties of any kind.
 
-**8. Your personal data and the public record.** To record this agreement, KlangHaus
+**8. Your personal data and the public record.** To record this agreement, 30blackbirds
 processes Your **GitHub username, Your GitHub numeric user ID, the date, and the
 version of this agreement You accepted**, held in a file in the Project's public
 repository. **We record no email address in that file.** Note that the commit You make
@@ -89,7 +89,7 @@ the establishment, exercise or defence of legal claims). **You can ask us to cor
 entry that is wrong**, and we will do so by adding a correcting entry rather than by
 rewriting history.
 
-**9. Governing law.** Danish law. Venue is KlangHaus' home court.
+**9. Governing law.** Danish law. Venue is 30blackbirds' home court.
 
 **Signed:** You add Your own line to the signature file in a pull request **from Your
 own GitHub account**. The line states Your GitHub username, Your numeric user ID, the

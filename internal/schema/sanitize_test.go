@@ -21,9 +21,9 @@ func TestSanitizeRichTextCells(t *testing.T) {
 		{"data href", `<a href="data:text/html,<script>x</script>">l</a>`, []string{"data:"}, nil},
 		{"style and on* attrs", `<p style="x" onclick="y">t</p>`, []string{"style=", "onclick"}, []string{"<p>t</p>"}},
 		{
-			"formatting kept", `<h2>T</h2><p><strong>b</strong> <em>i</em> <a href="https://klanghaus.dk">l</a></p><ul><li>1</li></ul><blockquote>q</blockquote>`,
+			"formatting kept", `<h2>T</h2><p><strong>b</strong> <em>i</em> <a href="https://30blackbirds.dk">l</a></p><ul><li>1</li></ul><blockquote>q</blockquote>`,
 			nil,
-			[]string{"<h2>T</h2>", "<strong>b</strong>", "<em>i</em>", `<a href="https://klanghaus.dk"`, "<li>1</li>", "<blockquote>q</blockquote>"},
+			[]string{"<h2>T</h2>", "<strong>b</strong>", "<em>i</em>", `<a href="https://30blackbirds.dk"`, "<li>1</li>", "<blockquote>q</blockquote>"},
 		},
 	}
 	for _, c := range cases {

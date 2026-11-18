@@ -23,8 +23,8 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwk"
 	"github.com/lestrrat-go/jwx/v2/jwt"
 
-	"github.com/KlangHaus/resonans/internal/persistence"
-	"github.com/KlangHaus/resonans/internal/testpg"
+	"github.com/30blackbirds/resotone/internal/persistence"
+	"github.com/30blackbirds/resotone/internal/testpg"
 )
 
 // oneShotDB points DATABASE_URL at this build's own database, as the migrator
@@ -297,7 +297,7 @@ func TestRunRefusesARoleThatBypassesRLSInProduction(t *testing.T) {
 }
 
 // Dev with a database (the Tilt path) migrates at boot: a fresh database has
-// the schema once Run serves, with no `resonans migrate` beforehand.
+// the schema once Run serves, with no `resotone migrate` beforehand.
 func TestRunInDevMigratesAtBoot(t *testing.T) {
 	ctx := context.Background()
 	base, _ := devEnv(t)

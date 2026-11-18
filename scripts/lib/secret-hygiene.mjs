@@ -27,7 +27,7 @@ export const SECRET_ALLOWLIST = {
   // refs/pull/N/merge, which no branch policy can match, so an environment would not restrict the
   // scan, it would switch it off on every PR. Analysis token, not a publish key. Fork PRs get no
   // secrets because sonar.yml uses pull_request, not pull_request_target (measured 2026-11-12 on
-  // resonans 9bfb7812: the only pull_request_target TRIGGER is cla.yml, which consumes no
+  // resotone 9bfb7812: the only pull_request_target TRIGGER is cla.yml, which consumes no
   // non-builtin secret by this guard's own count).
   // Terminator: if the Sonar token ever becomes publish-capable, this entry stops being valid.
   SONAR_TOKEN: 'consumed on PR refs, which no branch policy can match; analysis-only',
@@ -36,7 +36,7 @@ export const SECRET_ALLOWLIST = {
 
 /** Environments allowed without a branch policy, each with a reason. */
 export const ENV_ALLOWLIST = {
-  // Terminator: holds 0 secrets and 0 variables (measured on resonans 2026-11-12). The day it
+  // Terminator: holds 0 secrets and 0 variables (measured on resotone 2026-11-12). The day it
   // holds one this entry is wrong — the staleness check below fails when it grows a policy or
   // disappears.
   copilot: 'created by the Copilot integration; holds no secrets or variables',
@@ -414,7 +414,7 @@ function gateGap(job, ungatedEnvs) {
 /**
  * @typedef {{rule: string, file: string, line: number, job: string, secret: string, text: string}} Finding
  *   A violation with the location and rule id it is reported under. `text` is NEUTRAL by
- *   decision (Sikkerhed 2026-11-12, resonans is public and the text lands in a public Actions
+ *   decision (Sikkerhed 2026-11-12, resotone is public and the text lands in a public Actions
  *   log): file:line, the rule id and what the configuration lacks, never what that exposes.
  *   `file`, `job` and `secret` are '' where they do not apply.
  */
@@ -926,7 +926,7 @@ export function selfTestCells() {
     surfaceB([env('a', { custom: true }), env('copilot', { custom: true })]), 'RED')
   cell('allowlisted env that no longer exists', () => surfaceB([env('a', { custom: true })]), 'RED')
 
-  // Location and rule id (resonans): every surface-A finding names file:line and its rule.
+  // Location and rule id (resotone): every surface-A finding names file:line and its rule.
   cell('a finding names file:line and its rule id', () => {
     const v = surfaceA(wf(bare), {})
     if (!v[0]?.startsWith("t.yml:4 SH-A1 job 'a' consumes secrets.MY_KEY")) {
@@ -940,7 +940,7 @@ export function selfTestCells() {
     return v
   }, 'RED')
 
-  // Exemptions (resonans): one finding, a task, an owner, at most MAX_EXEMPTION_DAYS.
+  // Exemptions (resotone): one finding, a task, an owner, at most MAX_EXEMPTION_DAYS.
   const ex = (o = {}) => ({
     file: 't.yml', job: 'a', rule: 'SH-A1', secret: 'MY_KEY',
     task: 'T1', owner: 'O', added: '2026-01-01', expires: '2026-01-15', ...o,

@@ -13,10 +13,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/KlangHaus/resonans/internal/content"
-	"github.com/KlangHaus/resonans/internal/media"
-	"github.com/KlangHaus/resonans/internal/preview"
-	"github.com/KlangHaus/resonans/internal/settings"
+	"github.com/30blackbirds/resotone/internal/content"
+	"github.com/30blackbirds/resotone/internal/media"
+	"github.com/30blackbirds/resotone/internal/preview"
+	"github.com/30blackbirds/resotone/internal/settings"
 )
 
 const previewSecret = "preview-secret-of-sufficient-length-0123456789"

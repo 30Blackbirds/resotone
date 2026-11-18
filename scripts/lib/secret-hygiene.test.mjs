@@ -1,4 +1,4 @@
-// Ported from KlangHaus/grundtone@36f9227c (vitest there); node:test here, so the workflow runs
+// Ported from 30blackbirds/grundtone@36f9227c (vitest there); node:test here, so the workflow runs
 // it without an install. The cells are the same.
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'

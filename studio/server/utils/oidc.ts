@@ -5,7 +5,7 @@
 //
 // 🔴 WHY THE TOKEN STAYS ON THE SERVER.
 //    The editor renders user-authored HTML, and Resotone has had a stored XSS
-//    (resonans#52). A token in page memory is readable by any script that gets
+//    (resotone#52). A token in page memory is readable by any script that gets
 //    into the page; a token that never reaches the page is not. That is the
 //    whole reason for the extra hop.
 //
@@ -23,7 +23,7 @@ export interface OidcSettings {
   scopes: string
   /** Externally visible origin of the editor, e.g. https://cms.example.com. */
   editorUrl: string
-  /** Where the Resotone API answers from this server, e.g. http://resonans:3000. */
+  /** Where the Resotone API answers from this server, e.g. http://resotone:3000. */
   apiUrl: string
   sessionSecret: string
   allowInsecure: boolean

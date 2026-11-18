@@ -11,7 +11,7 @@ connectors:
     id: mock
     name: Try it (no password)
 staticClients:
-  - id: resonans-editor
+  - id: resotone-editor
     name: Resotone editor
     secret: try-local-only-client-secret
     # 8080 is the README's port. 3010 is for running beside another stack that

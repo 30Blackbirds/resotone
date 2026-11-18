@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/content"
+	"github.com/30blackbirds/resotone/internal/content"
 )
 
 // publishFour publishes courses a, b, c and d in that order, so the catalog

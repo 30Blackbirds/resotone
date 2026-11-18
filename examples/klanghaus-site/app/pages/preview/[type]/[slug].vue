@@ -6,7 +6,7 @@
 // as a new envelope and the page re-renders from it — unsaved, no reload. The
 // renderer is the same one the public pages use; only this route marks values
 // with their paths (provide PREVIEW_KEY) and loads the bridge.
-import type { Envelope } from '~~/server/utils/resonans'
+import type { Envelope } from '~~/server/utils/resotone'
 import { PREVIEW_KEY, str, withHeadingIds, type Block } from '~/composables/useSections'
 
 const route = useRoute()
@@ -38,7 +38,7 @@ onBeforeUnmount(() => (draftHome.value = null))
 onMounted(() => {
   const base = String(cfg.resonansPublicUrl).replace(/\/$/, '')
   const script = document.createElement('script')
-  script.src = `${base}/bridge/v1/resonans-bridge.js`
+  script.src = `${base}/bridge/v1/resotone-bridge.js`
   script.onload = () => {
     const bridge = (window as unknown as { ResonansBridge?: { init: (o: unknown) => void } }).ResonansBridge
     bridge?.init({
@@ -64,11 +64,11 @@ useHead({ title: `Forhåndsvisning — ${heading.value}`, meta: [{ name: 'robots
   </main>
   <main v-else class="kh-legal" :class="{ 'kh-post': type === 'post' }">
     <p class="kh-sec__eyebrow">Forhåndsvisning · {{ type }}</p>
-    <h1 class="kh-sec__title" data-resonans-path="data.seoTitle">{{ heading }}</h1>
-    <p v-if="str(envelope.data.excerpt)" class="kh-sec__lead" data-resonans-path="data.excerpt">{{ str(envelope.data.excerpt) }}</p>
+    <h1 class="kh-sec__title" data-resotone-path="data.seoTitle">{{ heading }}</h1>
+    <p v-if="str(envelope.data.excerpt)" class="kh-sec__lead" data-resotone-path="data.excerpt">{{ str(envelope.data.excerpt) }}</p>
     <template v-for="(b, i) in components" :key="i">
       <!-- eslint-disable-next-line vue/no-v-html -- Resotone sanitizes rich text on save and in the live envelope -->
-      <div v-if="type === 'page' && b._type === 'rich_text'" class="kh-prose" :data-resonans-path="`components.${i}.value`" v-html="withHeadingIds(str(b.value))" />
+      <div v-if="type === 'page' && b._type === 'rich_text'" class="kh-prose" :data-resotone-path="`components.${i}.value`" v-html="withHeadingIds(str(b.value))" />
       <PostBlock v-else :block="b" :index="i" />
     </template>
   </main>

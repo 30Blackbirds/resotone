@@ -14,14 +14,14 @@
 # compose file that quietly published an editor to the internet would be the wrong
 # default for the only person who can judge that: you.
 
-name: resonans
+name: resotone
 
 services:
   postgres:
     image: postgres:18.7-alpine3.24@sha256:b6972e1115a4ff8eba5d7f7d19184926d1e16d7d1136ae1e1a7ebf286da0f015
     restart: unless-stopped
     environment:
-      POSTGRES_DB: resonans
+      POSTGRES_DB: resotone
       POSTGRES_USER: resonans_migrator
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       # Read by deploy/initdb/10-app-role.sql to create the non-bypassing role
@@ -37,7 +37,7 @@ services:
       # -h: over TCP, not the socket. While it initialises, the image runs a temporary
       # server on the socket only, which reports ready before the real one starts, so
       # migrate's connection is refused on a machine slow enough to get there first.
-      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U resonans_migrator -d resonans"]
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U resonans_migrator -d resotone"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -45,18 +45,18 @@ services:
   # One-shot. In production Resotone does NOT migrate at boot, because the
   # server connects as a role with no DDL privileges. This runs as the migrator.
   migrate:
-    image: ghcr.io/klanghaus/resonans:${RESONANS_VERSION:-latest}
+    image: ghcr.io/30blackbirds/resotone:${RESONANS_VERSION:-latest}
     build: .
     command: ["migrate"]
     restart: "no"
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgres://resonans_migrator:${POSTGRES_PASSWORD:?}@postgres:5432/resonans
+      DATABASE_URL: postgres://resonans_migrator:${POSTGRES_PASSWORD:?}@postgres:5432/resotone
     depends_on:
       postgres: { condition: service_healthy }
 
   api:
-    image: ghcr.io/klanghaus/resonans:${RESONANS_VERSION:-latest}
+    image: ghcr.io/30blackbirds/resotone:${RESONANS_VERSION:-latest}
     build: .
     restart: unless-stopped
     environment:
@@ -66,11 +66,11 @@ services:
       # it, so a wrong value here shows up as broken images rather than as an
       # error anywhere.
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3000}
-      DATABASE_URL: postgres://resonans_app:${RESONANS_APP_PASSWORD:?}@postgres:5432/resonans
+      DATABASE_URL: postgres://resonans_app:${RESONANS_APP_PASSWORD:?}@postgres:5432/resotone
       # Asset bytes on a local volume. Without this (or a full BUNNY_STORAGE_*
       # set) the server REFUSES to start in production, because the in-memory
       # fallback loses every upload on restart.
-      RESONANS_STORAGE_DIR: /var/lib/resonans/assets
+      RESONANS_STORAGE_DIR: /var/lib/resotone/assets
       # Trusted server-to-server read surface. Required in production: unset, it
       # would trust an unauthenticated tenant header.
       RESONANS_DELIVERY_TOKEN: ${RESONANS_DELIVERY_TOKEN:?set RESONANS_DELIVERY_TOKEN in .env}
@@ -93,7 +93,7 @@ services:
       # The language delivered when a request names none. See .env.example.
       RESONANS_DEFAULT_LOCALE: ${RESONANS_DEFAULT_LOCALE:-da}
     volumes:
-      - assets_data:/var/lib/resonans/assets
+      - assets_data:/var/lib/resotone/assets
     ports:
       - "${BIND_ADDRESS:-127.0.0.1}:${API_PORT:-3000}:3000"
     depends_on:
@@ -101,7 +101,7 @@ services:
       migrate: { condition: service_completed_successfully }
 
   studio:
-    image: ghcr.io/klanghaus/resonans-studio:${RESONANS_VERSION:-latest}
+    image: ghcr.io/30blackbirds/resotone-studio:${RESONANS_VERSION:-latest}
     build: ./studio
     restart: unless-stopped
     environment:

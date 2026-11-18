@@ -68,8 +68,8 @@ async function reportProblem() {
   <div class="sb-shell">
     <!-- Dark rail -->
     <aside class="sb-rail" :class="{ 'sb-rail--slim': inSpace }">
-      <NuxtLink to="/" class="sb-rail__brand" title="resonans" @click="leave()">
-        <span class="sb-rail__mark">R</span> <span class="sb-rail__label">resonans</span>
+      <NuxtLink to="/" class="sb-rail__brand" title="resotone" @click="leave()">
+        <span class="sb-rail__mark">R</span> <span class="sb-rail__label">resotone</span>
       </NuxtLink>
 
       <!-- Current-space chip: only in the slim rail, inside a space -->

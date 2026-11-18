@@ -38,7 +38,7 @@ describe('logged in', () => {
   })
 
   it('ignores a space left in this browser from dev mode', () => {
-    localStorage.setItem('resonans.activeSpace', 'stale-tenant')
+    localStorage.setItem('resotone.activeSpace', 'stale-tenant')
     expect(useSpaces().activeId.value).toBe('session')
   })
 
@@ -62,10 +62,10 @@ describe('dev mode', () => {
     const spaces = useSpaces()
     spaces.enter('dev-tenant')
     expect(spaces.active.value?.id).toBe('dev-tenant')
-    expect(localStorage.getItem('resonans.activeSpace')).toBe('dev-tenant')
+    expect(localStorage.getItem('resotone.activeSpace')).toBe('dev-tenant')
     spaces.leave()
     expect(spaces.active.value).toBeNull()
-    expect(localStorage.getItem('resonans.activeSpace')).toBeNull()
+    expect(localStorage.getItem('resotone.activeSpace')).toBeNull()
   })
 
   it('creates a space with its own tenant id', () => {

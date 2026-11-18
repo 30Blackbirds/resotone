@@ -18,8 +18,8 @@ readme="${1:?usage: quickstart_readme.sh README SOURCE_REPO WORKDIR}"
 source_repo="${2:?usage: quickstart_readme.sh README SOURCE_REPO WORKDIR}"
 workdir="${3:?usage: quickstart_readme.sh README SOURCE_REPO WORKDIR}"
 
-clone_line='git clone https://github.com/KlangHaus/resonans.git'
-cd_line='cd resonans'
+clone_line='git clone https://github.com/30blackbirds/resotone.git'
+cd_line='cd resotone'
 
 # The first ```bash block under "### Try it", up to the next heading.
 mapfile -t steps < <(awk '
@@ -46,8 +46,8 @@ cd "$workdir"
 
 echo "step 1: ${steps[0]}"
 echo "        (cloned from $source_repo, so the commit under test is what runs)"
-git clone --no-local --quiet "$source_repo" resonans
-echo "        $(git -C resonans rev-parse HEAD)"
+git clone --no-local --quiet "$source_repo" resotone
+echo "        $(git -C resotone rev-parse HEAD)"
 
 for i in "${!steps[@]}"; do
   [ "$i" -ge 1 ] || continue

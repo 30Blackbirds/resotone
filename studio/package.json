@@ -1,5 +1,5 @@
 {
-  "name": "@klanghaus/resonans-studio",
+  "name": "@30blackbirds/resotone-studio",
   "private": true,
   "type": "module",
   "description": "Resonans editor (Studio) — schema-driven, swappable-theming Nuxt app.",

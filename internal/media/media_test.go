@@ -84,13 +84,13 @@ func TestStoreTenantIsolation(t *testing.T) {
 }
 
 func TestURLBuilder(t *testing.T) {
-	u := NewURLBuilder("https://cdn.klanghaus.dk/")
+	u := NewURLBuilder("https://cdn.30blackbirds.dk/")
 	a := Asset{StorageKey: "t/abc-photo.png"}
-	if got := u.AssetURL(a, Transform{}); got != "https://cdn.klanghaus.dk/t/abc-photo.png" {
+	if got := u.AssetURL(a, Transform{}); got != "https://cdn.30blackbirds.dk/t/abc-photo.png" {
 		t.Errorf("plain URL = %q", got)
 	}
 	got := u.AssetURL(a, Transform{Width: 800, Height: 600})
-	if got != "https://cdn.klanghaus.dk/t/abc-photo.png?height=600&width=800" {
+	if got != "https://cdn.30blackbirds.dk/t/abc-photo.png?height=600&width=800" {
 		t.Errorf("transform URL = %q", got)
 	}
 }

@@ -78,23 +78,23 @@ const PRIMARY = ['heading', 'title', 'quote', 'label', 'value', 'caption', 'vide
 
 // One card = one block (prototype: .pv__gblk). The primary field fills the body;
 // every other filled field is a `name: value` item in the meta line. Every
-// element carries the same data-resonans-path contract as the real bridge, so
+// element carries the same data-resotone-path contract as the real bridge, so
 // selection works identically — only the VIEW is generic.
 function card(path: string, type: string, fields: Field[], values: Record<string, unknown>): string {
   const filled = fields.filter((f) => values[f.name] != null && values[f.name] !== '')
   const primary = PRIMARY.map((n) => filled.find((f) => f.name === n)).find(Boolean)
   const body = primary
     ? primary.type === 'richtext'
-      ? `<div class="body" data-resonans-path="${esc(`${path}.${primary.name}`)}">${richText(values[primary.name])}</div>`
-      : `<div class="body" data-resonans-path="${esc(`${path}.${primary.name}`)}"><b>${esc(short(primary, values[primary.name]))}</b></div>`
+      ? `<div class="body" data-resotone-path="${esc(`${path}.${primary.name}`)}">${richText(values[primary.name])}</div>`
+      : `<div class="body" data-resotone-path="${esc(`${path}.${primary.name}`)}"><b>${esc(short(primary, values[primary.name]))}</b></div>`
     : ''
   const meta = filled
     .filter((f) => f !== primary)
-    .map((f) => `<span data-resonans-path="${esc(`${path}.${f.name}`)}">${esc(f.name)}: ${esc(short(f, values[f.name]))}</span>`)
+    .map((f) => `<span data-resotone-path="${esc(`${path}.${f.name}`)}">${esc(f.name)}: ${esc(short(f, values[f.name]))}</span>`)
     .join(' · ')
   const icon = ICONS[type] ?? '▪'
   return (
-    `<div class="gblk" data-resonans-path="${esc(path)}">` +
+    `<div class="gblk" data-resotone-path="${esc(path)}">` +
     `<span class="tag"><i>${esc(icon)}</i>${esc(label(type))}</span>${body}` +
     (meta ? `<div class="meta">${meta}</div>` : '') +
     `</div>`
@@ -113,7 +113,7 @@ export function renderBody(
 ): string {
   const data = env.data ?? {}
   const docCardFields: Field[] = [{ name: 'title', type: 'string' }, ...docFields.filter((f) => f.type !== 'blocks')]
-  const out = [card('data', labels.document, docCardFields, data).replace('data-resonans-path="data"', 'data-resonans-path="data.title"')]
+  const out = [card('data', labels.document, docCardFields, data).replace('data-resotone-path="data"', 'data-resotone-path="data.title"')]
   ;(env.components ?? []).forEach((b, i) => {
     const type = String(b._type ?? '')
     const def = blockDefs.find((d) => d.name === type)
@@ -153,7 +153,7 @@ export function buildSrcdoc(studioOrigin: string, theme: Partial<Theme>, selecte
   var RE = /^[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+){0,19}$/;
   var main = document.getElementById('fp'), sel = null;
   function post(m) { m.source = FROM_B; m.v = V; parent.postMessage(m, O); }
-  function byPath(p) { return p && RE.test(p) ? document.querySelector('[data-resonans-path="' + p + '"]') : null; }
+  function byPath(p) { return p && RE.test(p) ? document.querySelector('[data-resotone-path="' + p + '"]') : null; }
   function mark(p) {
     var old = document.querySelector('.fp-on'); if (old) old.classList.remove('fp-on');
     var chip = document.querySelector('.fp-chip'); if (chip) chip.remove();
@@ -169,9 +169,9 @@ export function buildSrcdoc(studioOrigin: string, theme: Partial<Theme>, selecte
   // the Studio can only address an opaque-origin frame with targetOrigin '*'.
   document.addEventListener('click', function (e) {
     e.preventDefault();
-    var el = e.target.closest && e.target.closest('[data-resonans-path]');
+    var el = e.target.closest && e.target.closest('[data-resotone-path]');
     if (!el) return;
-    var p = el.getAttribute('data-resonans-path'); if (!RE.test(p)) return;
+    var p = el.getAttribute('data-resotone-path'); if (!RE.test(p)) return;
     mark(p); post({ type: 'select', path: p });
   }, true);
   addEventListener('message', function (e) {
@@ -195,8 +195,8 @@ body{margin:0;padding:14px;font:12.5px/1.5 system-ui,-apple-system,"Segoe UI",sa
 .gblk .body{font-size:12.5px;color:${t.text};line-height:1.5}
 .gblk .body b{font-weight:600}.gblk .body p{margin:0 0 4px}
 .gblk .meta{font-size:10.5px;color:${t.muted};margin-top:4px}
-[data-resonans-path]{cursor:pointer}
-[data-resonans-path]:hover{outline:1px solid ${t.primary};outline-offset:1px;border-radius:3px}
+[data-resotone-path]{cursor:pointer}
+[data-resotone-path]:hover{outline:1px solid ${t.primary};outline-offset:1px;border-radius:3px}
 .fp-on{outline:2px solid ${t.primary} !important;outline-offset:0;border-radius:7px}
 .fp-chip{position:absolute;top:-9px;left:8px;background:${t.primary};color:#fff;font-size:10px;font-weight:500;padding:2px 7px;border-radius:5px;pointer-events:none}
 </style></head><body>

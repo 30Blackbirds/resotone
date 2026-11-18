@@ -42,7 +42,7 @@ jobs:
       - name: Confirm the images came from the registry, and name them
         run: |
           set -euo pipefail
-          for image in ghcr.io/klanghaus/resonans:latest ghcr.io/klanghaus/resonans-studio:latest; do
+          for image in ghcr.io/30blackbirds/resotone:latest ghcr.io/30blackbirds/resotone-studio:latest; do
             digests="$(docker image inspect --format '{{len .RepoDigests}}' "$image")"
             if [ "$digests" = "0" ]; then
               echo "::error::$image was not pulled from the registry"

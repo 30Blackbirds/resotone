@@ -12,7 +12,7 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwt"
 )
 
-const testIssuer = "https://auth.klanghaus.dk"
+const testIssuer = "https://auth.30blackbirds.dk"
 
 // testKeys generates an RSA keypair and returns the signing key + a JWKS set
 // holding the public key (for the verifier).

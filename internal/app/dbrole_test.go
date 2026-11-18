@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KlangHaus/resonans/internal/persistence"
+	"github.com/30blackbirds/resotone/internal/persistence"
 )
 
 // Every branch of the role decision, with what each one logs. The end-to-end

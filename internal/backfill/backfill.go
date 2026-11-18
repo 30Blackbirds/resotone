@@ -1,5 +1,5 @@
 // Package backfill cleans rich text that was stored BEFORE the API sanitized on
-// save (resonans#52): every row of documents and document_versions goes through
+// save (resotone#52): every row of documents and document_versions goes through
 // schema.RepairDocument. Without the versions table, a rollback would restore
 // the dirty body again.
 //
@@ -17,7 +17,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/KlangHaus/resonans/internal/schema"
+	"github.com/30blackbirds/resotone/internal/schema"
 )
 
 // ErrConcurrentChange is returned by Store.Update when the row no longer holds

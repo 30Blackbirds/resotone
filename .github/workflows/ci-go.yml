@@ -153,7 +153,7 @@ jobs:
       # failed run, which is the silent class semantic-release.yml documents.
       #
       # This job produces `Lint + Test`, which is on the required list (it
-      # replaced `jenkins/Lint + Test` on 2026-10-22, when resonans' CI moved to
+      # replaced `jenkins/Lint + Test` on 2026-10-22, when resotone' CI moved to
       # Actions), so this step blocks a merge.
       - uses: actions/setup-node@v7
         with:
@@ -168,7 +168,7 @@ jobs:
       # The release gate decides whether semantic-release may cut a release. Its
       # decision is a pure function, tested against fixtures — including the old
       # Jenkins check alone, which must no longer pass. This used to run as
-      # `jenkins/release gate`; it moved here with the rest of resonans' CI.
+      # `jenkins/release gate`; it moved here with the rest of resotone' CI.
       - name: Release gate selftest
         run: python3 scripts/release_gate.py --selftest scripts/testdata/release-gate
 
@@ -210,7 +210,7 @@ jobs:
   # Tenant isolation against a real Postgres: the RLS cells in
   # internal/persistence (//go:build integration), including the canary that
   # plants a table WITHOUT row level security and must make the suite fail. This
-  # ran as `jenkins/Tenant isolation` until 2026-10-22; resonans is public, and
+  # ran as `jenkins/Tenant isolation` until 2026-10-22; resotone is public, and
   # a public repo runs its CI in Actions — Jenkins' CI box has no fork discovery,
   # so an outside contributor's PR never got this check at all.
   #

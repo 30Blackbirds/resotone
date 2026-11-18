@@ -43,7 +43,7 @@ export default defineNuxtConfig({
       scopes: 'openid profile email',
       // The editor's public origin; the redirect URI is <editorUrl>/auth/callback.
       editorUrl: '',
-      // Where this server reaches the Resotone API (e.g. http://resonans:3000).
+      // Where this server reaches the Resotone API (e.g. http://resotone:3000).
       apiUrl: '',
       // Seals the session cookie. At least 32 characters; generate with
       // `openssl rand -base64 32`.

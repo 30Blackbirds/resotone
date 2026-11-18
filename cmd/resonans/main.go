@@ -1,11 +1,11 @@
-// Command resonans is the KlangHaus headless CMS (Resotone) server.
+// Command resotone is the 30blackbirds headless CMS (Resotone) server.
 //
 // Subcommands:
 //
-//	resonans              run the server (default)
-//	resonans healthcheck  probe /healthz on PORT and exit 0/1 (distroless
+//	resotone              run the server (default)
+//	resotone healthcheck  probe /healthz on PORT and exit 0/1 (distroless
 //	                      HEALTHCHECK — no curl/wget in the image)
-//	resonans version      print the build version
+//	resotone version      print the build version
 package main
 
 import (
@@ -19,7 +19,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/KlangHaus/resonans/internal/app"
+	"github.com/30blackbirds/resotone/internal/app"
 )
 
 func main() {
@@ -48,7 +48,7 @@ func main() {
 	defer stop()
 
 	if err := app.Run(ctx); err != nil {
-		slog.Error("resonans exited with error", "error", err)
+		slog.Error("resotone exited with error", "error", err)
 		os.Exit(1)
 	}
 }
@@ -154,17 +154,17 @@ func runSlugAudit() int {
 }
 
 func usage(w *os.File) {
-	_, _ = fmt.Fprintln(w, `resonans — KlangHaus headless CMS server
+	_, _ = fmt.Fprintln(w, `resotone — 30blackbirds headless CMS server
 
 Usage:
-  resonans              run the server
-  resonans migrate      run pending DB migrations and exit (as migrator role)
-  resonans seed         insert the explainers demo dataset (RESONANS_SEED_TENANT) and exit
-  resonans sanitize-backfill [--apply]
+  resotone              run the server
+  resotone migrate      run pending DB migrations and exit (as migrator role)
+  resotone seed         insert the explainers demo dataset (RESONANS_SEED_TENANT) and exit
+  resotone sanitize-backfill [--apply]
                         clean stored rich text in documents + document_versions
                         (dry-run unless --apply; as migrator role)
-  resonans slug-audit   list stored slugs that create now rejects (read-only; as migrator role)
-  resonans healthcheck  probe /healthz on $PORT and exit 0 (ok) / 1 (fail)
-  resonans version      print the build version
-  resonans help         show this message`)
+  resotone slug-audit   list stored slugs that create now rejects (read-only; as migrator role)
+  resotone healthcheck  probe /healthz on $PORT and exit 0 (ok) / 1 (fail)
+  resotone version      print the build version
+  resotone help         show this message`)
 }

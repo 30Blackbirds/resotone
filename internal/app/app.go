@@ -18,20 +18,20 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 
-	"github.com/KlangHaus/resonans/internal/apiref"
-	"github.com/KlangHaus/resonans/internal/auth"
-	"github.com/KlangHaus/resonans/internal/backfill"
-	"github.com/KlangHaus/resonans/internal/bridge"
-	"github.com/KlangHaus/resonans/internal/config"
-	"github.com/KlangHaus/resonans/internal/content"
-	"github.com/KlangHaus/resonans/internal/delivery"
-	"github.com/KlangHaus/resonans/internal/httpapi"
-	"github.com/KlangHaus/resonans/internal/media"
-	"github.com/KlangHaus/resonans/internal/observability"
-	"github.com/KlangHaus/resonans/internal/persistence"
-	"github.com/KlangHaus/resonans/internal/schema"
-	"github.com/KlangHaus/resonans/internal/seed"
-	"github.com/KlangHaus/resonans/internal/settings"
+	"github.com/30blackbirds/resotone/internal/apiref"
+	"github.com/30blackbirds/resotone/internal/auth"
+	"github.com/30blackbirds/resotone/internal/backfill"
+	"github.com/30blackbirds/resotone/internal/bridge"
+	"github.com/30blackbirds/resotone/internal/config"
+	"github.com/30blackbirds/resotone/internal/content"
+	"github.com/30blackbirds/resotone/internal/delivery"
+	"github.com/30blackbirds/resotone/internal/httpapi"
+	"github.com/30blackbirds/resotone/internal/media"
+	"github.com/30blackbirds/resotone/internal/observability"
+	"github.com/30blackbirds/resotone/internal/persistence"
+	"github.com/30blackbirds/resotone/internal/schema"
+	"github.com/30blackbirds/resotone/internal/seed"
+	"github.com/30blackbirds/resotone/internal/settings"
 )
 
 // version and revision are stamped via -ldflags at build time. revision is the
@@ -146,11 +146,11 @@ func Run(ctx context.Context) error {
 		}
 
 		// In production the server connects as the NOBYPASSRLS app-role, which
-		// has no DDL privileges — migrations run via the `resonans migrate`
+		// has no DDL privileges — migrations run via the `resotone migrate`
 		// one-shot as the BYPASSRLS migrator-role (CTO deploy-wiring, Option A).
 		// In dev the single role owns the schema, so auto-migrate for convenience.
 		if cfg.IsProduction() {
-			logger.Info("boot migrations skipped in production — run `resonans migrate` (migrator role) before deploy")
+			logger.Info("boot migrations skipped in production — run `resotone migrate` (migrator role) before deploy")
 		} else {
 			applied, err := persistence.Migrate(ctx, pool)
 			if err != nil {
@@ -308,7 +308,7 @@ func Run(ctx context.Context) error {
 		_, _ = w.Write([]byte(`{"status":"ready"}`))
 	})
 
-	root := otelhttp.NewHandler(mux, "resonans.http")
+	root := otelhttp.NewHandler(mux, "resotone.http")
 	srv := &http.Server{
 		Addr:              cfg.ListenAddr(),
 		Handler:           root,
@@ -317,7 +317,7 @@ func Run(ctx context.Context) error {
 
 	errCh := make(chan error, 1)
 	go func() {
-		logger.Info("resonans listening", "host", cfg.Host, "port", cfg.Port, "publicURL", cfg.PublicURL)
+		logger.Info("resotone listening", "host", cfg.Host, "port", cfg.Port, "publicURL", cfg.PublicURL)
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			errCh <- fmt.Errorf("http server: %w", err)
 		}
@@ -341,7 +341,7 @@ func Run(ctx context.Context) error {
 }
 
 // Seed inserts the explainers demo dataset for the tenant in RESONANS_SEED_TENANT.
-// Run as a one-shot (`resonans seed`) against a staging instance so consumers can
+// Run as a one-shot (`resotone seed`) against a staging instance so consumers can
 // render real content. Connects as the app role; the stores set the tenant GUC.
 func Seed(ctx context.Context) error {
 	cfg, err := config.Load()
@@ -374,7 +374,7 @@ func Seed(ctx context.Context) error {
 	return nil
 }
 
-// Migrate runs pending migrations and returns. Used by the `resonans migrate`
+// Migrate runs pending migrations and returns. Used by the `resotone migrate`
 // one-shot deploy service, which connects as the BYPASSRLS migrator-role (via
 // DATABASE_URL) so the long-running server (NOBYPASSRLS app-role) never needs
 // DDL privileges (CTO deploy-wiring, Option A).
@@ -527,7 +527,7 @@ func (m *mediaAssetResolver) ResolveAsset(ctx context.Context, tenantID uuid.UUI
 func healthPayload(sourceURL string) ([]byte, error) {
 	return json.Marshal(map[string]string{
 		"status":  "ok",
-		"service": "resonans",
+		"service": "resotone",
 		"version": version,
 		// AGPL-3.0 §13: a user interacting with this instance over a network is
 		// entitled to its Corresponding Source. An unauthenticated probe is the

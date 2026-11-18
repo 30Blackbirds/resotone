@@ -19,7 +19,7 @@ POST /api/v1/preview-token  ─ token ─►   GET /delivery/v1/preview/{type}/{
 POST /api/v1/preview/envelope
 (unsaved body → envelope)   ─ update ─►  onUpdate(envelope) → re-render
 click/focus a block or field ─ select ─► "✎ Valgt blok" frame on that element
-select block/field in editor ◄─ select ─ click on [data-resonans-path]
+select block/field in editor ◄─ select ─ click on [data-resotone-path]
 ```
 
 All messages are `{ source, v: 1, type, ... }`. The Studio accepts messages only
@@ -38,7 +38,7 @@ and posts only to that origin. The bridge accepts messages only from
    `Content-Security-Policy: frame-ancestors <studio origin>`, so no other site
    can frame the draft.
 3. **Bridge.** On the preview route only, load
-   `<resonans>/bridge/v1/resonans-bridge.js` and call:
+   `<resotone>/bridge/v1/resotone-bridge.js` and call:
 
    ```js
    ResonansBridge.init({
@@ -51,7 +51,7 @@ and posts only to that origin. The bridge accepts messages only from
    `studioOrigin` must come from the site's own configuration. Reading it from
    the query string would let any page that frames the preview drive it.
 4. **Mark rendered values** with the path of the value in the delivery envelope:
-   `data-resonans-path="data.seoTitle"`, `data-resonans-path="components.2.heading"`.
+   `data-resotone-path="data.seoTitle"`, `data-resotone-path="components.2.heading"`.
    In Vue: `v-bind="ResonansBridge.attr('components.' + i + '.heading')"`.
    Only mark elements on the preview route.
 5. **Render from the envelope.** `onUpdate` receives the same shape as the
@@ -67,7 +67,7 @@ contain `{token}`.
 Start the Resotone API with a preview secret, the Studio, and this site:
 
 ```bash
-GOTOOLCHAIN=go1.26.9 PORT=3998 RESONANS_DEV_AUTH=1 RESONANS_PREVIEW_SECRET=local-secret go run ./cmd/resonans
+GOTOOLCHAIN=go1.26.9 PORT=3998 RESONANS_DEV_AUTH=1 RESONANS_PREVIEW_SECRET=local-secret go run ./cmd/resotone
 ```
 
 ```bash

@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/KlangHaus/resonans/internal/config"
+	"github.com/30blackbirds/resotone/internal/config"
 )
 
 // devEnv is the smallest environment Run boots in: dev auth on both surfaces,
@@ -116,12 +116,12 @@ func TestRunServesEverySurfaceAndStopsOnCancel(t *testing.T) {
 		code   int
 		want   string
 	}{
-		{"/healthz", nil, 200, `"service":"resonans"`},
+		{"/healthz", nil, 200, `"service":"resotone"`},
 		{"/readyz", nil, 200, `"ready"`},
 		{"/api/v1/schema", tenant, 200, "docTypes"},
 		{"/api/v1/documents", nil, 403, "requires role viewer"}, // no tenant, no role: refused
 		{"/delivery/v1/schema", scope, 200, "serverSideOnly"},
-		{"/bridge/v1/resonans-bridge.js", nil, 200, "resonans"},
+		{"/bridge/v1/resotone-bridge.js", nil, 200, "resotone"},
 		{"/docs/v1/openapi.yaml", nil, 200, "openapi:"},
 		{"/_assets/t/x.png", nil, 200, "PNG"},
 		{"/_assets/t/missing.png", nil, 404, ""},

@@ -4,9 +4,9 @@ name: actionlint
 # step keys, and the shell in each `run:` through shellcheck. A YAML parser is
 # not enough. A workflow that uses the `runner` context at job level parses, and
 # GitHub then rejects the whole file, so its jobs never run and leave no check
-# behind to fail (measured on resonans#180, 2026-11-08).
+# behind to fail (measured on resotone#180, 2026-11-08).
 on:
-  # No `branches:` filter, on purpose (KlangHaus/platform#125): with one, a PR
+  # No `branches:` filter, on purpose (30blackbirds/platform#125): with one, a PR
   # against a feature branch never runs this job and passes without the gate.
   pull_request:
 
