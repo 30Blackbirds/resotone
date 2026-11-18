@@ -26,6 +26,7 @@ import (
 	"github.com/30blackbirds/resotone/internal/preview"
 	"github.com/30blackbirds/resotone/internal/schema"
 	"github.com/30blackbirds/resotone/internal/settings"
+	"github.com/30blackbirds/resotone/internal/users"
 )
 
 // maxUploadBytes caps an asset upload (25 MiB).
@@ -40,8 +41,10 @@ type Deps struct {
 	Verifier auth.Verifier       // nil in dev/test (X-Dev-Tenant header path)
 	// Users is Resotone's own user store; the role comes from it, not from the
 	// token. ClaimGrants is the operator's opt-in (RESONANS_ROLE_CLAIM_GRANTS=1).
-	Users         auth.UserStore
-	ClaimGrants   bool
+	Users       auth.UserStore
+	ClaimGrants bool
+	// UserAdmin backs the admin-only user routes; nil answers them 501.
+	UserAdmin     users.Admin
 	Settings      settings.Store // per-tenant content profile
 	PreviewSecret string         // signs preview tokens; empty disables preview
 	// Assets resolves asset ids in live-preview envelopes, exactly as delivery
@@ -62,6 +65,7 @@ type Handlers struct {
 	media         *media.Service
 	video         media.VideoProvider
 	settings      settings.Store
+	userAdmin     users.Admin
 	previewSecret []byte
 	assets        delivery.AssetResolver
 	log           *slog.Logger
@@ -97,6 +101,15 @@ func (h *Handlers) Routes() []Route {
 		// is framed inside the editor, so who sets it is an admin decision.
 		{"GET /api/v1/settings/preview", viewer, h.getPreviewSettings},
 		{"PUT /api/v1/settings/preview", admin, h.putPreviewSettings},
+		// Users and roles. Admin only, including the reads: the list holds personal
+		// data. Every query is scoped to the caller's own tenant.
+		{"GET /api/v1/users", admin, h.listUsers},
+		{"GET /api/v1/users/{id}", admin, h.getUser},
+		{"GET /api/v1/users/{id}/export", admin, h.exportUser},
+		{"PUT /api/v1/users/{id}/role", admin, h.putUserRole},
+		{"POST /api/v1/users/{id}/disable", admin, h.disableUser},
+		{"POST /api/v1/users/{id}/enable", admin, h.enableUser},
+		{"DELETE /api/v1/users/{id}", admin, h.eraseUser},
 		// Documents — tenant-scoped authoring.
 		{"GET /api/v1/documents", viewer, h.listDocuments},
 		{"GET /api/v1/documents/{id}", viewer, h.getDocument},
@@ -133,7 +146,7 @@ func (h *Handlers) Routes() []Route {
 // role, inside the JWT-auth middleware (which resolves the actor onto the
 // request context).
 func NewRouter(d Deps) http.Handler {
-	h := &Handlers{store: d.Store, registry: d.Registry, media: d.Media, video: d.Video, settings: d.Settings, previewSecret: []byte(d.PreviewSecret), assets: d.Assets, log: d.Logger}
+	h := &Handlers{store: d.Store, registry: d.Registry, media: d.Media, video: d.Video, settings: d.Settings, userAdmin: d.UserAdmin, previewSecret: []byte(d.PreviewSecret), assets: d.Assets, log: d.Logger}
 	h.defaultLocale = d.DefaultLocale
 	if h.defaultLocale == "" {
 		h.defaultLocale = delivery.DefaultLocale

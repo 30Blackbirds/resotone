@@ -78,7 +78,7 @@
     "github.com/30blackbirds/resotone/internal/schema": 93,
     "github.com/30blackbirds/resotone/internal/seed": 98,
     "github.com/30blackbirds/resotone/internal/settings": 44,
-    "github.com/30blackbirds/resotone/internal/users": 13,
+    "github.com/30blackbirds/resotone/internal/users": 5,
     "github.com/30blackbirds/resotone/migrations": 0,
     "github.com/30blackbirds/resotone/internal/deploycheck": 0,
     "github.com/30blackbirds/resotone/docs/api": 0,
