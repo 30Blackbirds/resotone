@@ -129,6 +129,10 @@ services:
       NUXT_OIDC_API_URL: http://api:3000
       # The interface language: en or da.
       NUXT_PUBLIC_EDITOR_LOCALE: ${EDITOR_LOCALE:-en}
+      # Optional error reporting from the editor's browser to your own Sentry
+      # project. Empty = off. Read when the container starts.
+      NUXT_PUBLIC_SENTRY_DSN: ${NUXT_PUBLIC_SENTRY_DSN:-}
+      NUXT_PUBLIC_SENTRY_ENV: ${NUXT_PUBLIC_SENTRY_ENV:-}
     ports:
       - "${BIND_ADDRESS:-127.0.0.1}:${STUDIO_PORT:-8080}:3000"
     depends_on:
