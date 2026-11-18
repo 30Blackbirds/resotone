@@ -6,7 +6,7 @@ name: actionlint
 # GitHub then rejects the whole file, so its jobs never run and leave no check
 # behind to fail (measured on resotone#180, 2026-11-08).
 on:
-  # No `branches:` filter, on purpose (30blackbirds/platform#125): with one, a PR
+  # No `branches:` filter, on purpose (KlangHaus/platform#125): with one, a PR
   # against a feature branch never runs this job and passes without the gate.
   pull_request:
 

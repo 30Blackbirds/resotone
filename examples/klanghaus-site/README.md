@@ -2,7 +2,7 @@
 
 [30blackbirds.dk](https://30blackbirds.dk), rebuilt so that every word and photo on it comes from
 Resotone. The front-end decides only how things look — it uses the same
-[grundtone](https://github.com/30blackbirds/grundtone) components and the same stylesheets as the
+[grundtone](https://github.com/KlangHaus/grundtone) components and the same stylesheets as the
 live site, so the front page renders the same text at the same height (measured against the live
 site at 1280 px: identical `main` text, page height 4950 px on both).
 

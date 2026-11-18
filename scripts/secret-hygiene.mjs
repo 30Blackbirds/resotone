@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // secret-hygiene.mjs — a secret this repo consumes is gated by an environment, or it is named.
 //
-// PORTED from 30blackbirds/grundtone@36f9227c (scripts/secret-hygiene.mjs and
+// PORTED from KlangHaus/grundtone@36f9227c (scripts/secret-hygiene.mjs and
 // scripts/lib/secret-hygiene.mjs). The decision logic and the self-test cells are unchanged, so the
 // two copies can be diffed. Differences: the repo name, the allowlist reasons and the workflow;
 // and two additions. Every finding carries a rule id and file:line, and its text says what the

@@ -1,5 +1,5 @@
-# SonarQube analysis against our own instance (sonar.30blackbirds.dk).
-# Allan 2026-10-27: resotone is out of Jenkins and gets SonarQube through
+# SonarQube analysis against our own instance (sonar.klanghaus.dk).
+# Allan 2026-10-27: resonans is out of Jenkins and gets SonarQube through
 # Actions on grundtone's pattern (grundtone develop d432bf2, .github/workflows/
 # sonar.yml). Where this file differs from that one, it says why.
 #
@@ -20,7 +20,7 @@
 # reason grundtone runs it on pull_request at all. Forks are covered by the
 # first bullet above, not by an environment.
 #
-# Branch: main only. resotone has no develop; a PR against any other branch
+# Branch: main only. resonans has no develop; a PR against any other branch
 # is not analysed, and that is a choice written here, not an omission.
 
 name: SonarQube
@@ -163,7 +163,7 @@ jobs:
         if: ${{ always() && github.event_name == 'pull_request' && env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != '' }}
         env:
           # Same key as sonar-project.properties.
-          SONAR_PROJECT_KEY: 30blackbirds_resonans_7e9bb7e1-ee71-479d-9904-a02be28f4d30
+          SONAR_PROJECT_KEY: KlangHaus_resonans_7e9bb7e1-ee71-479d-9904-a02be28f4d30
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: bash scripts/print-sonar-findings.sh
 

@@ -4,7 +4,7 @@ This file is the **index** of companies that have signed the
 [Resonans Corporate Contributor Licence Agreement](corporate-cla.md), and of the persons
 each one covers (its Schedule). **The company signs, not the person**, so a person listed
 here has not signed the individual agreement and is not in [CLA.md](../CLA.md). The
-signed agreement itself is held by 30blackbirds; a maintainer checks it before merging a
+signed agreement itself is held by KlangHaus; a maintainer checks it before merging a
 change to this file.
 
 Each company is a `##` line — company · company number · signatory, role · date ·
