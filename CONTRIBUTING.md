@@ -109,11 +109,11 @@ and stays, AGPL-3.0; that is not what the paragraph below is about.
 
 **Outside contributions need a signed contributor licence agreement.** The agreement is
 [legal/individual-cla.md](legal/individual-cla.md) (version `cla-1.0`). **No lawyer has
-reviewed it** — 30blackbirds decided not to pay for one, and we would rather say that than imply
+reviewed it** — KlangHaus decided not to pay for one, and we would rather say that than imply
 a review that has not happened. Read it before you sign; it is one page.
 
 **What it changes.** Everything published here stays AGPL-3.0. The agreement adds two things,
-and the second one is easy to leave out: 30blackbirds may additionally grant your contribution
+and the second one is easy to leave out: KlangHaus may additionally grant your contribution
 under other terms, including proprietary ones, **and may transfer those rights onward to
 another legal entity** — a group company, or a company in the same ownership — without asking
 you again. It is a **licence**, not an assignment: you keep your copyright.
@@ -129,7 +129,7 @@ stops there ends at one company.
 This is the clause a signer most needs to read **before** signing, so here it is, word for
 word from the agreement:
 
-> **8. Your personal data and the public record.** To record this agreement, 30blackbirds
+> **8. Your personal data and the public record.** To record this agreement, KlangHaus
 > processes Your **GitHub username, Your GitHub numeric user ID, the date, and the
 > version of this agreement You accepted**, held in a file in the Project's public
 > repository. **We record no email address in that file.** Note that the commit You make
