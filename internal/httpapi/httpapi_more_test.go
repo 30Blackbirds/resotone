@@ -180,7 +180,7 @@ func TestWriteErrMapping(t *testing.T) {
 		{content.ErrInvalidSlug, 400, "invalid slug"},
 		{content.ErrInvalid, 400, "invalid input"},
 		{fmt.Errorf("wrapped: %w", content.ErrNotFound), 404, "not found"},
-		{errors.New("pq: password authentication failed for user resonans_app"), 500, "internal error"},
+		{errors.New("pq: password authentication failed for user resotone_app"), 500, "internal error"},
 	} {
 		var logBuf bytes.Buffer
 		h := &Handlers{log: slog.New(slog.NewTextHandler(&logBuf, nil))}

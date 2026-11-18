@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_DB: resotone
-      POSTGRES_USER: resonans_migrator
+      POSTGRES_USER: resotone_migrator
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       # Read by deploy/initdb/10-app-role.sql to create the non-bypassing role
       # the server connects as. See that file for why the two roles are split.
@@ -37,7 +37,7 @@ services:
       # -h: over TCP, not the socket. While it initialises, the image runs a temporary
       # server on the socket only, which reports ready before the real one starts, so
       # migrate's connection is refused on a machine slow enough to get there first.
-      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U resonans_migrator -d resotone"]
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U resotone_migrator -d resotone"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -51,7 +51,7 @@ services:
     restart: "no"
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgres://resonans_migrator:${POSTGRES_PASSWORD:?}@postgres:5432/resotone
+      DATABASE_URL: postgres://resotone_migrator:${POSTGRES_PASSWORD:?}@postgres:5432/resotone
     depends_on:
       postgres: { condition: service_healthy }
 
@@ -66,7 +66,7 @@ services:
       # it, so a wrong value here shows up as broken images rather than as an
       # error anywhere.
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3000}
-      DATABASE_URL: postgres://resonans_app:${RESONANS_APP_PASSWORD:?}@postgres:5432/resotone
+      DATABASE_URL: postgres://resotone_app:${RESONANS_APP_PASSWORD:?}@postgres:5432/resotone
       # Asset bytes on a local volume. Without this (or a full BUNNY_STORAGE_*
       # set) the server REFUSES to start in production, because the in-memory
       # fallback loses every upload on restart.
