@@ -6,6 +6,7 @@
 // Nitro's auto-imports do not exist under vitest, so each one is a global here,
 // backed by a small fake event. The modules under test are the real ones.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { exportJWK, generateKeyPair, SignJWT } from 'jose'
 
 const client = vi.hoisted(() => ({
   discovery: vi.fn(),
@@ -117,8 +118,28 @@ beforeEach(() => {
   vi.clearAllMocks()
   // A new issuer per test defeats the per-process discovery cache.
   runtime.issuer = `https://idp.example/${Math.random()}`
-  client.discovery.mockResolvedValue({ serverMetadata: () => ({}) })
+  const { issuer } = runtime
+  client.discovery.mockResolvedValue({ serverMetadata: () => ({ issuer, jwks_uri: `${issuer}/jwks` }) })
 })
+
+// Real keys, so the signature check is exercised rather than mocked.
+const makeKey = async () => {
+  const { privateKey, publicKey } = await generateKeyPair('ES256')
+  return { privateKey, jwk: await exportJWK(publicKey) }
+}
+const trusted = await makeKey()
+const forger = await makeKey()
+
+async function idToken(over: Record<string, unknown> = {}, key = trusted.privateKey, alg = 'ES256') {
+  const claims = { sub: 'user-1', email: 'a@example.org', name: 'A', nonce: 'n', ...over }
+  return new SignJWT(claims)
+    .setProtectedHeader({ alg, kid: 'k1' })
+    .setIssuer(String(runtime.issuer))
+    .setAudience('resotone-editor')
+    .setIssuedAt()
+    .setExpirationTime('5m')
+    .sign(key)
+}
 
 describe('oidcSettings', () => {
   it('is null without an issuer: that is dev mode', () => {
@@ -144,10 +165,15 @@ describe('oidcSettings', () => {
   })
 
   it('reads the waiver as exactly 1, including the number Nuxt parses it into', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     runtime.allowInsecure = 1
     expect(s().allowInsecure).toBe(true)
     runtime.allowInsecure = '1'
     expect(s().allowInsecure).toBe(true)
+    // Loud, but once per process, not once per request.
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(warn.mock.calls[0][0]).toContain('NUXT_OIDC_ALLOW_INSECURE=1')
+    warn.mockRestore()
   })
 
   it.each(['true', 'yes', '0', '', 2])('does not read %s as the waiver', (v) => {
@@ -389,6 +415,15 @@ describe('GET /auth/login', () => {
 })
 
 describe('GET /auth/callback', () => {
+  let before: typeof fetch
+  beforeEach(() => {
+    before = globalThis.fetch
+    // The provider's published keys: only the trusted key, never the forger's.
+    vi.stubGlobal('fetch', async () => Response.json({ keys: [{ ...trusted.jwk, kid: 'k1', alg: 'ES256' }] }))
+  })
+  afterEach(() => {
+    vi.stubGlobal('fetch', before)
+  })
   const started = (over: Record<string, unknown> = {}) =>
     fakeEvent({
       path: 'auth/callback?code=abc&state=the-state',
@@ -396,23 +431,24 @@ describe('GET /auth/callback', () => {
     })
 
   it('logs in and goes to the stored destination', async () => {
-    client.authorizationCodeGrant.mockResolvedValue(tokens())
+    const id_token = await idToken()
+    client.authorizationCodeGrant.mockResolvedValue(tokens({ id_token }))
     const event = started()
     expect(redirects(await callback(event))).toBe('/content')
     expect(event.sessions.resonans_session).toMatchObject({
       accessToken: 'the-access-token',
-      idToken: 'the-id-token',
+      idToken: id_token,
       user: { sub: 'user-1', email: 'a@example.org', name: 'A' },
     })
   })
 
   it('checks a stored destination again before redirecting to it', async () => {
-    client.authorizationCodeGrant.mockResolvedValue(tokens())
+    client.authorizationCodeGrant.mockResolvedValue(tokens({ id_token: await idToken() }))
     expect(redirects(await callback(started({ next: '/\t/evil.example' })))).toBe('/')
   })
 
   it('checks state, PKCE and nonce, and requires an ID token', async () => {
-    client.authorizationCodeGrant.mockResolvedValue(tokens())
+    client.authorizationCodeGrant.mockResolvedValue(tokens({ id_token: await idToken() }))
     await callback(started())
     expect(client.authorizationCodeGrant.mock.calls[0][2]).toEqual({
       pkceCodeVerifier: 'v',
@@ -423,7 +459,7 @@ describe('GET /auth/callback', () => {
   })
 
   it('builds the current URL from configuration, not the Host header', async () => {
-    client.authorizationCodeGrant.mockResolvedValue(tokens())
+    client.authorizationCodeGrant.mockResolvedValue(tokens({ id_token: await idToken() }))
     await callback(started())
     expect(String(client.authorizationCodeGrant.mock.calls[0][1])).toBe(
       'https://cms.example/auth/callback?code=abc&state=the-state',
@@ -431,7 +467,7 @@ describe('GET /auth/callback', () => {
   })
 
   it('spends the transaction, so a second callback starts over', async () => {
-    client.authorizationCodeGrant.mockResolvedValue(tokens())
+    client.authorizationCodeGrant.mockResolvedValue(tokens({ id_token: await idToken() }))
     const event = started()
     await callback(event)
     expect(event.sessions.resonans_login).toEqual({})
@@ -458,11 +494,45 @@ describe('GET /auth/callback', () => {
     expect(redirects(await callback(started()))).toMatch(/^\/login\?/)
   })
 
-  it('refuses claims without a subject and saves nothing', async () => {
-    client.authorizationCodeGrant.mockResolvedValue(tokens({ claims: () => ({}) }))
+  const refused = async (id_token: string | undefined) => {
+    client.authorizationCodeGrant.mockResolvedValue(tokens({ id_token }))
     const event = started()
-    expect(redirects(await callback(event))).toMatch(/^\/login\?/)
+    expect(redirects(await callback(event))).toBe('/login?reason=refused')
     expect(event.sessions.resonans_session ?? {}).toEqual({})
+  }
+
+  it('refuses an ID token without a subject and saves nothing', async () => refused(await idToken({ sub: '' })))
+
+  it('refuses an ID token signed by a key the provider does not publish', async () => {
+    await refused(await idToken({}, forger.privateKey))
+  })
+
+  it('accepts the same claims signed by the published key (control)', async () => {
+    const event = started()
+    client.authorizationCodeGrant.mockResolvedValue(tokens({ id_token: await idToken() }))
+    expect(redirects(await callback(event))).toBe('/content')
+  })
+
+  it('refuses a token reply with no ID token', async () => refused(undefined))
+
+  it('refuses an unsigned ID token', async () => {
+    const b64 = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url')
+    const claims = { sub: 'user-1', nonce: 'n', iss: runtime.issuer, aud: 'resotone-editor', exp: 9999999999 }
+    await refused(`${b64({ alg: 'none' })}.${b64(claims)}.`)
+  })
+
+  it('refuses an ID token with the wrong nonce, audience or issuer', async () => {
+    await refused(await idToken({ nonce: 'other' }))
+    await refused(await new SignJWT({ sub: 'u', nonce: 'n' }).setProtectedHeader({ alg: 'ES256', kid: 'k1' })
+      .setIssuer(String(runtime.issuer)).setAudience('someone-else').setExpirationTime('5m').sign(trusted.privateKey))
+    await refused(await new SignJWT({ sub: 'u', nonce: 'n' }).setProtectedHeader({ alg: 'ES256', kid: 'k1' })
+      .setIssuer('https://evil.example').setAudience('resotone-editor').setExpirationTime('5m').sign(trusted.privateKey))
+  })
+
+  it('refuses an expired ID token', async () => {
+    await refused(await new SignJWT({ sub: 'u', nonce: 'n' }).setProtectedHeader({ alg: 'ES256', kid: 'k1' })
+      .setIssuer(String(runtime.issuer)).setAudience('resotone-editor').setExpirationTime(Math.floor(Date.now() / 1000) - 3600)
+      .sign(trusted.privateKey))
   })
 })
 
