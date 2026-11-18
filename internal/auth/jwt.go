@@ -134,7 +134,8 @@ func (v *jwksVerifier) keys(ctx context.Context) (jwk.Set, error) {
 
 // Verify parses and validates the token (algorithm, signature, issuer,
 // audience, exp/nbf), then extracts sub (required, non-empty), the tenant and
-// the role. A missing tenant or role is NOT an error here: the token is
+// the role CLAIM. The claim is only an input: the login middleware decides the
+// effective role from Resotone's own assignment (users.go). A missing tenant or role is NOT an error here: the token is
 // genuine, and the handlers answer 403 for what it may not do.
 func (v *jwksVerifier) Verify(ctx context.Context, token string) (Actor, error) {
 	if err := checkAlg(token); err != nil {
@@ -168,7 +169,29 @@ func (v *jwksVerifier) Verify(ctx context.Context, token string) (Actor, error) 
 	if tenant == "" {
 		tenant = stringClaim(tok, v.tenantClaim)
 	}
-	return Actor{Sub: sub, Tenant: tenant, Role: v.role(tok)}, nil
+	name := stringClaim(tok, "name")
+	if name == "" {
+		name = stringClaim(tok, "preferred_username")
+	}
+	return Actor{
+		Sub:         sub,
+		Tenant:      tenant,
+		Role:        v.role(tok),
+		Issuer:      v.issuer,
+		DisplayName: truncate(name, maxProfileRunes),
+		Email:       truncate(stringClaim(tok, "email"), maxProfileRunes),
+	}, nil
+}
+
+// maxProfileRunes bounds the profile claims that are stored, so a provider (or a
+// hostile token from one) cannot make Resotone keep an unbounded string.
+const maxProfileRunes = 320
+
+func truncate(s string, n int) string {
+	if r := []rune(s); len(r) > n {
+		return string(r[:n])
+	}
+	return s
 }
 
 // checkAlg refuses a token whose header names an algorithm outside allowedAlgs,

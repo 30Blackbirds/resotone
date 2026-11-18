@@ -5,7 +5,11 @@
 // (provider-neutral claims and built-in roles). Ported from the permissions PDP.
 package auth
 
-import "context"
+import (
+	"context"
+
+	"github.com/google/uuid"
+)
 
 // Actor is the verified sender of a request.
 //
@@ -20,6 +24,18 @@ type Actor struct {
 	Sub    string
 	Tenant string
 	Role   Role
+	// Issuer is the provider the token came from (the verifier's configured
+	// issuer, which the token was validated against). With Sub it identifies the
+	// user. Empty for dev and service actors.
+	Issuer string
+	// DisplayName and Email are the optional profile claims (name or
+	// preferred_username, and email). Informational only: never used to make an
+	// access decision.
+	DisplayName string
+	Email       string
+	// UserID is Resotone's own record of this user, set once the login resolver
+	// has found or created it. The zero value means no record (dev, service).
+	UserID uuid.UUID
 }
 
 // HasTenant reports whether a non-empty tenant was present on the JWT.

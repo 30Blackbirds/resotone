@@ -14,7 +14,7 @@ func clearAuthEnv(t *testing.T) {
 	for _, k := range []string{
 		"NODE_ENV", "RESONANS_JWT_ISSUER", "RESONANS_JWKS_URL", "RESONANS_JWT_AUDIENCE",
 		"RESONANS_TENANT_CLAIM", "RESONANS_ROLE_CLAIM", "RESONANS_ROLE_MAP",
-		"RESONANS_TENANT_MODE", "RESONANS_TENANT_ID",
+		"RESONANS_TENANT_MODE", "RESONANS_TENANT_ID", "RESONANS_ROLE_CLAIM_GRANTS",
 	} {
 		t.Setenv(k, "")
 	}
@@ -112,5 +112,22 @@ func TestTenantMode(t *testing.T) {
 				t.Fatalf("TenantID = %q, want %q", cfg.TenantID, tc.wantTenant)
 			}
 		})
+	}
+}
+
+// Claim-granted roles are off unless the value is exactly 1.
+func TestRoleClaimGrantsIsAnExactOptIn(t *testing.T) {
+	for val, want := range map[string]bool{"": false, "0": false, "true": false, "yes": false, "1": true} {
+		clearAuthEnv(t)
+		withJWT(t)
+		t.Setenv("RESONANS_JWT_AUDIENCE", "resotone")
+		t.Setenv("RESONANS_ROLE_CLAIM_GRANTS", val)
+		cfg, err := Load()
+		if err != nil {
+			t.Fatalf("Load(%q): %v", val, err)
+		}
+		if cfg.RoleClaimGrants != want {
+			t.Errorf("RESONANS_ROLE_CLAIM_GRANTS=%q -> %v, want %v", val, cfg.RoleClaimGrants, want)
+		}
 	}
 }

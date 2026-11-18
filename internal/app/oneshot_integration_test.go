@@ -328,6 +328,9 @@ func TestDevAuthIsIgnoredWhenJWTIsConfigured(t *testing.T) {
 	t.Setenv("NODE_ENV", "development") // dev auth is refused outright in production
 	t.Setenv("RESONANS_DEV_AUTH", "1")
 	t.Setenv("DATABASE_URL", "")
+	// This cell is about the header, not about roles: let the token's claim grant
+	// the role, as there is no assignment in an in-memory run.
+	t.Setenv("RESONANS_ROLE_CLAIM_GRANTS", "1")
 	stop := start(t, ctx, base)
 	defer func() { _ = stop() }()
 	tenant := uuid.NewString()
@@ -377,6 +380,31 @@ func TestEntryPointsFailOnABadConfig(t *testing.T) {
 	} {
 		if err := run(); err == nil || !strings.Contains(err.Error(), "load config") {
 			t.Errorf("%s with PORT=-1 = %v, want a load config error", name, err)
+		}
+	}
+}
+
+// 🔴 A token whose role claim says admin gets NO role at a first login: the role
+// is Resotone's own assignment, and the claim counts only with the explicit
+// opt-in. Both directions, in the same run shape.
+func TestRoleClaimDoesNotGrantARoleWithoutOptIn(t *testing.T) {
+	for _, optIn := range []string{"", "1"} {
+		ctx := context.Background()
+		base, _ := devEnv(t)
+		sign := prodAuth(t)
+		t.Setenv("DATABASE_URL", "")
+		t.Setenv("NODE_ENV", "development") // in-memory store, as in the cell above
+		t.Setenv("RESONANS_ROLE_CLAIM_GRANTS", optIn)
+		stop := start(t, ctx, base)
+		tenant := uuid.NewString()
+		want := http.StatusForbidden
+		if optIn == "1" {
+			want = http.StatusOK
+		}
+		code, _ := fetch(t, http.MethodGet, base+"/api/v1/documents", map[string]string{"Authorization": "Bearer " + sign(tenant, "admin")})
+		_ = stop()
+		if code != want {
+			t.Errorf("RESONANS_ROLE_CLAIM_GRANTS=%q: an admin-claim token = %d, want %d", optIn, code, want)
 		}
 	}
 }

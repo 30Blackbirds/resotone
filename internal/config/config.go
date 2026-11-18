@@ -78,6 +78,10 @@ type Config struct {
 	TenantClaim string
 	RoleClaim   string
 	RoleMap     map[string]auth.Role
+	// RoleClaimGrants (RESONANS_ROLE_CLAIM_GRANTS=1) lets the provider's role
+	// claim raise a user's role above the one assigned inside Resotone. Off by
+	// default; only the exact value 1 turns it on.
+	RoleClaimGrants bool
 
 	// TenantID is single-tenant mode (RESONANS_TENANT_MODE=single +
 	// RESONANS_TENANT_ID): every editor works in this tenant and the tenant
@@ -229,6 +233,7 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("RESONANS_ROLE_MAP: %w", err)
 	}
 	cfg.RoleMap = roleMap
+	cfg.RoleClaimGrants = strings.TrimSpace(os.Getenv("RESONANS_ROLE_CLAIM_GRANTS")) == "1"
 
 	if !localePattern.MatchString(cfg.DefaultLocale) {
 		return nil, fmt.Errorf("RESONANS_DEFAULT_LOCALE: %q is not a language tag like en or pt-BR", cfg.DefaultLocale)
